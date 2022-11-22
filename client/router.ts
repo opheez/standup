@@ -1,33 +1,41 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import FreetsPage from './components/Freet/FreetsPage.vue';
 import AccountPage from './components/Account/AccountPage.vue';
-import LoginPage from './components/Login/LoginPage.vue';
+import FeedPage from './components/Feed/FeedPage.vue';
+import HomePage from './components/Login/HomePage.vue';
+import ProjectDashboard from './components/Project/ProjectDashboard.vue';
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
-  {path: '/', name: 'Home', component: FreetsPage},
+  {path: '/', name: 'Home', component: HomePage},
+  {path: '/feed', name: 'Feed', component: FeedPage},
+  {path: '/projects', name: 'Projects', component: ProjectDashboard},
   {path: '/account', name: 'Account', component: AccountPage},
-  {path: '/login', name: 'Login', component: LoginPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
 
 const router = new VueRouter({routes});
+
+const AUTH_REQUIRED_ROUTES = [
+  'Feed', 'Projects', 'Account',
+];
 
 /**
  * Navigation guards to prevent user from accessing wrong pages.
  */
 router.beforeEach((to, from, next) => {
   if (router.app.$store) {
-    if (to.name === 'Login' && router.app.$store.state.username) {
-      next({name: 'Account'}); // Go to Account page if user navigates to Login and are signed in
+    // Go to feed if user navigates to home page and is signed in
+    if (to.name === 'Home' && router.app.$store.state.username) {
+      next({name: 'Feed'});
       return;
     }
 
-    if (to.name === 'Account' && !router.app.$store.state.username) {
-      next({name: 'Login'}); // Go to Login page if user navigates to Account and are not signed in
+    // Go to home page if user navigates to feed/account and is not signed in
+    if (!router.app.$store.state.username && AUTH_REQUIRED_ROUTES.includes(to.name)) {
+      next({name: 'Home'});
       return;
     }
   }
