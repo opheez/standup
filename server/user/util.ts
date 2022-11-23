@@ -5,8 +5,10 @@ import type {User} from './model';
 // Update this if you add a property to the User type!
 type UserResponse = {
   _id: string;
-  username: string;
-  dateJoined: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  // TODO: add projects
 };
 
 /**
@@ -35,7 +37,10 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
   return {
     ...userCopy,
     _id: userCopy._id.toString(),
-    dateJoined: formatDate(user.dateJoined)
+    firstName: userCopy.firstName,
+    lastName: userCopy.lastName,
+    email: userCopy.email,
+    // TODO: add projects
   };
 };
 

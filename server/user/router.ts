@@ -33,7 +33,7 @@ router.get(
  *
  * @name POST /api/users/session
  *
- * @param {string} username - The user's username
+ * @param {string} email - The user's email
  * @param {string} password - The user's password
  * @return {UserResponse} - An object with user's details
  * @throws {403} - If user is already signed in
@@ -109,7 +109,7 @@ router.post(
     const user = await UserCollection.addOne(req.body.username, req.body.password);
     req.session.userId = user._id.toString();
     res.status(201).json({
-      message: `Your account was created successfully. You have been logged in as ${user.username}`,
+      message: `Your account was created successfully. You have been logged in as ${user.firstName + ' ' + user.lastName}`,
       user: util.constructUserResponse(user)
     });
   }
