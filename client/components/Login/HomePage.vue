@@ -40,7 +40,7 @@ export default {
     };
   },
   beforeCreate() {
-    if (this.$store.state.username) {
+    if (this.$store.state.email) {
       this.$router.push({ name: 'Feed' });
     }
   },

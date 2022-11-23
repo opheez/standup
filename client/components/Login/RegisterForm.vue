@@ -11,7 +11,7 @@ export default {
       url: '/api/users',
       method: 'POST',
       hasBody: true,
-      setUsername: true,
+      setEmail: true,
       fields: [
         {id: 'email', label: 'Email', value: ''},
         {id: 'firstName', label: 'First name', value: ''},
