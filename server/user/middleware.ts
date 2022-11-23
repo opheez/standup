@@ -41,7 +41,7 @@ const isValidName = (req: Request, res: Response, next: NextFunction) => {
  * Checks if an email in req.body is valid, that is, it matches the email regex
  */
 const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
-  const emailRegex = /^.+@.+\..+$/i;
+  const emailRegex = /^^\S+@.+\..+$/i;
   if (!emailRegex.test(req.body.email)) {
     res.status(400).json({
       error: 'Email must be of the format someone@somewhere.domain.'
