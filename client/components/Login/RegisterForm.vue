@@ -13,7 +13,9 @@ export default {
       hasBody: true,
       setUsername: true,
       fields: [
-        {id: 'username', label: 'Username', value: ''},
+        {id: 'email', label: 'Email', value: ''},
+        {id: 'firstname', label: 'First name', value: ''},
+        {id: 'lastname', label: 'Last name', value: ''},
         {id: 'password', label: 'Password', value: ''}
       ],
       title: 'Create account',
