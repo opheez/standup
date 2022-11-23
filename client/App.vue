@@ -20,6 +20,8 @@ export default {
     }).then(res => res.json()).then(res => {
       const user = res.user;
       this.$store.commit('setEmail', user ? user.email : null);
+      this.$store.commit('setLastname', user ? user.lastName : null);
+      this.$store.commit('setFirstname', user ? user.firstName : null);
     });
 
     // Clear alerts on page refresh
