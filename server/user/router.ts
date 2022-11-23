@@ -104,6 +104,7 @@ router.post(
   [
     userValidator.isUserLoggedOut,
     userValidator.isValidEmail,
+    userValidator.isValidName,
     userValidator.isEmailNotAlreadyInUse,
     userValidator.isValidPassword
   ],
@@ -136,6 +137,7 @@ router.patch(
   [
     userValidator.isUserLoggedIn,
     userValidator.isValidEmail,
+    userValidator.isValidName,
     userValidator.isEmailNotAlreadyInUse,
     userValidator.isValidPassword
   ],

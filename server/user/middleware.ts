@@ -26,10 +26,10 @@ const isCurrentSessionUserExists = async (req: Request, res: Response, next: Nex
  * Checks if both first and last names in req.body is valid, that is, it matches the name regex
  */
 const isValidName = (req: Request, res: Response, next: NextFunction) => {
-  const nameRegex = /^[a-zA-Z]+$/i;
+  const nameRegex = /^\w+$/i;
   if (!nameRegex.test(req.body.firstName) || !nameRegex.test(req.body.lastName)) {
     res.status(400).json({
-      error: 'Names must only contain upper and lowercase English letters'
+      error: 'Names must be a nonempty alphanumeric string'
     });
     return;
   }
