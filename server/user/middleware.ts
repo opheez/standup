@@ -23,13 +23,28 @@ const isCurrentSessionUserExists = async (req: Request, res: Response, next: Nex
 };
 
 /**
- * Checks if a username in req.body is valid, that is, it matches the username regex
+ * Checks if both first and last names in req.body is valid, that is, it matches the name regex
  */
-const isValidUsername = (req: Request, res: Response, next: NextFunction) => {
-  const usernameRegex = /^\w+$/i;
-  if (!usernameRegex.test(req.body.username)) {
+const isValidName = (req: Request, res: Response, next: NextFunction) => {
+  const nameRegex = /^[a-zA-Z]+$/i;
+  if (!nameRegex.test(req.body.firstName) || !nameRegex.test(req.body.lastName)) {
     res.status(400).json({
-      error: 'Username must be a nonempty alphanumeric string.'
+      error: 'Names must only contain upper and lowercase English letters'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if an email in req.body is valid, that is, it matches the email regex
+ */
+const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
+  const emailRegex = /^^\S+@.+\..+$/i;
+  if (!emailRegex.test(req.body.email)) {
+    res.status(400).json({
+      error: 'Email must be of the format someone@somewhere.domain.'
     });
     return;
   }
@@ -56,15 +71,15 @@ const isValidPassword = (req: Request, res: Response, next: NextFunction) => {
  * Checks if a user with username and password in req.body exists
  */
 const isAccountExists = async (req: Request, res: Response, next: NextFunction) => {
-  const {username, password} = req.body as {username: string; password: string};
+  const {email, password} = req.body as {email: string; password: string};
 
-  if (!username || !password) {
-    res.status(400).json({error: `Missing ${username ? 'password' : 'username'} credentials for sign in.`});
+  if (!email || !password) {
+    res.status(400).json({error: `Missing ${email ? 'password' : 'username'} credentials for sign in.`});
     return;
   }
 
-  const user = await UserCollection.findOneByUsernameAndPassword(
-    username, password
+  const user = await UserCollection.findOneByEmailAndPassword(
+    email, password
   );
 
   if (user) {
@@ -75,17 +90,17 @@ const isAccountExists = async (req: Request, res: Response, next: NextFunction) 
 };
 
 /**
- * Checks if a username in req.body is already in use
+ * Checks if an email in req.body is already in use
  */
-const isUsernameNotAlreadyInUse = async (req: Request, res: Response, next: NextFunction) => {
-  if (req.body.username !== undefined) { // If username is not being changed, skip this check
-    const user = await UserCollection.findOneByUsername(req.body.username);
+const isEmailNotAlreadyInUse = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.body.email !== undefined) { // If email is not being changed, skip this check
+    const user = await UserCollection.findOneByEmail(req.body.email);
 
-    // If the current session user wants to change their username to one which matches
+    // If the current session user wants to change their email to one which matches
     // the current one irrespective of the case, we should allow them to do so
     if (user && (user?._id.toString() !== req.session.userId)) {
       res.status(409).json({
-        error: 'An account with this username already exists.'
+        error: 'An account with this email already exists.'
       });
       return;
     }
@@ -122,35 +137,13 @@ const isUserLoggedOut = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-/**
- * Checks if a user with userId as author id in req.query exists
- */
-const isAuthorExists = async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.query.author) {
-    res.status(400).json({
-      error: 'Provided author username must be nonempty.'
-    });
-    return;
-  }
-
-  const user = await UserCollection.findOneByUsername(req.query.author as string);
-  if (!user) {
-    res.status(404).json({
-      error: `A user with username ${req.query.author as string} does not exist.`
-    });
-    return;
-  }
-
-  next();
-};
-
 export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
   isUserLoggedOut,
-  isUsernameNotAlreadyInUse,
+  isEmailNotAlreadyInUse,
   isAccountExists,
-  isAuthorExists,
-  isValidUsername,
-  isValidPassword
+  isValidEmail,
+  isValidPassword,
+  isValidName
 };
