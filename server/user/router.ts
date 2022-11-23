@@ -51,8 +51,8 @@ router.post(
     userValidator.isAccountExists
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByUsernameAndPassword(
-      req.body.username, req.body.password
+    const user = await UserCollection.findOneByEmailAndPassword(
+      req.body.email, req.body.password
     );
     req.session.userId = user._id.toString();
     res.status(201).json({

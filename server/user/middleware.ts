@@ -23,6 +23,21 @@ const isCurrentSessionUserExists = async (req: Request, res: Response, next: Nex
 };
 
 /**
+ * Checks if both first and last names in req.body is valid, that is, it matches the name regex
+ */
+const isValidName = (req: Request, res: Response, next: NextFunction) => {
+  const nameRegex = /^[a-zA-Z]+$/i;
+  if (!nameRegex.test(req.body.firstName) || !nameRegex.test(req.body.lastName)) {
+    res.status(400).json({
+      error: 'Names must only contain upper and lowercase English letters'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
  * Checks if an email in req.body is valid, that is, it matches the email regex
  */
 const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
@@ -129,5 +144,6 @@ export {
   isEmailNotAlreadyInUse,
   isAccountExists,
   isValidEmail,
-  isValidPassword
+  isValidPassword,
+  isValidName
 };
