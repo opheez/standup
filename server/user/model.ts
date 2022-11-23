@@ -11,8 +11,8 @@ export type User = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   firstName: string;
   lastName: string;
-  password: string;
   email: string;
+  password: string;
   // TODO: add projects
 };
 
@@ -30,16 +30,16 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  // The user's email
+  email: {
+    type: String,
+    required: true
+  },
   // The user's password
   password: {
     type: String,
     required: true
   },
-  // The user's email
-  email: {
-    type: String,
-    required: true
-  }
 });
 
 const UserModel = model<User>('User', UserSchema);
