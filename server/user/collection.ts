@@ -71,11 +71,11 @@ class UserCollection {
   static async updateOne(userId: Types.ObjectId | string, userDetails: {password?: string; email?: string; firstName?: string; lastName?: string}): Promise<HydratedDocument<User>> {
     const user = await UserModel.findOne({_id: userId});
     if (userDetails.firstName) {
-      user.password = userDetails.firstName;
+      user.firstName = userDetails.firstName;
     }
 
     if (userDetails.lastName) {
-      user.password = userDetails.lastName;
+      user.lastName = userDetails.lastName;
     }
 
     if (userDetails.password) {
