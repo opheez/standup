@@ -28,13 +28,13 @@ const AUTH_REQUIRED_ROUTES = [
 router.beforeEach((to, from, next) => {
   if (router.app.$store) {
     // Go to feed if user navigates to home page and is signed in
-    if (to.name === 'Home' && router.app.$store.state.username) {
+    if (to.name === 'Home' && router.app.$store.state.email) {
       next({name: 'Feed'});
       return;
     }
 
     // Go to home page if user navigates to feed/account and is not signed in
-    if (!router.app.$store.state.username && AUTH_REQUIRED_ROUTES.includes(to.name)) {
+    if (!router.app.$store.state.email && AUTH_REQUIRED_ROUTES.includes(to.name)) {
       next({name: 'Home'});
       return;
     }

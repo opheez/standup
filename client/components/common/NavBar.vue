@@ -10,7 +10,7 @@
         Standup
       </h1>
     </div>
-    <div class="right" v-if="$store.state.username">
+    <div class="right" v-if="$store.state.email">
       <router-link to="/feed">
         Feed
       </router-link>
