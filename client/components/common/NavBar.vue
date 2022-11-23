@@ -7,24 +7,18 @@
     <div class="left">
       <img src="../../public/logo.svg">
       <h1 class="title">
-        Fritter
+        Standup
       </h1>
     </div>
-    <div class="right">
-      <router-link to="/">
-        Home
+    <div class="right" v-if="$store.state.username">
+      <router-link to="/feed">
+        Feed
       </router-link>
-      <router-link
-        v-if="$store.state.username"
-        to="/account"
-      >
+      <router-link to="/projects">
+        Projects
+      </router-link>
+      <router-link to="/account">
         Account
-      </router-link>
-      <router-link
-        v-else
-        to="/login"
-      >
-        Login
       </router-link>
     </div>
     <section class="alerts">
