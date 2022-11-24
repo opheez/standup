@@ -29,7 +29,49 @@ const isValidName = (req: Request, res: Response, next: NextFunction) => {
   const nameRegex = /^\w+$/i;
   if (!nameRegex.test(req.body.firstName) || !nameRegex.test(req.body.lastName)) {
     res.status(400).json({
-      error: 'Names must be a nonempty alphanumeric string'
+      error: 'Names must be a nonempty alphanumeric string.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if last name in req.body is valid, that is, it matches the name regex
+ */
+ const isValidOrUndefinedFirstName = (req: Request, res: Response, next: NextFunction) => {
+  // if undefined, no change
+  if (!req.body.firstName) {
+    next();
+    return;
+  }
+
+  const nameRegex = /^\w+$/i;
+  if (!nameRegex.test(req.body.firstName)) {
+    res.status(400).json({
+      error: 'First name must be a nonempty alphanumeric string.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if first name in req.body is valid, that is, it matches the name regex
+ */
+ const isValidOrUndefinedLastName = (req: Request, res: Response, next: NextFunction) => {
+  // if both undefined, no change
+  if (!req.body.lastName) {
+    next();
+    return;
+  }
+
+  const nameRegex = /^\w+$/i;
+  if (!nameRegex.test(req.body.lastName)) {
+    res.status(400).json({
+      error: 'Last name must be a nonempty alphanumeric string.'
     });
     return;
   }
@@ -53,9 +95,51 @@ const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
+ * Checks if an email in req.body is undefined, or valid, that is, it matches the email regex
+ */
+ const isValidOrUndefinedEmail = (req: Request, res: Response, next: NextFunction) => {
+  // if undefined, no change
+  if (!req.body.email) {
+    next();
+    return;
+  }
+
+  const emailRegex = /^^\S+@.+\..+$/i;
+  if (!emailRegex.test(req.body.email)) {
+    res.status(400).json({
+      error: 'Email must be of the format someone@somewhere.domain.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
  * Checks if a password in req.body is valid, that is, at 6-50 characters long without any spaces
  */
 const isValidPassword = (req: Request, res: Response, next: NextFunction) => {
+  const passwordRegex = /^\S+$/;
+  if (!passwordRegex.test(req.body.password)) {
+    res.status(400).json({
+      error: 'Password must be a nonempty string.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if a password in req.body is undefined, or valid, that is, at 6-50 characters long without any spaces
+ */
+ const isValidOrUndefinedPassword = (req: Request, res: Response, next: NextFunction) => {
+  // if undefined, no change
+  if (!req.body.password) {
+    next();
+    return;
+  }
+
   const passwordRegex = /^\S+$/;
   if (!passwordRegex.test(req.body.password)) {
     res.status(400).json({
@@ -144,6 +228,10 @@ export {
   isEmailNotAlreadyInUse,
   isAccountExists,
   isValidEmail,
+  isValidOrUndefinedEmail,
   isValidPassword,
-  isValidName
+  isValidOrUndefinedPassword,
+  isValidName,
+  isValidOrUndefinedFirstName,
+  isValidOrUndefinedLastName,
 };
