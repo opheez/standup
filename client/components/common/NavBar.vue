@@ -11,8 +11,8 @@
       </h1>
     </div>
     <div class="right" v-if="$store.state.email">
-      <router-link to="/feed">
-        Feed
+      <router-link to="/">
+        Home
       </router-link>
       <router-link to="/projects">
         Projects
