@@ -11,6 +11,9 @@
         {{ label }}
       </p>
     </div>
+    <div class="add-btns">
+      <AddProjectComponent/>
+    </div>
     <section>
       <ProjectComponent
         v-for="project in filteredProjects"
@@ -23,6 +26,7 @@
 
 <script>
 import ProjectComponent from '@/components/Project/ProjectComponent.vue';
+import AddProjectComponent from '@/components/Project/AddProjectComponent.vue';
 
 const FILTER_TO_VALUE = {
   'All': null,
@@ -32,7 +36,7 @@ const FILTER_TO_VALUE = {
 
 export default {
   name: 'ProjectDashboard',
-  components: {ProjectComponent},
+  components: {ProjectComponent, AddProjectComponent},
   data() {
     return {
       // filter on the status of the project. null means all projects are shown
@@ -76,5 +80,11 @@ export default {
 .project-filters > p.active {
   color: rgb(73, 40, 183);
   text-decoration: underline;
+}
+
+.add-btns {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
 }
 </style>

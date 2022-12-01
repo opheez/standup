@@ -88,4 +88,21 @@ ul.reset li {
   text-indent: 0;
   list-style-type: none;
 }
+
+button {
+  border: none;
+  border: 2px solid transparent;
+  font-family: inherit;
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 16px;
+  background: #c4b5e0;
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(90%);
+}
+
 </style>
