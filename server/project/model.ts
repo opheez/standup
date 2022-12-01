@@ -13,6 +13,8 @@ export type Project = {
   creatorId: Types.ObjectId;
   active: boolean;
   projectName: string;
+  participants: Types.ObjectId[];
+  invitedUsers: Types.ObjectId[];
   scheduledUpdates: Date[]; 
 };
 
@@ -21,8 +23,8 @@ export type PopulatedProject = {
   creatorId: User;
   active: boolean;
   projectName: string;
-  participants: Types.ObjectId[];
-  invitedUsers: Types.ObjectId[];
+  participants: User[];
+  invitedUsers: User[];
   scheduledUpdates: Date[]; 
 };
 
@@ -48,6 +50,18 @@ const ProjectSchema = new Schema<Project>({
     type: String,
     required: true
   },
+  // The participants id
+  participants: [{
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'User'
+  }],
+  // The invited users' id
+  invitedUsers: [{
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'User'
+  }],
   // Dates requiring updates, if exists
   scheduledUpdates: {
     type: [Date],
