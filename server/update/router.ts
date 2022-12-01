@@ -73,7 +73,7 @@ router.delete(
     updateValidator.isUpdateAuthor,
   ],
   async (req: Request, res: Response) => {
-    await UpdateCollection.deleteOne(req.params.freetId);
+    await UpdateCollection.deleteOne(req.params.updateId);
     res.status(200).json({
       message: 'Your update was deleted successfully.'
     });
