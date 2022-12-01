@@ -1,85 +1,81 @@
 import type {Request, Response} from 'express';
 import express from 'express';
-// import FreetCollection from '../freet/collection';
-import UserCollection from './collection';
+import UpdateCollection from './collection';
 import * as userValidator from '../user/middleware';
+import * as projectValidator from '../project/middleware';
+import * as updateValidator from './middleware';
 import * as util from './util';
 
 const router = express.Router();
 
 /**
- * Get the signed in user
- * TODO: may need better route and documentation
- * (so students don't accidentally delete this when copying over)
+ * Get updates for a given project
  *
- * @name GET /api/users/session
+ * @name GET /api/updates?projectId=projectId
  *
- * @return - currently logged in user, or null if not logged in
+ * @return {UpdateResponse[]} - An array of updates associated with the given project
+ * @throws {400} - If projectId is not given
+ * @throws {403} - If user is not logged in or not part of the project
+ * @throws {404} - If project with projectId is not found
  */
 router.get(
-  '/session',
-  [],
+  '/',
+  [
+    userValidator.isUserLoggedIn,
+    projectValidator.isProjectExistsQuery,
+    projectValidator.isUserInProject,
+  ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByUserId(req.session.userId);
-    res.status(200).json({
-      message: 'Your session info was found successfully.',
-      user: user ? util.constructUserResponse(user) : null
-    });
+    const updates = await UpdateCollection.findAllByProjectId(req.query.projectId as string);
+    const response = updates.map(util.constructUpdateResponse);
+    res.status(200).json(response);
   }
 );
 
 /**
- * Sign in user.
+ * Create a new update.
  *
- * @name POST /api/users/session
+ * @name POST /api/updates
  *
  * @param {string} email - The user's email
  * @param {string} password - The user's password
- * @return {UserResponse} - An object with user's details
- * @throws {403} - If user is already signed in
- * @throws {400} - If username or password is  not in the correct format,
- *                 or missing in the req
- * @throws {401} - If the user login credentials are invalid
- *
+ * @return {UpdateResponse} - An object with the new update
+ * @throws {400} - If projectId is not given
+ * @throws {403} - If user is not logged in or not part of the project
+ * @throws {404} - If project with projectId is not found
  */
 router.post(
-  '/session',
+  '/',
   [
-    userValidator.isUserLoggedOut,
-    userValidator.isValidEmail,
-    userValidator.isValidPassword,
-    userValidator.isAccountExists
+    userValidator.isUserLoggedIn,
+    projectValidator.isProjectExistsQuery,
+    projectValidator.isUserInProject,
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByEmailAndPassword(
-      req.body.email, req.body.password
-    );
-    req.session.userId = user._id.toString();
-    res.status(201).json({
-      message: 'You have logged in successfully',
-      user: util.constructUserResponse(user)
-    });
+    
   }
 );
 
 /**
- * Sign out a user
+ * Delete an update
  *
- * @name DELETE /api/users/session
+ * @name DELETE /api/updates/:id
  *
- * @return - None
- * @throws {403} - If user is not logged in
+ * @return {string} - A success message
+ * @throws {403} - If user is not logged in or is not the author of the update
  *
  */
 router.delete(
-  '/session',
+  '/:updateId?',
   [
-    userValidator.isUserLoggedIn
+    userValidator.isUserLoggedIn,
+    updateValidator.isUpdateExistsParams,
+    updateValidator.isUpdateAuthor,
   ],
-  (req: Request, res: Response) => {
-    req.session.userId = undefined;
+  async (req: Request, res: Response) => {
+    await UpdateCollection.deleteOne(req.params.freetId);
     res.status(200).json({
-      message: 'You have been logged out successfully.'
+      message: 'Your update was deleted successfully.'
     });
   }
 );
