@@ -37,6 +37,7 @@ export default {
 }
 
 .modal-container {
+  position: relative;
   width: 500px;
   margin: 0px auto;
   padding: 20px 30px;
