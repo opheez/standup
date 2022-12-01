@@ -1,40 +1,46 @@
 import type {HydratedDocument, Types} from 'mongoose';
-import type {User} from './model';
-import UserModel from './model';
+import type {User} from '../user/model';
+import type {Update} from './model';
+import UpdateModel from './model';
 
 /**
- * This file contains a class with functionality to interact with users stored
+ * This file contains a class with functionality to interact with updates stored
  * in MongoDB, including adding, finding, updating, and deleting. Feel free to add
  * additional operations in this file.
  *
- * Note: HydratedDocument<User> is the output of the UserModel() constructor,
- * and contains all the information in User. https://mongoosejs.com/docs/typescript.html
+ * Note: HydratedDocument<Update> is the output of the UpdateModel() constructor,
+ * and contains all the information in Update. https://mongoosejs.com/docs/typescript.html
  */
-class UserCollection {
+class UpdateCollection {
   /**
-   * Add a new user
+   * Add a new update
    *
-   * @param {string} firstName - The first name of the user
-   * @param {string} lastName - The first name of the user
-   *    * @param {string} email - The email of the user
+   * @param {string} updateId - The id of the author of the update
+   * @param {string} email - The email of the user
    * @param {string} password - The password of the user
    * TODO: add projects
    * @return {Promise<HydratedDocument<User>>} - The newly created user
    */
   static async addOne(firstName: string, lastName: string, email: string, password: string): Promise<HydratedDocument<User>> {
-    const user = new UserModel({ firstName, lastName, email, password });
-    await user.save(); // Saves user to MongoDB
-    return user;
+    const date = new Date();
+    const update = new UpdateModel({
+      authorId,
+      dateCreated: date,
+      content,
+      dateModified: date
+    });
+    await update.save(); // Saves freet to MongoDB
+    return update.populate('authorId');
   }
 
   /**
-   * Find a user by userId.
+   * Find a update by updateId.
    *
-   * @param {string} userId - The userId of the user to find
-   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
+   * @param {string} updateId - The updateId of the update to update
+   * @return {Promise<HydratedDocument<Update>> | Promise<null>} - The update with the given updateId, if any
    */
-  static async findOneByUserId(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({_id: userId});
+  static async findOneByUpdateId(updateId: Types.ObjectId | string): Promise<HydratedDocument<Update>> {
+    return UpdateModel.findOne({_id: updateId});
   }
 
   /**
@@ -91,15 +97,15 @@ class UserCollection {
   }
 
   /**
-   * Delete a user from the collection.
+   * Delete a update from the collection.
    *
-   * @param {string} userId - The userId of user to delete
+   * @param {string} userId - The updateId of update to delete
    * @return {Promise<Boolean>} - true if the user has been deleted, false otherwise
    */
-  static async deleteOne(userId: Types.ObjectId | string): Promise<boolean> {
-    const user = await UserModel.deleteOne({_id: userId});
-    return user !== null;
+  static async deleteOne(updateId: Types.ObjectId | string): Promise<boolean> {
+    const update = await UpdateModel.deleteOne({_id: updateId});
+    return update !== null;
   }
 }
 
-export default UserCollection;
+export default UpdateCollection;

@@ -1,7 +1,7 @@
 import type {Types} from 'mongoose';
 import {Schema, model} from 'mongoose';
 import type {User} from '../user/model';
-import type {Project} from '../project/model';
+// import type {Project} from '../project/model';
 
 /**
  * This file defines the properties stored in a User
@@ -33,7 +33,7 @@ export type PopulatedUpdate = {
   details: string;
   todos: string;
   blockers: string;
-  project: Project;
+  projectId: string;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -86,7 +86,6 @@ const UpdateSchema = new Schema({
   projectId: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: 'Project',
   },
 });
 
