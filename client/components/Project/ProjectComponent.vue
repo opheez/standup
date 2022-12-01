@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     status() {
-      if (this.project.active) {
+      if (!this.project.active) {
         return 'Completed';
       }
       if (moment() > moment(this.project.deadline)) {
