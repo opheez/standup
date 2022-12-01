@@ -15,6 +15,7 @@ const store = new Vuex.Store({
     firstname: null, //first name of the logged in user
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     projects: [], // All projects the signed in user is a part of
+    invites: [], // All projects the signed in user is invited to
   },
   mutations: {
     alert(state, payload) {
@@ -90,10 +91,30 @@ const store = new Vuex.Store({
           teammates: id % 2 ? teammates : teammates.slice(0, 3),
           deadline: dates[id],
           active: id % 2 == 0,
+          pendingRequests: [],
         }
       });
       state.projects = projects;
-    }
+    },
+    async refreshInvites(state) {
+      const invites = [...Array(3).keys()].map(id => {
+        return {
+          id,
+          name: `Project Name #${id}`,
+          teammates: [
+            'teammate1@gmail.com',
+            'teammate2@gmail.com',
+          ],
+          deadline: '12/31/2022',
+          active: true,
+          pendingRequests: [
+            'teammate3@gmail.com',
+            'teammate4@gmail.com',
+          ],
+        }
+      });
+      state.invites = invites;
+    },
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
