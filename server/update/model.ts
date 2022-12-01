@@ -1,5 +1,7 @@
 import type {Types} from 'mongoose';
 import {Schema, model} from 'mongoose';
+import type {User} from '../user/model';
+import type {Project} from '../project/model';
 
 /**
  * This file defines the properties stored in a User
@@ -18,6 +20,20 @@ export type Update = {
   todos: string;
   blockers: string;
   projectId: Types.ObjectId;
+};
+
+// Type definition for Update on the backend
+export type PopulatedUpdate = {
+  _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
+  author: User;
+  dateCreated: Date;
+  dateModified: Date;
+  status: string;
+  summary: string;
+  details: string;
+  todos: string;
+  blockers: string;
+  project: Project;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
