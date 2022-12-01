@@ -1,5 +1,5 @@
 <template>
-  <div class="project" @click="openProject">
+  <div class="project preview" @click="openProject">
     <h3>{{ project.name }}</h3>
     <p class="deadline">Due {{ project.deadline }}</p>
     <ul class="reset teammates-list">
@@ -8,7 +8,7 @@
       </li>
     </ul>
     <div
-      class="project-status"
+      class="project-status status"
       :class="status"
     >
       {{ status }}
@@ -53,15 +53,11 @@ export default {
 
 <style scoped>
 .project {
-  border: 2px solid #a4a4a4;
-  border-radius: 12px;
   display: inline-flex;
   flex-direction: column;
-  background: #F8F8F8;
   width: 340px;
   height: 260px;
   margin: 0 12px 12px 0;
-  padding: 24px;
   cursor: pointer;
 }
 
@@ -86,19 +82,6 @@ export default {
 }
 .project > .teammates-list li {
   margin-bottom: 4px;
-}
-
-.project-status {
-  background: #bcbcbc;
-  border-radius: 100px;
-  padding: 4px 12px;
-  width: fit-content;
-}
-.project-status.In-Progress {
-  background: #FBC358;
-}
-.project-status.Completed {
-  background: #69E8AB;
 }
 .project-status.Overdue {
   background: #F58870;

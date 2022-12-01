@@ -16,6 +16,7 @@ const store = new Vuex.Store({
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     projects: [], // All projects the signed in user is a part of
     invites: [], // All projects the signed in user is invited to
+    updates: {}, // mapping from project IDs to a list of updates
   },
   mutations: {
     alert(state, payload) {
@@ -118,6 +119,50 @@ const store = new Vuex.Store({
       });
       state.invites = invites;
     },
+    async refreshUpdates(state, projectId) {
+      // TODO(AL): When backend is ready call the API instead
+      const dates = [
+        '11/12/2022',
+        '11/15/2022',
+        '11/30/2022',
+        '11/1/2022',
+      ];
+      const teammates = [
+        'teammate1@gmail.com',
+        'teammate2@gmail.com',
+        'teammate3@gmail.com',
+        'teammate4@gmail.com',
+        'teammate5@gmail.com',
+        'teammate6@gmail.com',
+        'teammate7@gmail.com',
+      ];
+      const statuses = ['Blocked', 'In-Progress', 'Completed'];
+      const updates = [...Array(20).keys()].map(id => {
+        return {
+          id: `update${id}project${projectId}`,
+          summary: `Update summary #${id}`,
+          author: teammates[id % teammates.length],
+          dateCreated: dates[id % dates.length],
+          dateModified: dates[id % dates.length],
+          status: statuses[id % statuses.length],
+          details: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
+          todos: [
+            'todo task',
+            'todo task',
+            'todo task',
+            'todo task',
+          ],
+          blockers: [
+            'blocker',
+            'blocker',
+            'blocker',
+            'blocker',
+          ],
+          project: projectId,
+        };
+      });
+      Vue.set(state.updates, projectId, updates);
+    }
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
