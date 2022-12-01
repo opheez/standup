@@ -50,6 +50,7 @@ body {
 main {
   width: 75%;
   margin: auto;
+  padding-top: 16px;
 }
 
 .alerts {
