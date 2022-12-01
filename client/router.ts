@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import AccountPage from './components/Account/AccountPage.vue';
 import HomePage from './components/Home/HomePage.vue';
 import ProjectDashboard from './components/Project/ProjectDashboard.vue';
+import UpdatesPage from './components/Update/UpdatesPage.vue';
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
@@ -10,6 +11,7 @@ Vue.use(VueRouter);
 const routes = [
   {path: '/', name: 'Home', component: HomePage},
   {path: '/projects', name: 'Projects', component: ProjectDashboard},
+  {path: '/updates/:id', name: 'Updates', component: UpdatesPage},
   {path: '/account', name: 'Account', component: AccountPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
@@ -17,7 +19,7 @@ const routes = [
 const router = new VueRouter({routes});
 
 const AUTH_REQUIRED_ROUTES = [
-  'Projects', 'Account',
+  'Projects', 'Account', 'Updates',
 ];
 
 /**

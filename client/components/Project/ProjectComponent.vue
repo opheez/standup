@@ -1,5 +1,5 @@
 <template>
-  <div class="project">
+  <div class="project" @click="openProject">
     <h3>{{ project.name }}</h3>
     <p class="deadline">Due {{ project.deadline }}</p>
     <ul class="reset teammates-list">
@@ -37,7 +37,17 @@ export default {
       }
       return 'In-Progress';
     }
-  }
+  },
+  methods: {
+    openProject() {
+      this.$router.push({
+        name: 'Updates',
+        params: {
+          id: this.project.id,
+        },
+      });
+    }
+  },
 }
 </script>
 
@@ -52,6 +62,11 @@ export default {
   height: 260px;
   margin: 0 12px 12px 0;
   padding: 24px;
+  cursor: pointer;
+}
+
+.project:hover {
+  background: #f0eef0;
 }
 .project > h3 {
   margin: 0;
