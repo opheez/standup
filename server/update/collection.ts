@@ -15,21 +15,35 @@ class UpdateCollection {
   /**
    * Add a new update
    *
-   * @param {string} updateId - The id of the author of the update
-   * @param {string} email - The email of the user
-   * @param {string} password - The password of the user
-   * TODO: add projects
-   * @return {Promise<HydratedDocument<User>>} - The newly created user
+   * @param {Types.ObjectId | string} authorId - The id of the author of the update
+   * @param {string} status - The status of the update
+   * @param {string} summary - The summary of the update
+   * @param {string} details - The details of the update
+   * @param {string | undefined} todos - The todos of the update
+   * @param {string | undefined} blockers - The blockers of the update
+   * @param {Types.ObjectId | string} projectId - The id of the project the update is associated with
+   * @return {Promise<HydratedDocument<Update>>} - The newly created update
    */
-  static async addOne(firstName: string, lastName: string, email: string, password: string): Promise<HydratedDocument<User>> {
+  static async addOne(authorId: Types.ObjectId | string, 
+                      status: string, 
+                      summary: string, 
+                      details: string, 
+                      todos: string | undefined,
+                      blockers: string | undefined,
+                      projectId: Types.ObjectId | string): Promise<HydratedDocument<Update>> {
     const date = new Date();
     const update = new UpdateModel({
       authorId,
       dateCreated: date,
-      content,
-      dateModified: date
+      dateModified: date,
+      status,
+      summary,
+      details,
+      todos: todos ? todos : '',
+      blockers: blockers ? blockers: '',
+      projectId,
     });
-    await update.save(); // Saves freet to MongoDB
+    await update.save(); // Saves update to MongoDB
     return update.populate('authorId');
   }
 
@@ -44,56 +58,50 @@ class UpdateCollection {
   }
 
   /**
-   * Find a user by email (case insensitive).
+   * Find all updates by projectId.
    *
-   * @param {string} email - The email of the user to find
-   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
+   * @param {string} projectId - The id of the project
+   * @return {Promise<HydratedDocument<Update>[]>} - The updates with the given projectId
    */
-  static async findOneByEmail(email: string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({ email: new RegExp(`^${email.trim()}$`, 'i') });
+   static async findAllByProjectId(projectId: Types.ObjectId | string): Promise<HydratedDocument<Update>[]> {
+    return UpdateModel.find({ projectId }).sort({ dateCreated: -1 }).populate('authorId');
   }
 
   /**
-   * Find a user by email (case insensitive).
+   * Updates an update
    *
-   * @param {string} email - The email of the user to find
-   * @param {string} password - The password of the user to find
-   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
+   * @param {string} updateId - The id of the update to update
+   * @param {Object} updateDetails - An object with the updated update
+   * @return {Promise<HydratedDocument<Update>>} - The updated update
    */
-  static async findOneByEmailAndPassword(email: string, password: string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({
-      username: new RegExp(`^${email.trim()}$`, 'i'),
-      password
-    });
-  }
-
-  /**
-   * Update user's information
-   *
-   * @param {string} userId - The userId of the user to update
-   * @param {Object} userDetails - An object with the user's updated credentials
-   * @return {Promise<HydratedDocument<User>>} - The updated user
-   */
-  static async updateOne(userId: Types.ObjectId | string, userDetails: {password?: string; email?: string; firstName?: string; lastName?: string}): Promise<HydratedDocument<User>> {
-    const user = await UserModel.findOne({_id: userId});
-    if (userDetails.firstName) {
-      user.firstName = userDetails.firstName;
+  static async updateOne(updateId: Types.ObjectId | string, 
+                         updateDetails: {status?: string; summary?: string; details?: string; todos?: string; blockers?: string}): Promise<HydratedDocument<User>> {
+    const date = new Date();
+    const update = await UpdateModel.findOne({_id: updateId});
+    if (updateDetails.status) {
+      update.status = updateDetails.status;
     }
 
-    if (userDetails.lastName) {
-      user.lastName = userDetails.lastName;
+    if (updateDetails.summary) {
+      update.summary = updateDetails.summary;
     }
 
-    if (userDetails.password) {
-      user.password = userDetails.password;
+    if (updateDetails.details) {
+      update.details = updateDetails.details;
     }
 
-    if (userDetails.email) {
-      user.email = userDetails.email;
+    if (updateDetails.todos) {
+      update.todos = updateDetails.todos;
     }
 
-    await user.save();
-    return user;
+    if (updateDetails.blockers) {
+      update.blockers = updateDetails.blockers;
+    }
+
+    // note: this will update dateModified whenever the update is updated, regardless of whether the information actually changed
+    update.dateModified = date;
+    await update.save();
+    return update.populate('authorId');
   }
 
   /**
