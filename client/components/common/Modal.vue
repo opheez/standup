@@ -3,16 +3,9 @@
     class="modal-backdrop"
     @click="hideModal"
   >
-    <div class="modal-container">
-      <h2>
-        <slot name="title"></slot>
-      </h2>
-      <div class="body">
-        <slot name="body"></slot>
-      </div>
-      <div class="actions">
-        <slot name="actions"></slot>
-      </div>
+    <!-- Hide modal on click on backdrop, but not the container itself -->
+    <div class="modal-container" @click.stop="">
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -20,7 +13,12 @@
 <script>
 export default {
   name: 'Modal',
-
+  props: {
+    hideModal: {
+      type: Function,
+      required: true,
+    }
+  }
 }
 </script>
 
@@ -39,17 +37,12 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
+  width: 500px;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #F8F8F8;
   border: 2px solid #4A4A4A;
   border-radius: 12px;
   z-index: 9999;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
 }
 </style>
