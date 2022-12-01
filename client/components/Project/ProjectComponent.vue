@@ -49,9 +49,25 @@ export default {
   background: #F8F8F8;
   width: 340px;
   margin: 0 12px 12px 0;
-  padding: 16px;
+  padding: 24px;
 }
 .project > h3 {
   margin: 0;
+}
+
+.project-status {
+  background: #bcbcbc;
+  border-radius: 100px;
+  padding: 4px 12px;
+  width: fit-content;
+}
+.project-status.In-Progress {
+  background: #FBC358;
+}
+.project-status.Completed {
+  background: #69E8AB;
+}
+.project-status.Overdue {
+  background: #F58870;
 }
 </style>
