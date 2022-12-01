@@ -80,4 +80,12 @@ main {
 .alerts .success {
     background-color: rgb(45, 135, 87);
 }
+
+ul.reset,
+ul.reset li {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  list-style-type: none;
+}
 </style>

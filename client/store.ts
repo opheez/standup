@@ -74,17 +74,24 @@ const store = new Vuex.Store({
         '12/30/2022',
         '12/1/2022',
       ]
-      const projects = [...Array(5).keys()].map(id => ({
-        id,
-        name: `Project Name #${id}`,
-        teammates: [
-          'teammate1@gmail.com',
-          'teammate2@gmail.com',
-          'teammate3@gmail.com'
-        ],
-        deadline: dates[id],
-        active: id % 2 == 0,
-      }));
+      const teammates = [
+        'teammate1@gmail.com',
+        'teammate2@gmail.com',
+        'teammate3@gmail.com',
+        'teammate4@gmail.com',
+        'teammate5@gmail.com',
+        'teammate6@gmail.com',
+        'teammate7@gmail.com',
+      ];
+      const projects = [...Array(5).keys()].map(id => {
+        return {
+          id,
+          name: `Project Name #${id}`,
+          teammates: id % 2 ? teammates : teammates.slice(0, 3),
+          deadline: dates[id],
+          active: id % 2 == 0,
+        }
+      });
       state.projects = projects;
     }
   },

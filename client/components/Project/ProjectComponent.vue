@@ -2,11 +2,11 @@
   <div class="project">
     <h3>{{ project.name }}</h3>
     <p class="deadline">Due {{ project.deadline }}</p>
-    <div class="teammates-list">
-      <p v-for="teammate in project.teammates">
+    <ul class="reset teammates-list">
+      <li v-for="teammate in project.teammates">
         {{ teammate }}
-      </p>
-    </div>
+      </li>
+    </ul>
     <div
       class="project-status"
       :class="status"
@@ -45,14 +45,32 @@ export default {
 .project {
   border: 2px solid #a4a4a4;
   border-radius: 12px;
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
   background: #F8F8F8;
   width: 340px;
+  height: 260px;
   margin: 0 12px 12px 0;
   padding: 24px;
 }
 .project > h3 {
   margin: 0;
+}
+
+.project > .deadline {
+  margin-top: 4px;
+}
+.project > .deadline,
+.project > .teammates-list {
+  margin-bottom: 16px;
+}
+
+.project > .teammates-list {
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+.project > .teammates-list li {
+  margin-bottom: 4px;
 }
 
 .project-status {
@@ -70,4 +88,6 @@ export default {
 .project-status.Overdue {
   background: #F58870;
 }
+
+
 </style>
