@@ -10,11 +10,11 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     filter: null, // Username to filter shown freets by (null = show all)
-    freets: [], // All freets created in the app
     email: null, // email of the logged in user
     lastname: null, //last name of the logged in user
     firstname: null, //first name of the logged in user
-    alerts: {} // global success/error messages encountered during submissions to non-visible forms
+    alerts: {}, // global success/error messages encountered during submissions to non-visible forms
+    projects: [], // All projects the signed in user is a part of
   },
   mutations: {
     alert(state, payload) {
@@ -54,20 +54,38 @@ const store = new Vuex.Store({
        */
       state.filter = filter;
     },
-    updateFreets(state, freets) {
+    updateProjects(state, projects) {
       /**
-       * Update the stored freets to the provided freets.
-       * @param freets - Freets to store
+       * Update the stored projects to the provided projects.
+       * @param projects - Projects to store
        */
-      state.freets = freets;
+      state.projects = projects;
     },
-    async refreshFreets(state) {
+    async refreshProjects(state) {
       /**
        * Request the server for the currently available freets.
        */
-      const url = state.filter ? `/api/users/${state.filter}/freets` : '/api/freets';
-      const res = await fetch(url).then(async r => r.json());
-      state.freets = res;
+      // TODO(AL): When backend is ready call the API instead
+      // Hardcoded dates so that we can test IN-PROGRESS, OVERDUE, COMPLETED
+      const dates = [
+        '11/12/2022',
+        '11/15/2022',
+        '12/15/2022',
+        '12/30/2022',
+        '12/1/2022',
+      ]
+      const projects = [...Array(5).keys()].map(id => ({
+        id,
+        name: `Project Name #${id}`,
+        teammates: [
+          'teammate1@gmail.com',
+          'teammate2@gmail.com',
+          'teammate3@gmail.com'
+        ],
+        deadline: dates[id],
+        active: id % 2 == 0,
+      }));
+      state.projects = projects;
     }
   },
   // Store data across page refreshes, only discard on browser close
