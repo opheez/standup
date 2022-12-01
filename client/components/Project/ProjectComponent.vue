@@ -48,11 +48,7 @@ export default {
       this.$router.push({
         name: 'Updates',
         params: {
-<<<<<<< HEAD
           id: this.project._id,
-=======
-          id: this.project.id,
->>>>>>> Add page for updates, reachable by clicking on proj
         },
       });
     }
