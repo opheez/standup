@@ -127,4 +127,4 @@ router.patch(
 );
 
 
-export {router as userRouter};
+export {router as updateRouter};
