@@ -48,7 +48,6 @@
                 ({{i + 1}})
               </label>
               <input
-                type="email"
                 :id="i"
                 :name="i"
                 :value="fields.collaborators[i]"
@@ -59,7 +58,10 @@
                 🗑
               </button>
             </div>
-            <button class="text-btn" @click="addCollaborator">
+            <button
+              class="text-btn"
+              @click="$event.preventDefault(); addCollaborator()"
+            >
               + Add collaborator
             </button>
           </div>
