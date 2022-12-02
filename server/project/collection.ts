@@ -14,21 +14,17 @@ import UserCollection from '../user/collection';
 class ProjectCollection {
 
   static async populateProject(project: HydratedDocument<Project>) {
-    await project.populate([
-      // {
-      //   path: 'intent',
-      //   populate: {path: 'projects'}
-      // },
-      // {
-      //   path: 'tags',
-      //   populate: {path: 'freetId'}
-      // },
-      // {
-      //   path: 'suggestions',
-      //   populate: {path: 'freetId'}
-      // }
-    ]);
-    await project.populate('creatorId');
+    // await project.populate([
+    //   {
+    //     path: 'participants',
+    //     populate: {path: 'projects'}
+    //   },
+    //   {
+    //     path: 'invitedUsers',
+    //     populate: {path: 'freetId'}
+    //   }
+    // ]);
+    await project.populate(['creatorId', 'participants', 'invitedUsers']);
   }
 
   /**
