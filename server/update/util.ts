@@ -12,8 +12,8 @@ type UpdateResponse = {
   status: string;
   summary: string;
   details: string;
-  todos: string;
-  blockers: string;
+  todos: string[];
+  blockers: string[];
   projectId: string;
 };
 

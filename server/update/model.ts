@@ -17,8 +17,8 @@ export type Update = {
   status: string;
   summary: string;
   details: string;
-  todos: string;
-  blockers: string;
+  todos: string[];
+  blockers: string[];
   projectId: Types.ObjectId;
 };
 
@@ -31,8 +31,8 @@ export type PopulatedUpdate = {
   status: string;
   summary: string;
   details: string;
-  todos: string;
-  blockers: string;
+  todos: string[];
+  blockers: string[];
   projectId: string;
 };
 
@@ -74,12 +74,12 @@ const UpdateSchema = new Schema({
   },
   // The todos of the update
   todos: {
-    type: String,
+    type: [String],
     required: true
   },
   // The blockers of the update
   blockers: {
-    type: String,
+    type: [String],
     required: true
   },
   // The project the update is associated with

@@ -4,21 +4,6 @@ import UserCollection from 'server/user/collection';
 import UpdateCollection from '../update/collection';
 
 /**
- * Checks if a password in req.body is valid, that is, at 6-50 characters long without any spaces
- */
-const isValidPassword = (req: Request, res: Response, next: NextFunction) => {
-  const passwordRegex = /^\S+$/;
-  if (!passwordRegex.test(req.body.password)) {
-    res.status(400).json({
-      error: 'Password must be a nonempty string.'
-    });
-    return;
-  }
-
-  next();
-};
-
-/**
  * Checks if an update with updateId in req.query exists
  */
  const isUpdateExistsQuery = async (req: Request, res: Response, next: NextFunction) => {

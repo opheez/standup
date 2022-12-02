@@ -28,8 +28,8 @@ class UpdateCollection {
                       status: string, 
                       summary: string, 
                       details: string, 
-                      todos: string | undefined,
-                      blockers: string | undefined,
+                      todos: string[] | undefined,
+                      blockers: string[] | undefined,
                       projectId: Types.ObjectId | string): Promise<HydratedDocument<Update>> {
     const date = new Date();
     const update = new UpdateModel({
@@ -39,8 +39,8 @@ class UpdateCollection {
       status,
       summary,
       details,
-      todos: todos ? todos : '',
-      blockers: blockers ? blockers: '',
+      todos: todos ? todos : [],
+      blockers: blockers ? blockers: [],
       projectId,
     });
     await update.save(); // Saves update to MongoDB
@@ -75,7 +75,7 @@ class UpdateCollection {
    * @return {Promise<HydratedDocument<Update>>} - The updated update
    */
   static async updateOne(updateId: Types.ObjectId | string, 
-                         updateDetails: {status?: string; summary?: string; details?: string; todos?: string; blockers?: string}): Promise<HydratedDocument<Update>> {
+                         updateDetails: {status?: string; summary?: string; details?: string; todos?: string[]; blockers?: string[]}): Promise<HydratedDocument<Update>> {
     const date = new Date();
     const update = await UpdateModel.findOne({ _id: updateId });
     if (updateDetails.status) {
