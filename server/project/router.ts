@@ -9,19 +9,23 @@ const router = express.Router();
 
 
 /**
- * Get projects a user is in.
+ * Get projects a user is in or invited to
  *
- * @name GET /api/projects
+ * @name GET /api/projects?invited=invited
  *
- * @return {ProjectResponse[]} - An array of projects created by user with username, author
+ * @return {ProjectResponse[]} - An array of projects the user is in or invited to
  * @throws {400} - If author is not given
  * @throws {404} - If no user has given author
  *
  */
 router.get(
   '/',
+  [
+    userValidator.isUserLoggedIn
+  ],
   async (req: Request, res: Response) => {
-    const authorProjects = await ProjectCollection.findAllWithUser(req.session.id);
+    const invited = req.query.invited as string;
+    const authorProjects = (invited === "true") ? await ProjectCollection.findAllWithUser(req.session.id) : await ProjectCollection.findAllInvitedUser(req.session.id);
     const response = authorProjects.map(util.constructProjectResponse);
     res.status(200).json(response);
   }
@@ -41,6 +45,7 @@ router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
+    projectValidator.isValidProjectFields
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string);
@@ -83,9 +88,9 @@ router.patch(
  *
  * @name PATCH /api/projects/:id
  *
- * @param {string} newName - the new name for the project
- * @param {string} newDates - the new scheduled dates for the project
- * @param {string} newInvitedUsers - the new invitees for the project
+ * @param {string} projectName - the new name for the project
+ * @param {string} scheduledUpdates - the new scheduled dates for the project
+ * @param {string} invitedUsers - the new invitees for the project
  * @return {ProjectResponse} - the updated project
  * @throws {403} - if the user is not logged in or not the author of
  *                 of the project
@@ -97,9 +102,10 @@ router.patch(
     userValidator.isUserLoggedIn,
     projectValidator.isProjectExists,
     projectValidator.isValidProjectModifier,
+    projectValidator.isValidProjectFields
   ],
   async (req: Request, res: Response) => {
-    const project = await ProjectCollection.updateOne(req.params.projectId, req.body.newName, req.body.newDates, req.body.newInvitedUsers);
+    const project = await ProjectCollection.updateOne(req.params.projectId, req.body.projectName, req.body.scheduledUpdates, req.body.invitedUsers);
     res.status(200).json({
       message: 'Your project was updated successfully.',
       project: util.constructProjectResponse(project)
@@ -122,7 +128,7 @@ router.patch(
   [
     userValidator.isUserLoggedIn,
     projectValidator.isProjectExists,
-    projectValidator.isValidProjectModifier,
+    projectValidator.isValidProjectInvitee,
   ],
   async (req: Request, res: Response) => {
     const userId = req.session.id;
