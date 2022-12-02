@@ -87,7 +87,7 @@ class ProjectCollection {
   }
 
   /**
-   * Get all the projects a user belongs to
+   * Get all the projects a user is invited to
    *
    * @param {string} userId - The id of user
    * @return {Promise<HydratedDocument<Project>[]>} - An array of all of the projects
