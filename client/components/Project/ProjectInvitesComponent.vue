@@ -1,5 +1,5 @@
 <template>
-  <div class="invite-container">
+  <div>
     <button @click="showModal">
       Project Invites
     </button>
@@ -8,9 +8,16 @@
       :hideModal="hideModal"
     >
       <h2>Pending Invitations</h2>
-      <div v-for="invite in $store.state.invites">
-        {{invite.name}}
+      <div class="invite-list">
+        <InviteComponent
+          v-for="(invite, i) in $store.state.invites"
+          :invite="invite"
+          :index="i"
+        />
       </div>
+      <p v-if="!$store.state.invites.length">
+        No pending project invitations.
+      </p>
       <button
         class="close-modal-btn text-btn"
         @click="hideModal"
@@ -23,10 +30,11 @@
   
 <script>
 import Modal from '@/components/common/Modal.vue';
+import InviteComponent from '@/components/Project/InviteComponent.vue';
 
 export default {
   name: 'AddProjectComponent',
-  components: {Modal},
+  components: {Modal, InviteComponent},
   beforeMount() {
     this.$store.commit('refreshInvites');
   },
@@ -53,7 +61,8 @@ export default {
   right: 20px;
   font-weight: 700;
 }
-.invite-container {
-  max-height: 90vh;
+
+.invite-list {
+  overflow-y: scroll;
 }
 </style>
