@@ -8,44 +8,22 @@ import * as util from './util';
 const router = express.Router();
 
 /**
- * Get all the freets
+ * Get EyesWanted by user.
  *
- * @name GET /api/freets
+ * @name GET /api/eyeswanted?userId=userId
  *
- * @return {FreetResponse[]} - A list of all the freets sorted in descending
- *                      order by date modified
- */
-/**
- * Get freets by author.
- *
- * @name GET /api/freets?author=username
- *
- * @return {FreetResponse[]} - An array of freets created by user with username, author
- * @throws {400} - If author is not given
- * @throws {404} - If no user has given author
+ * @return {EyesWantedResponse[]} - An array of EyesWanted targeting the given user
+ * @throws {400} - If userId is not given
+ * @throws {404} - If no user has the given userId
  *
  */
 router.get(
   '/',
   async (req: Request, res: Response, next: NextFunction) => {
-    // Check if author query parameter was supplied
-    if (req.query.author !== undefined) {
-      next();
-      return;
-    }
-
     const allFreets = await FreetCollection.findAll();
     const response = allFreets.map(util.constructFreetResponse);
     res.status(200).json(response);
   },
-  [
-    userValidator.isAuthorExists
-  ],
-  async (req: Request, res: Response) => {
-    const authorFreets = await FreetCollection.findAllByUsername(req.query.author as string);
-    const response = authorFreets.map(util.constructFreetResponse);
-    res.status(200).json(response);
-  }
 );
 
 /**
