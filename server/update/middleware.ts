@@ -1,5 +1,6 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
+import UserCollection from 'server/user/collection';
 import UpdateCollection from '../update/collection';
 
 /**
@@ -72,6 +73,22 @@ const isValidPassword = (req: Request, res: Response, next: NextFunction) => {
   if (req.session.userId !== userId.toString()) {
     res.status(403).json({
       error: 'Cannot modify or delete other users\' updates.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if the current user is in the project of the update with id in req.query (and therefore can see it)
+ */
+ const isUserInProject = async (req: Request, res: Response, next: NextFunction) => {
+  const update = await UpdateCollection.findOneByUpdateId(req.query.updateId as string);
+  const user = await UserCollection.findOneByUserId(req.session.userId as string;
+  if (!user.projects.includes(update.projectId)) {
+    res.status(403).json({
+      error: 'Cannot view updates for projects you are not in.'
     });
     return;
   }
@@ -158,4 +175,5 @@ export {
   isUpdateExistsParams,
   isUpdateAuthor,
   isValidUpdateContent,
+  isUserInProject,
 };

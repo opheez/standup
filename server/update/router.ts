@@ -1,4 +1,4 @@
-import type {Request, Response} from 'express';
+import type {Request, Response, NextFunction} from 'express';
 import express from 'express';
 import UpdateCollection from './collection';
 import * as userValidator from '../user/middleware';
@@ -8,6 +8,16 @@ import * as util from './util';
 
 const router = express.Router();
 
+/**
+ * Get a given update by id
+ *
+ * @name GET /api/updates?updateId=updateId
+ *
+ * @return {UpdateResponse} - The update with id updateId
+ * @throws {400} - If updateId is not given
+ * @throws {403} - If user is not logged in or not part of the project the update is part of
+ * @throws {404} - If update with updateId is not found
+ */
 /**
  * Get updates for a given project
  *
@@ -25,11 +35,25 @@ router.get(
     projectValidator.isProjectExistsQuery,
     projectValidator.isUserInProject,
   ],
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Check if updateId parameters was supplied instead
+    if (req.query.updateId !== undefined) { 
+      next();
+      return;
+    }
+
     const updates = await UpdateCollection.findAllByProjectId(req.query.projectId as string);
     const response = updates.map(util.constructUpdateResponse);
     res.status(200).json(response);
-  }
+  },
+  [
+    updateValidator.isUserInProject,
+  ],
+  async (req: Request, res: Response) => {
+    const update = await UpdateCollection.findOneByUpdateId(req.query.updateId as string);
+    const response = util.constructUpdateResponse(update);
+    res.status(200).json(response);
+  },
 );
 
 /**
