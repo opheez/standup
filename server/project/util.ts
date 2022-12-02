@@ -8,6 +8,8 @@ type ProjectResponse = {
   creator: string;
   active: boolean;
   projectName: string;
+  participants: string[];
+  invitedUsers: string[];
   scheduledUpdates: string[]; 
 };
 
@@ -32,12 +34,18 @@ const constructProjectResponse = (project: HydratedDocument<Project>): ProjectRe
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  const {_id} = projectCopy.creatorId;
+  const {email} = projectCopy.creatorId;
   delete projectCopy.creatorId;
+  const participantEmails = projectCopy.participants.map(user => user.email);
+  delete projectCopy.participants;
+  const inviteesEmails = projectCopy.invitedUsers.map(user => user.email);
+  delete projectCopy.invitedUsers;
   return {
     ...projectCopy,
     _id: projectCopy._id.toString(),
-    creator: _id.toString(),
+    creator: email.toString(),
+    participants: participantEmails,
+    invitedUsers: inviteesEmails,
     scheduledUpdates: project.scheduledUpdates ? project.scheduledUpdates.map(formatDate) : null
   };
 };
