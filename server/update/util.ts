@@ -3,7 +3,7 @@ import moment from 'moment';
 import type {Update, PopulatedUpdate} from './model';
 import type {User} from '../user/model';
 
-// Update this if you add a property to the User type!
+// Update this if you add a property to the Update type!
 type UpdateResponse = {
   _id: string;
   author: any;

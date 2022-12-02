@@ -75,9 +75,9 @@ class UpdateCollection {
    * @return {Promise<HydratedDocument<Update>>} - The updated update
    */
   static async updateOne(updateId: Types.ObjectId | string, 
-                         updateDetails: {status?: string; summary?: string; details?: string; todos?: string; blockers?: string}): Promise<HydratedDocument<User>> {
+                         updateDetails: {status?: string; summary?: string; details?: string; todos?: string; blockers?: string}): Promise<HydratedDocument<Update>> {
     const date = new Date();
-    const update = await UpdateModel.findOne({_id: updateId});
+    const update = await UpdateModel.findOne({ _id: updateId });
     if (updateDetails.status) {
       update.status = updateDetails.status;
     }
@@ -107,8 +107,8 @@ class UpdateCollection {
   /**
    * Delete a update from the collection.
    *
-   * @param {string} userId - The updateId of update to delete
-   * @return {Promise<Boolean>} - true if the user has been deleted, false otherwise
+   * @param {string} updateId - The updateId of update to delete
+   * @return {Promise<Boolean>} - true if the update has been deleted, false otherwise
    */
   static async deleteOne(updateId: Types.ObjectId | string): Promise<boolean> {
     const update = await UpdateModel.deleteOne({_id: updateId});
