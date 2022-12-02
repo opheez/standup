@@ -1,6 +1,6 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
-import UserCollection from 'server/user/collection';
+import ProjectCollection from 'server/project/collection';
 import UpdateCollection from '../update/collection';
 
 /**
@@ -70,8 +70,9 @@ import UpdateCollection from '../update/collection';
  */
  const isUserInProject = async (req: Request, res: Response, next: NextFunction) => {
   const update = await UpdateCollection.findOneByUpdateId(req.query.updateId as string);
-  const user = await UserCollection.findOneByUserId(req.session.userId as string;
-  if (!user.projects.includes(update.projectId)) {
+  const project = await ProjectCollection.findOneByProjectId(update.projectId);
+  const userId = req.session.userId as string;
+  if (!project.participants.includes(userId)) {
     res.status(403).json({
       error: 'Cannot view updates for projects you are not in.'
     });
