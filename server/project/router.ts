@@ -36,14 +36,11 @@ router.get(
  * @param {string} scheduledUpdates - the scheduled dates for the project
  * @param {string} invitedUsers - the invitees for the project
  * @throws {403} - If the user is not logged in
- * @throws {400} - If the project content is empty or a stream of empty spaces
- * @throws {413} - If the project content is more than 140 characters long
  */
 router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
-    projectValidator.isValidProjectContent
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string);
@@ -82,7 +79,7 @@ router.patch(
 );
 
 /**
- * Modify a project
+ * Modify a project - project characteristics like name/deadlines, or inviting/uninviting users
  *
  * @name PATCH /api/projects/:id
  *
@@ -93,8 +90,6 @@ router.patch(
  * @throws {403} - if the user is not logged in or not the author of
  *                 of the project
  * @throws {404} - If the projectId is not valid
- * @throws {400} - If the project content is empty or a stream of empty spaces
- * @throws {413} - If the project content is more than 140 characters long
  */
 router.patch(
   '/:projectId?',
@@ -102,7 +97,6 @@ router.patch(
     userValidator.isUserLoggedIn,
     projectValidator.isProjectExists,
     projectValidator.isValidProjectModifier,
-    projectValidator.isValidProjectContent
   ],
   async (req: Request, res: Response) => {
     const project = await ProjectCollection.updateOne(req.params.projectId, req.body.newName, req.body.newDates, req.body.newInvitedUsers);
@@ -112,5 +106,61 @@ router.patch(
     });
   }
 );
+
+/**
+ * Accept/reject an invitation to a project
+ *
+ * @name PATCH /api/projects/:id
+ *
+ * @return {ProjectResponse} - the updated project
+ * @throws {403} - if the user is not logged in or not the author of
+ *                 of the project
+ * @throws {404} - If the projectId is not valid
+ */
+router.patch(
+  '/:projectId/:response',
+  [
+    userValidator.isUserLoggedIn,
+    projectValidator.isProjectExists,
+    projectValidator.isValidProjectModifier,
+  ],
+  async (req: Request, res: Response) => {
+    const userId = req.session.id;
+    const project = await ProjectCollection.respondInvite(req.params.projectId, userId, req.params.response === 'accept');
+    res.status(200).json({
+      message: 'Your project was updated successfully.',
+      project: util.constructProjectResponse(project)
+    });
+  }
+);
+
+// /**
+//  * Remove a user from a project
+//  *
+//  * @name PATCH /api/projects/:id
+//  *
+//  * @param {string} newName - the new name for the project
+//  * @param {string} newDates - the new scheduled dates for the project
+//  * @param {string} newInvitedUsers - the new invitees for the project
+//  * @return {ProjectResponse} - the updated project
+//  * @throws {403} - if the user is not logged in or not the author of
+//  *                 of the project
+//  * @throws {404} - If the projectId is not valid
+//  */
+// router.patch(
+//   '/:projectId?',
+//   [
+//     userValidator.isUserLoggedIn,
+//     projectValidator.isProjectExists,
+//     projectValidator.isValidProjectModifier,
+//   ],
+//   async (req: Request, res: Response) => {
+//     const project = await ProjectCollection.updateOne(req.params.projectId, req.body.newName, req.body.newDates, req.body.newInvitedUsers);
+//     res.status(200).json({
+//       message: 'Your project was updated successfully.',
+//       project: util.constructProjectResponse(project)
+//     });
+//   }
+// );
 
 export {router as projectRouter};

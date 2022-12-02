@@ -131,28 +131,24 @@ class ProjectCollection {
     return project;
   }
 
-  // /**
-  //  * Update a project's participants
-  //  *
-  //  * @param {string} projectId - The id of the project to be updated
-  //  * @param {Types.ObjectId[]} newParticipants? - The id of the project participants
-  //  * @param {Types.ObjectId[]} newInvitedUsers? - The id of the invited users
-  //  * @return {Promise<HydratedDocument<Project>>} - The newly updated project
-  //  */
-  // static async updateOneParticipants(projectId: Types.ObjectId | string,
-  //                        newParticipants?: Types.ObjectId[],
-  //                        newInvitedUsers?: Types.ObjectId[]): Promise<HydratedDocument<Project>> {
-  //   const project = await ProjectModel.findOne({_id: projectId});
-  //   if (typeof newParticipants !== 'undefined'){
-  //     project.participants = newParticipants;
-  //   }
-  //   if (typeof newInvitedUsers !== 'undefined'){
-  //     project.invitedUsers = newInvitedUsers;
-  //   }
-  //   await project.save();
-  //   await Promise.resolve(this.populateProject(project));
-  //   return project;
-  // }
+  /**
+   * Accept/reject invitation
+   *
+   * @param {string} projectId - The id of the project to be updated
+   * @param {Types.ObjectId[]} userId - the id of the user accepting invitation
+   * @param {boolean} accept - true if user accepted, false if rejected
+   * @return {Promise<HydratedDocument<Project>>} - The newly updated project
+   */
+  static async respondInvite(projectId: Types.ObjectId | string, userId: Types.ObjectId | string, accept: boolean): Promise<HydratedDocument<Project>> {
+    if (accept) {
+      await ProjectModel.updateMany({_id: projectId}, {$pull: {invitedUsers: userId}, $push: {participants: userId}});
+    } else {
+      await ProjectModel.updateMany({_id: projectId}, {$pull: {invitedUsers: userId}});
+    }
+    const project = await ProjectModel.findOne({_id: projectId});
+    await Promise.resolve(this.populateProject(project));
+    return project;
+  }
 
   /**
    * Archive a project with given projectId.
