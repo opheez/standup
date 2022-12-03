@@ -176,37 +176,41 @@ import UpdateCollection from '../update/collection';
     return;
   }
 
-  // todos must be a list of strings
-  if (!Array.isArray(todos)) {
-    res.status(400).json({
-      error: 'Todos must be a list.'
-    });
-    return;
-  }
-
-  for (const elt of todos) {
-    if (typeof elt !== 'string') {
+  // todos, if defined, must be a list of strings
+  if (todos) {
+    if (!Array.isArray(todos)) {
       res.status(400).json({
-        error: 'Todos must be a list of strings.'
+        error: 'Todos must be a list.'
       });
       return;
+    }
+
+    for (const elt of todos) {
+      if (typeof elt !== 'string') {
+        res.status(400).json({
+          error: 'Todos must be a list of strings.'
+        });
+        return;
+      }
     }
   }
 
   // blockers must be a list of strings
-  if (!Array.isArray(blockers)) {
-    res.status(400).json({
-      error: 'Blockers must be a list.'
-    });
-    return;
-  }
-
-  for (const elt of blockers) {
-    if (typeof elt !== 'string') {
+  if (blockers) {
+    if (!Array.isArray(blockers)) {
       res.status(400).json({
-        error: 'Blockers must be a list of strings.'
+        error: 'Blockers must be a list.'
       });
       return;
+    }
+
+    for (const elt of blockers) {
+      if (typeof elt !== 'string') {
+        res.status(400).json({
+          error: 'Blockers must be a list of strings.'
+        });
+        return;
+      }
     }
   }
 
