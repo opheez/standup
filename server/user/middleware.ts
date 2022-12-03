@@ -90,6 +90,13 @@ const isValidName = (req: Request, res: Response, next: NextFunction) => {
  * Checks if an email in req.body is valid, that is, it matches the email regex
  */
 const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
+  if (req.body.email === undefined) {
+    res.status(400).json({
+      error: 'Email cannot be undefined.'
+    });
+    return;
+  }
+
   const emailRegex = /^^\S+@.+\..+$/i;
   if (!emailRegex.test(req.body.email)) {
     res.status(400).json({
@@ -126,6 +133,13 @@ const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
  * Checks if a password in req.body is valid, that is, at 6-50 characters long without any spaces
  */
 const isValidPassword = (req: Request, res: Response, next: NextFunction) => {
+  if (req.body.password === undefined) {
+    res.status(400).json({
+      error: 'Password cannot be undefined.'
+    });
+    return;
+  }
+
   const passwordRegex = /^\S+$/;
   if (!passwordRegex.test(req.body.password)) {
     res.status(400).json({
