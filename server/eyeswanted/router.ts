@@ -51,7 +51,8 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const updateId = req.body.updateId as string;
-    const eyesWanted = await EyesWantedCollection.addOne(updateId);
+    const userId = req.session.userId as string;
+    const eyesWanted = await EyesWantedCollection.addOne(updateId, userId);
 
     res.status(201).json({
       message: 'Your Eyes Wanted was created successfully.',

@@ -18,13 +18,14 @@ class EyesWantedCollection {
    * Add an EyesWanted to the collection
    *
    * @param {Types.ObjectId | string} updateId - The id of the update
+   * @param {Types.ObjectId | string} authorId - The id of the author of the update
    * @return {Promise<HydratedDocument<EyesWanted>>} - The newly created eyesWanted
    */
-  static async addOne(updateId: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
+  static async addOne(updateId: Types.ObjectId | string, authorId: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
     const date = new Date();
     const update = await UpdateCollection.findOneByUpdateId(updateId);
     const project = await ProjectCollection.findOne(update.projectId);
-    const targetUsers = project.participants;
+    const targetUsers = project.participants.filter((participant) => participant._id.toString() !== authorId.toString());
     const eyesWanted = await EyesWantedCollection.findOneByUpdateId(updateId);
     if (eyesWanted) {
       // Eyes Wanted already exists, so just re-add every user to it and overwrite the creation date
