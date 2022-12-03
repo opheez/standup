@@ -23,11 +23,6 @@ const isProjectExists = async (req: Request, res: Response, next: NextFunction) 
  */
 const isValidProjectFields = async (req: Request, res: Response, next: NextFunction) => {
   const {projectName, scheduledUpdatesReq, invitedUsersReq} = req.body as {projectName: string, scheduledUpdatesReq: any[], invitedUsersReq: string[]};
-  const scheduledUpdates = scheduledUpdatesReq.map(date => !isNaN(new Date(date).getTime()));
-  const invitedUsers = await Promise.all(invitedUsersReq.map(async (user) => {
-    const validFormat = Types.ObjectId.isValid(user);
-    return validFormat ? await ProjectCollection.findOne(req.params.projectId) : '';
-  }));
 
   if (!projectName.trim()) {
     res.status(400).json({
@@ -43,6 +38,7 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
+  const scheduledUpdates = scheduledUpdatesReq.map(date => !isNaN(new Date(date).getTime()));
   const scheduledUpdatesErr = scheduledUpdates.indexOf(false);
   if (scheduledUpdatesErr !== -1) {
     res.status(400).json({
@@ -51,6 +47,10 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
+  const invitedUsers = await Promise.all(invitedUsersReq.map(async (user) => {
+    const validFormat = Types.ObjectId.isValid(user);
+    return validFormat ? await ProjectCollection.findOne(req.params.projectId) : '';
+  }));
   const invitedUsersErr = invitedUsers.indexOf('');
   if (invitedUsersErr !== -1) {
     res.status(404).json({
