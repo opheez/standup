@@ -36,6 +36,23 @@ const isProjectExists = async (req: Request, res: Response, next: NextFunction) 
 };
 
 /**
+ * Checks if a project with projectId in req.body exists
+ */
+ const isProjectExistsBody = async (req: Request, res: Response, next: NextFunction) => {
+  const projectId = req.body.projectId as string;
+  const validFormat = Types.ObjectId.isValid(projectId);
+  const project = validFormat ? await ProjectCollection.findOne(projectId) : '';
+  if (!project) {
+    res.status(404).json({
+      error: `Project with project ID ${projectId} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
  * Checks if the content of the project in req.body is valid, i.e. project name is non-empty and < 50 char, dates and users are valid values
  */
 const isValidProjectFields = async (req: Request, res: Response, next: NextFunction) => {
@@ -167,6 +184,7 @@ export {
   isValidProjectFields,
   isProjectExists,
   isProjectExistsQuery,
+  isProjectExistsBody,
   isValidProjectModifier,
   isValidProjectInvitee,
   isUserInProjectQuery,

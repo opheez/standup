@@ -77,7 +77,7 @@ router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
-    projectValidator.isProjectExistsQuery,
+    projectValidator.isProjectExistsBody,
     projectValidator.isUserInProjectBody,
     projectValidator.isProjectActive,
     updateValidator.isValidUpdateContent,
