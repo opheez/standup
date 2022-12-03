@@ -3,7 +3,7 @@ import {Types} from 'mongoose';
 import ProjectCollection from '../project/collection';
 
 /**
- * Checks if a project with projectId is req.params exists
+ * Checks if a project with projectId in req.params exists
  */
 const isProjectExists = async (req: Request, res: Response, next: NextFunction) => {
   const validFormat = Types.ObjectId.isValid(req.params.projectId);
@@ -20,8 +20,14 @@ const isProjectExists = async (req: Request, res: Response, next: NextFunction) 
 
 /**
  * Checks if a project with projectId in req.query exists
+ * Or if updateId is given (needed so it doesn't flag GET /api/updates?updateId=updateId calls)
  */
- const isProjectExistsQuery = async (req: Request, res: Response, next: NextFunction) => {
+ const isProjectExistsQueryOrUpdateId = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.query.updateId) {
+    next();
+    return;
+  }
+
   const projectId = req.query.projectId as string;
   const validFormat = Types.ObjectId.isValid(projectId);
   const project = validFormat ? await ProjectCollection.findOne(projectId) : '';
@@ -129,9 +135,15 @@ const isValidProjectInvitee = async (req: Request, res: Response, next: NextFunc
 };
 
 /**
- * Checks if the current user is in the project with id in req.query 
+ * Checks if the current user is in the project with id in req.query
+ * Or if updateId is given (needed so it doesn't flag GET /api/updates?updateId=updateId calls)
  */
- const isUserInProjectQuery = async (req: Request, res: Response, next: NextFunction) => {
+ const isUserInProjectQueryOrUpdateId = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.query.updateId) {
+    next();
+    return;
+  }
+  
   const projectId = req.query.projectId as string;
   const project = await ProjectCollection.findOne(projectId);
   const userId = req.session.userId as string;
@@ -183,11 +195,11 @@ const isValidProjectInvitee = async (req: Request, res: Response, next: NextFunc
 export {
   isValidProjectFields,
   isProjectExists,
-  isProjectExistsQuery,
+  isProjectExistsQueryOrUpdateId,
   isProjectExistsBody,
   isValidProjectModifier,
   isValidProjectInvitee,
-  isUserInProjectQuery,
+  isUserInProjectQueryOrUpdateId,
   isUserInProjectBody,
   isProjectActive,
 };
