@@ -123,6 +123,23 @@ import UpdateCollection from '../update/collection';
 };
 
 /**
+ * Checks if the update with id in req.body is in an active project
+ */
+ const isUpdateInActiveProject = async (req: Request, res: Response, next: NextFunction) => {
+  const updateId = req.body.updateId as string;
+  const update = await UpdateCollection.findOneByUpdateId(updateId);
+  const project = await ProjectCollection.findOne(update.projectId);
+  if (!project.active) {
+    res.status(403).json({
+      error: 'The project this update is in is inactive.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
  * Checks if the update content in req.body is valid
  */
  const isValidUpdateContent = async (req: Request, res: Response, next: NextFunction) => {
@@ -204,4 +221,5 @@ export {
   isUpdateAuthorBody,
   isValidUpdateContent,
   isUserInProject,
+  isUpdateInActiveProject,
 };
