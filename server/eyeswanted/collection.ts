@@ -32,7 +32,10 @@ class EyesWantedCollection {
       eyesWanted.dateCreated = date;
       eyesWanted.targetUsers = targetUsers;
       await eyesWanted.save();
-      return EyesWantedModel.findOne({ _id: eyesWanted._id }).populate(['updateId', 'targetUsers']);
+      return EyesWantedModel.findOne({ _id: eyesWanted._id }).populate(['updateId', 'targetUsers', {
+        path: 'updateId',
+        populate: { path: 'authorId' }
+      }]);
     } else {
       const newEyesWanted = new EyesWantedModel({
         updateId,
@@ -40,7 +43,10 @@ class EyesWantedCollection {
         targetUsers,
       });
       await newEyesWanted.save(); // Saves freet to MongoDB
-      return newEyesWanted.populate(['updateId', 'targetUsers']);
+      return newEyesWanted.populate(['updateId', 'targetUsers', {
+        path: 'updateId',
+        populate: { path: 'authorId' }
+      }]);
     }
   }
 
@@ -51,7 +57,10 @@ class EyesWantedCollection {
    * @return {Promise<HydratedDocument<EyesWanted>>} - The EyesWanted, if any
    */
    static async findOne(eyesWantedId: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
-    return EyesWantedModel.findOne({ eyesWantedId }).populate(['updateId', 'targetUsers']);
+    return EyesWantedModel.findOne({ eyesWantedId }).populate(['updateId', 'targetUsers', {
+      path: 'updateId',
+      populate: { path: 'authorId' }
+    }]);
   }
 
   /**
@@ -61,7 +70,10 @@ class EyesWantedCollection {
    * @return {Promise<HydratedDocument<EyesWanted>>} - The EyesWanted, if any
    */
    static async findOneByUpdateId(updateId: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
-    return EyesWantedModel.findOne({ updateId }).populate(['updateId', 'targetUsers']);
+    return EyesWantedModel.findOne({ updateId }).populate(['updateId', 'targetUsers', {
+      path: 'updateId',
+      populate: { path: 'authorId' }
+    }]);
   }
 
   /**
@@ -71,7 +83,10 @@ class EyesWantedCollection {
    * @return {Promise<HydratedDocument<EyesWanted>[]>} - An array of all of the EyesWanted
    */
   static async findAllByUserId(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<EyesWanted>>> {
-    return EyesWantedModel.find({ targetUsers: userId }).sort({ dateCreated: -1 }).populate(['updateId', 'targetUsers']);
+    return EyesWantedModel.find({ targetUsers: userId }).sort({ dateCreated: -1 }).populate(['updateId', 'targetUsers', {
+      path: 'updateId',
+      populate: { path: 'authorId' }
+    }]);
   }
 
   /**
@@ -83,7 +98,10 @@ class EyesWantedCollection {
    */
   static async updateOneByIdAndReader(eyesWantedId: Types.ObjectId | string, reader: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
     await EyesWantedModel.updateOne({ _id: eyesWantedId }, { $pull: { targetUsers: reader }});
-    return EyesWantedModel.findOne({ _id: eyesWantedId }).populate(['authorId', 'targetUsers']);
+    return EyesWantedModel.findOne({ _id: eyesWantedId }).populate(['updateId', 'targetUsers', {
+      path: 'updateId',
+      populate: { path: 'authorId' }
+    }]);
   }
 
   /**
@@ -95,7 +113,10 @@ class EyesWantedCollection {
  */
     static async updateOneByUpdateAndReader(updateId: Types.ObjectId | string, reader: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
     await EyesWantedModel.updateOne({ updateId }, { $pull: { targetUsers: reader }});
-    return EyesWantedModel.findOne({ updateId }).populate(['authorId', 'targetUsers']);
+    return EyesWantedModel.findOne({ updateId }).populate(['updateId', 'targetUsers', {
+      path: 'updateId',
+      populate: { path: 'authorId' }
+    }]);
   }
 
   /**
