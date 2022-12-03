@@ -10,7 +10,6 @@ import * as userValidator from '../server/user/middleware';
 import {userRouter} from '../server/user/router';
 import {updateRouter} from '../server/update/router';
 import { projectRouter } from '../server/project/router';
-// import {freetRouter} from '../server/freet/router';
 import MongoStore from 'connect-mongo';
 
 // Load environmental variables
@@ -73,7 +72,6 @@ app.use(userValidator.isCurrentSessionUserExists);
 app.use('/api/users', userRouter);
 app.use('/api/updates', updateRouter);
 app.use('/api/projects', projectRouter);
-// app.use('/api/freets', freetRouter);
 
 // Catch all the other routes and display error message
 app.all('*', (req: Request, res: Response) => {

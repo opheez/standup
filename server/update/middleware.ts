@@ -1,6 +1,6 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
-import ProjectCollection from 'server/project/collection';
+import ProjectCollection from '../project/collection';
 import UpdateCollection from '../update/collection';
 
 /**
