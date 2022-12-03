@@ -33,7 +33,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     projectValidator.isProjectExistsQuery,
-    projectValidator.isUserInProject,
+    projectValidator.isUserInProjectQuery,
   ],
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if updateId parameters was supplied instead
@@ -78,7 +78,7 @@ router.post(
   [
     userValidator.isUserLoggedIn,
     projectValidator.isProjectExistsQuery,
-    projectValidator.isUserInProject,
+    projectValidator.isUserInProjectBody,
     updateValidator.isValidUpdateContent,
   ],
   async (req: Request, res: Response) => {

@@ -105,13 +105,14 @@ import UpdateCollection from '../update/collection';
 };
 
 /**
- * Checks if the current user is in the project of the update with id in req.query (and therefore can see it)
+ * Checks if the current user is in the project of the update with id in req.query 
  */
  const isUserInProject = async (req: Request, res: Response, next: NextFunction) => {
   const update = await UpdateCollection.findOneByUpdateId(req.query.updateId as string);
-  const project = await ProjectCollection.findOneByProjectId(update.projectId);
+  const project = await ProjectCollection.findOne(update.projectId);
   const userId = req.session.userId as string;
-  if (!project.participants.includes(userId)) {
+  const participants = project.participants.map((participant) => participant.toString());
+  if (!participants.includes(userId)) {
     res.status(403).json({
       error: 'Cannot view updates for projects you are not in.'
     });
