@@ -39,7 +39,8 @@ class ProjectCollection {
       creatorId,
       projectName,
       scheduledUpdates,
-      invitedUsers
+      invitedUsers,
+      participants: [creatorId],
     });
     await project.save(); // Saves project to MongoDB
     await Promise.resolve(this.populateProject(project));

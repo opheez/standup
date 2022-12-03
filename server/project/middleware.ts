@@ -1,5 +1,6 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
+import UserCollection from '../user/collection';
 import ProjectCollection from '../project/collection';
 
 /**
@@ -87,14 +88,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
-  const invitedUsers = await Promise.all(invitedUsersReq.map(async (user) => {
-    const validFormat = Types.ObjectId.isValid(user);
-    return validFormat ? await ProjectCollection.findOne(req.params.projectId) : '';
+  const invitedUsers = await Promise.all(invitedUsersReq.map(async (email) => {
+    return UserCollection.findOneByEmail(email);
   }));
-  const invitedUsersErr = invitedUsers.indexOf('');
-  if (invitedUsersErr !== -1) {
+  const invitedUsersErr = invitedUsers.every(user => !!user);
+  if (!invitedUsersErr) {
     res.status(404).json({
-      error: `Invited user ${invitedUsers[invitedUsersErr]} must be valid user ID`
+      error: 'Can only invite users with an existing account.'
     });
     return;
   }
