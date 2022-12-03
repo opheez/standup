@@ -60,7 +60,7 @@ class EyesWantedCollection {
    * @return {Promise<HydratedDocument<EyesWanted>[]>} - An array of all of the EyesWanted
    */
   static async findAllByUserId(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<EyesWanted>>> {
-    return EyesWantedModel.find({ targetUsers: userId }).populate(['updateId', 'targetUsers']);
+    return EyesWantedModel.find({ targetUsers: userId }).sort({ dateCreated: -1 }).populate(['updateId', 'targetUsers']);
   }
 
   /**
