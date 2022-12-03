@@ -54,7 +54,10 @@
                 placeholder="john.doe@gmail.com"
                 @input="fields.collaborators[i] = $event.target.value"
               />
-              <button class="text-btn" @click="removeCollaborator(i)">
+              <button
+                class="text-btn"
+                @click="$event.preventDefault(); removeCollaborator(i)"
+              >
                 🗑
               </button>
             </div>
