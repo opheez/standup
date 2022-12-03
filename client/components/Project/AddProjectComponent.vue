@@ -116,7 +116,6 @@ export default {
       };
       try {
         const res = await fetch('/api/projects', options);
-        const resJson = await res.json();
         if (!res.ok) {
           throw Error(resJson.error);
         }
@@ -125,13 +124,14 @@ export default {
           message: 'Successfully created project!',
         });
         this.$store.commit('refreshInvites');
+        this.$store.commit('refreshProjects');
+        this.hideModal();
       } catch (e) {
         this.$store.commit('alert', {
           status: 'error',
           message: e,
         });
       }
-      this.hideModal();
     },
     addCollaborator() {
       this.fields.collaborators.push('');
