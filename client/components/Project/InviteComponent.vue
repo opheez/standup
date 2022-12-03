@@ -4,21 +4,7 @@
       {{ invite.name }}
     </h4>
     <p>Due: {{ invite.deadline }}</p>
-    <label>Collaborators: </label>
-    <ul class="reset">
-      <li
-        v-for="teammate in invite.teammates"
-        class="teammate accepted"
-      >
-        ✔️ {{ teammate }}
-      </li>
-      <li
-        v-for="teammate in invite.pendingRequests"
-        class="teammate pending"
-      >
-        🕐 {{ teammate }}
-      </li>
-    </ul>
+    <p>Invited by: {{ invite.creatorId.email }}</p>
     <div class="action">
       <button class="decline-btn" @click="declineInvite">
         Decline
