@@ -118,7 +118,7 @@ const isValidProjectInvitee = async (req: Request, res: Response, next: NextFunc
   const projectId = req.query.projectId as string;
   const project = await ProjectCollection.findOne(projectId);
   const userId = req.session.userId as string;
-  const participants = project.participants.map((participant) => participant.toString());
+  const participants = project.participants.map((participant) => participant._id.toString());
   if (!participants.includes(userId)) {
     res.status(403).json({
       error: 'Cannot view updates for projects you are not in.'
@@ -136,7 +136,7 @@ const isValidProjectInvitee = async (req: Request, res: Response, next: NextFunc
   const projectId = req.body.projectId as string;
   const project = await ProjectCollection.findOne(projectId);
   const userId = req.session.userId as string;
-  const participants = project.participants.map((participant) => participant.toString());
+  const participants = project.participants.map((participant) => participant._id.toString());
   if (!participants.includes(userId)) {
     res.status(403).json({
       error: 'Cannot view updates for projects you are not in.'
