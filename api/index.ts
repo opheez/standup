@@ -11,6 +11,7 @@ import {userRouter} from '../server/user/router';
 import {updateRouter} from '../server/update/router';
 // import {freetRouter} from '../server/freet/router';
 import {eyesWantedRouter} from '../server/eyeswanted/router';
+import {thanksRouter} from '../server/thanks/router';
 import MongoStore from 'connect-mongo';
 
 // Load environmental variables
