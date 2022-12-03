@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import * as userValidator from '../server/user/middleware';
 import {userRouter} from '../server/user/router';
+import { projectRouter } from '../server/project/router';
 // import {freetRouter} from '../server/freet/router';
 import {eyesWantedRouter} from '../server/eyeswanted/router';
 import MongoStore from 'connect-mongo';
@@ -70,6 +71,7 @@ app.use(userValidator.isCurrentSessionUserExists);
 
 // Add routers from routes folder
 app.use('/api/users', userRouter);
+app.use('/api/projects', projectRouter);
 // app.use('/api/freets', freetRouter);
 app.use('/api/eyeswanted', eyesWantedRouter);
 
