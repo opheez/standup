@@ -110,16 +110,16 @@ class ProjectCollection {
                          newParticipants?: (Types.ObjectId | string)[],
                          newInvitedUsers?: (Types.ObjectId | string)[]): Promise<HydratedDocument<Project>> {
     const project = await ProjectModel.findOne({_id: projectId});
-    if (typeof newName !== 'undefined'){
+    if (newName !== undefined){
       project.projectName = newName;
     }
-    if (typeof newDates !== 'undefined'){
+    if (newDates !== undefined){
       project.scheduledUpdates = newDates;
     }
-    if (typeof newParticipants !== 'undefined'){
+    if (newParticipants !== undefined){
       project.participants = newParticipants.map(user => new Types.ObjectId(user));
     }
-    if (typeof newInvitedUsers !== 'undefined'){
+    if (newInvitedUsers !== undefined){
       project.invitedUsers = newInvitedUsers.map(user => new Types.ObjectId(user));
     }
     await project.save();
@@ -150,12 +150,14 @@ class ProjectCollection {
    * Archive a project with given projectId.
    *
    * @param {string} projectId - The projectId of project to archive
-   * @return {Promise<Boolean>} - true if the project has been archived, false otherwise
+   * @return {Promise<HydratedDocument<Project>>} - archived project
    */
-  static async archiveOne(projectId: Types.ObjectId | string): Promise<boolean> {
+  static async archiveOne(projectId: Types.ObjectId | string): Promise<HydratedDocument<Project>> {
     const project = await ProjectModel.findOne({_id: projectId});
     project.active = false;
-    return project !== null;
+    await project.save();
+    await Promise.resolve(this.populateProject(project));
+    return project;
   }
 
   /**
