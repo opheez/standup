@@ -17,7 +17,7 @@
             id="name"
             name="name"
             type="text"
-            placeholder="6.1040 Final Project"
+            placeholder="Project Name"
             :value="fields.name"
             @input="fields.name = $event.target.value"
           />
