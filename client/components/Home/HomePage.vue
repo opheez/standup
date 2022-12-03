@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       // whether to show the create acc or login form
-      showCreate: true,
+      showCreate: false,
     };
   },
 }
