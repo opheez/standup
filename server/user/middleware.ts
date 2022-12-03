@@ -26,6 +26,13 @@ const isCurrentSessionUserExists = async (req: Request, res: Response, next: Nex
  * Checks if both first and last names in req.body is valid, that is, it matches the name regex
  */
 const isValidName = (req: Request, res: Response, next: NextFunction) => {
+  if ([req.body.firstName, req.body.lastName].includes(undefined)) {
+    res.status(400).json({
+      error: 'Both firstName and lastName must be defined.'
+    });
+    return;
+  }
+
   const nameRegex = /^\w+$/i;
   if (!nameRegex.test(req.body.firstName) || !nameRegex.test(req.body.lastName)) {
     res.status(400).json({
