@@ -39,10 +39,12 @@ const constructUpdateResponse = (update: HydratedDocument<Update>): UpdateRespon
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
+  const author = updateCopy.authorId;
+  delete updateCopy.authorId;
   return {
     ...updateCopy,
     _id: updateCopy._id.toString(),
-    author: formatPopulatedUser(updateCopy.authorId),
+    author: formatPopulatedUser(author),
     dateCreated: formatDate(updateCopy.dateCreated),
     dateModified: formatDate(updateCopy.dateModified),
     projectId: updateCopy.projectId.toString(),
