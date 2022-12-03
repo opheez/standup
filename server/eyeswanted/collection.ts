@@ -1,101 +1,113 @@
 import type {HydratedDocument, Types} from 'mongoose';
-import type {Freet} from './model';
-import FreetModel from './model';
+import type {EyesWanted} from './model';
+import EyesWantedModel from './model';
 import UserCollection from '../user/collection';
+import ProjectCollection from '../project/collection';
+import UpdateCollection from '../update/collection';
 
 /**
- * This files contains a class that has the functionality to explore freets
- * stored in MongoDB, including adding, finding, updating, and deleting freets.
+ * This files contains a class that has the functionality to explore EyesWanted
+ * stored in MongoDB, including adding, finding, updating, and deleting EyesWanted.
  * Feel free to add additional operations in this file.
  *
- * Note: HydratedDocument<Freet> is the output of the FreetModel() constructor,
- * and contains all the information in Freet. https://mongoosejs.com/docs/typescript.html
+ * Note: HydratedDocument<EyesWanted> is the output of the EyesWantedModel() constructor,
+ * and contains all the information in EyesWanted. https://mongoosejs.com/docs/typescript.html
  */
-class FreetCollection {
+class EyesWantedCollection {
   /**
-   * Add a freet to the collection
+   * Add an EyesWanted to the collection
    *
-   * @param {string} authorId - The id of the author of the freet
-   * @param {string} content - The id of the content of the freet
-   * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
+   * @param {Types.ObjectId | string} updateId - The id of the update
+   * @return {Promise<HydratedDocument<EyesWanted>>} - The newly created eyesWanted
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+  static async addOne(updateId: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
     const date = new Date();
-    const freet = new FreetModel({
-      authorId,
-      dateCreated: date,
-      content,
-      dateModified: date
-    });
-    await freet.save(); // Saves freet to MongoDB
-    return freet.populate('authorId');
+    const update = await UpdateCollection.findOneByUpdateId(updateId);
+    const project = await ProjectCollection.findOne(update.projectId);
+    const targetUsers = project.participants;
+    const eyesWanted = await EyesWantedCollection.findOneByUpdateId(updateId);
+    if (eyesWanted) {
+      // Eyes Wanted already exists, so just re-add every user to it and overwrite the creation date
+      eyesWanted.dateCreated = date;
+      eyesWanted.targetUsers = targetUsers;
+      await eyesWanted.save();
+      return EyesWantedModel.findOne({ _id: eyesWanted._id }).populate(['updateId', 'targetUsers']);
+    } else {
+      const newEyesWanted = new EyesWantedModel({
+        updateId,
+        dateCreated: date,
+        targetUsers,
+      });
+      await newEyesWanted.save(); // Saves freet to MongoDB
+      return newEyesWanted.populate(['updateId', 'targetUsers']);
+    }
   }
 
   /**
-   * Find a freet by freetId
+   * Get the EyesWanted for a given Update
    *
-   * @param {string} freetId - The id of the freet to find
-   * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
+   * @param {Types.ObjectId | string} updateId - The id of the update
+   * @return {Promise<HydratedDocument<EyesWanted>>} - The EyesWanted, if any
    */
-  static async findOne(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    return FreetModel.findOne({_id: freetId}).populate('authorId');
+   static async findOneByUpdateId(updateId: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
+    return EyesWantedModel.findOne({ updateId }).populate(['updateId', 'targetUsers']);
   }
 
   /**
-   * Get all the freets in the database
+   * Get all the EyesWanted targeting a given user
    *
-   * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the freets
+   * @param {Types.ObjectId | string} userId - The user
+   * @return {Promise<HydratedDocument<EyesWanted>[]>} - An array of all of the EyesWanted
    */
-  static async findAll(): Promise<Array<HydratedDocument<Freet>>> {
-    // Retrieves freets and sorts them from most to least recent
-    return FreetModel.find({}).sort({dateModified: -1}).populate('authorId');
+  static async findAllByUserId(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<EyesWanted>>> {
+    return EyesWantedModel.find({ targetUsers: userId }).populate(['updateId', 'targetUsers']);
   }
 
   /**
-   * Get all the freets in by given author
+   * Update an EyesWanted to reflect that a user has read it
    *
-   * @param {string} username - The username of author of the freets
-   * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the freets
+   * @param {Types.ObjectId | string} eyesWantedId - The id of the EyesWanted to be updated
+   * @param {Types.ObjectId | string} reader - The id of the user that just read the update
+   * @return {Promise<HydratedDocument<EyesWanted>>} - The newly updated freet
    */
-  static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Freet>>> {
-    const author = await UserCollection.findOneByUsername(username);
-    return FreetModel.find({authorId: author._id}).sort({dateModified: -1}).populate('authorId');
+  static async updateOneByIdAndReader(eyesWantedId: Types.ObjectId | string, reader: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
+    await EyesWantedModel.updateOne({ _id: eyesWantedId }, { $pull: { targetUsers: reader }});
+    return EyesWantedModel.findOne({ _id: eyesWantedId }).populate(['authorId', 'targetUsers']);
   }
 
   /**
-   * Update a freet with the new content
-   *
-   * @param {string} freetId - The id of the freet to be updated
-   * @param {string} content - The new content of the freet
-   * @return {Promise<HydratedDocument<Freet>>} - The newly updated freet
-   */
-  static async updateOne(freetId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
-    const freet = await FreetModel.findOne({_id: freetId});
-    freet.content = content;
-    freet.dateModified = new Date();
-    await freet.save();
-    return freet.populate('authorId');
+ * Update the EyesWanted for an Update to reflect that a user has read it
+ *
+ * @param {Types.ObjectId | string} updateId - The id of the Update whose EyesWanted is to be updated
+ * @param {Types.ObjectId | string} reader - The id of the user that just read the update
+ * @return {Promise<HydratedDocument<EyesWanted>>} - The newly updated freet
+ */
+    static async updateOneByUpdateAndReader(updateId: Types.ObjectId | string, reader: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
+    await EyesWantedModel.updateOne({ updateId }, { $pull: { targetUsers: reader }});
+    return EyesWantedModel.findOne({ updateId }).populate(['authorId', 'targetUsers']);
   }
 
   /**
-   * Delete a freet with given freetId.
+   * Delete an Eyes Wanted by its id
    *
-   * @param {string} freetId - The freetId of freet to delete
-   * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
+   * @param {Types.ObjectId | string} eyesWantedId - The id of the Eyes Wanted entry to delete
+   * @return {Promise<Boolean>} - true if the EyesWanted has been deleted, false otherwise
    */
-  static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
-    const freet = await FreetModel.deleteOne({_id: freetId});
-    return freet !== null;
+   static async deleteOne(updateId: Types.ObjectId | string): Promise<boolean> {
+    const eyesWanted = await EyesWantedModel.deleteOne({ updateId });
+    return eyesWanted !== null;
   }
 
   /**
-   * Delete all the freets by the given author
+   * Delete an Eyes Wanted by its update id
    *
-   * @param {string} authorId - The id of author of freets
+   * @param {Types.ObjectId | string} updateId - The id of the update whose Eyes Wanted entry to delete
+   * @return {Promise<Boolean>} - true if the EyesWanted has been deleted, false otherwise
    */
-  static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
-    await FreetModel.deleteMany({authorId});
+  static async deleteOneByUpdateId(updateId: Types.ObjectId | string): Promise<boolean> {
+    const eyesWanted = await EyesWantedModel.deleteOne({ updateId });
+    return eyesWanted !== null;
   }
 }
 
-export default FreetCollection;
+export default EyesWantedCollection;

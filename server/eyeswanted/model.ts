@@ -13,12 +13,14 @@ export type EyesWanted = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   targetUsers: Types.ObjectId[];
   updateId: Types.ObjectId;
+  dateCreated: Date;
 };
 
 export type PopulatedEyesWanted = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   targetusers: User[];
   updateId: Update;
+  dateCreated: Date;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -39,6 +41,11 @@ const EyesWantedSchema = new Schema<EyesWanted>({
     required: true,
     ref: 'Update'
   },
+  // The date the EyesWanted was created
+  dateCreated: {
+    type: Date,
+    required: true,
+  }
 });
 
 const EyesWantedModel = model<EyesWanted>('EyesWanted', EyesWantedSchema);
