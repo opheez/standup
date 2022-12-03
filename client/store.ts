@@ -100,6 +100,9 @@ const store = new Vuex.Store({
       const invites = [...Array(3).keys()].map(id => {
         return {
           id,
+          creatorId: {
+            email: 'inviter@gmail.com',
+          },
           name: `Invited Project Name #${id}`,
           teammates: [
             'teammate1@gmail.com',
