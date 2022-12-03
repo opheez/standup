@@ -60,56 +60,53 @@ router.post(
 );
 
 /**
- * Delete a freet
+ * Delete an EyesWanted
  *
- * @name DELETE /api/freets/:id
+ * @name DELETE /api/eyesWanted/:id
  *
  * @return {string} - A success message
  * @throws {403} - If the user is not logged in or is not the author of
- *                 the freet
- * @throws {404} - If the freetId is not valid
+ *                 the eyesWanted
+ * @throws {404} - If the eyesWantedId is not valid
  */
 router.delete(
-  '/:freetId?',
+  '/:eyesWantedId?',
   [
     userValidator.isUserLoggedIn,
-    freetValidator.isFreetExists,
-    freetValidator.isValidFreetModifier
+    eyesWantedValidator.isEyesWantedExists,
+    eyesWantedValidator.isEyesWantedAuthor,
   ],
   async (req: Request, res: Response) => {
-    await FreetCollection.deleteOne(req.params.freetId);
+    await EyesWantedCollection.deleteOne(req.params.eyesWantedId);
     res.status(200).json({
-      message: 'Your freet was deleted successfully.'
+      message: 'Your Eyes Wanted was deleted successfully.'
     });
   }
 );
 
 /**
- * Modify a freet
+ * Modify an Eyes Wanted to show that the current user has read it
  *
- * @name PATCH /api/freets/:id
+ * @name PATCH /api/eyeswanted/:id
  *
- * @param {string} content - the new content for the freet
- * @return {FreetResponse} - the updated freet
- * @throws {403} - if the user is not logged in or not the author of
- *                 of the freet
- * @throws {404} - If the freetId is not valid
- * @throws {400} - If the freet content is empty or a stream of empty spaces
- * @throws {413} - If the freet content is more than 140 characters long
+ * @return {EyesWantedResponse} - the updated EyesWanted
+ * @throws {403} - if the user is not logged in or not in the project
+ * @throws {404} - If the eyesWantedId is not valid
  */
 router.patch(
-  '/:freetId?',
+  '/:eyesWantedId?',
   [
     userValidator.isUserLoggedIn,
-    freetValidator.isFreetExists,
-    freetValidator.isValidFreetModifier,
-    freetValidator.isValidFreetContent
+    eyesWantedValidator.isEyesWantedExists,
+    eyesWantedValidator.isUserInProject,
   ],
   async (req: Request, res: Response) => {
-    const freet = await FreetCollection.updateOne(req.params.freetId, req.body.content);
+    const eyesWantedId = req.params.eyesWantedId as string;
+    const userId =  req.session.userId as string;
+    const eyesWanted = await EyesWantedCollection.updateOneByIdAndReader(eyesWantedId, userId);
     res.status(200).json({
-      message: 'Your freet was updated successfully.',
-      freet: util.constructFreetResponse(freet)
+      message: 'You have successfully read Eyes Wanted {ID}.',
+      eyesWanted: util.constructEyesWantedResponse(eyesWanted)
     });
   }
 );

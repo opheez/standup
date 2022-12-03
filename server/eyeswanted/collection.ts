@@ -44,6 +44,16 @@ class EyesWantedCollection {
   }
 
   /**
+   * Get an EyesWanted by id
+   *
+   * @param {Types.ObjectId | string} eyesWantedId - The id of the EyesWanted
+   * @return {Promise<HydratedDocument<EyesWanted>>} - The EyesWanted, if any
+   */
+   static async findOne(eyesWantedId: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
+    return EyesWantedModel.findOne({ eyesWantedId }).populate(['updateId', 'targetUsers']);
+  }
+
+  /**
    * Get the EyesWanted for a given Update
    *
    * @param {Types.ObjectId | string} updateId - The id of the update

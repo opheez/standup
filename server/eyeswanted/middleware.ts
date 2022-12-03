@@ -1,16 +1,17 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
-import FreetCollection from '../freet/collection';
+import EyesWantedCollection from './collection';
+import UpdateCollection from '../update/collection';
 
 /**
- * Checks if a freet with freetId is req.params exists
+ * Checks if an Eyes Wanted with eyesWantedId in req.params exists
  */
-const isFreetExists = async (req: Request, res: Response, next: NextFunction) => {
-  const validFormat = Types.ObjectId.isValid(req.params.freetId);
-  const freet = validFormat ? await FreetCollection.findOne(req.params.freetId) : '';
-  if (!freet) {
+const isEyesWantedExists = async (req: Request, res: Response, next: NextFunction) => {
+  const validFormat = Types.ObjectId.isValid(req.params.eyesWantedId);
+  const eyesWanted = validFormat ? await EyesWantedCollection.findOne(req.params.eyesWantedId) : '';
+  if (!eyesWanted) {
     res.status(404).json({
-      error: `Freet with freet ID ${req.params.freetId} does not exist.`
+      error: `Eyes Wanted with ID ${req.params.eyesWantedId} does not exist.`
     });
     return;
   }
@@ -19,37 +20,33 @@ const isFreetExists = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 /**
- * Checks if the content of the freet in req.body is valid, i.e not a stream of empty
- * spaces and not more than 140 characters
+ * Checks if the current user is the author of the EyesWanted whose eyesWantedId is in req.params
  */
-const isValidFreetContent = (req: Request, res: Response, next: NextFunction) => {
-  const {content} = req.body as {content: string};
-  if (!content.trim()) {
-    res.status(400).json({
-      error: 'Freet content must be at least one character long.'
-    });
-    return;
-  }
-
-  if (content.length > 140) {
-    res.status(413).json({
-      error: 'Freet content must be no more than 140 characters.'
-    });
-    return;
-  }
-
-  next();
-};
-
-/**
- * Checks if the current user is the author of the freet whose freetId is in req.params
- */
-const isValidFreetModifier = async (req: Request, res: Response, next: NextFunction) => {
-  const freet = await FreetCollection.findOne(req.params.freetId);
-  const userId = freet.authorId._id;
+const isEyesWantedAuthor = async (req: Request, res: Response, next: NextFunction) => {
+  const eyesWanted = await EyesWantedCollection.findOne(req.params.eyesWantedId);
+  const update = await UpdateCollection.findOneByUpdateId(eyesWanted.updateId);
+  const userId = update.authorId._id;
   if (req.session.userId !== userId.toString()) {
     res.status(403).json({
-      error: 'Cannot modify other users\' freets.'
+      error: 'Cannot modify other users\' Eyes Wanted.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if the current user is in the project of the EyesWanted with id in req.params
+ */
+ const isUserInProject = async (req: Request, res: Response, next: NextFunction) => {
+  const eyesWanted = await EyesWantedCollection.findOne(req.params.eyesWantedId);
+  const update = await UpdateCollection.findOneByUpdateId(eyesWanted.updateId);
+  const project = await ProjectCollection.findOne(update.projectId);
+  const participants = project.participants.map((participant) => participant.toString());
+  if (!participants.includes(req.session.userId)) {
+    res.status(403).json({
+      error: 'Cannot modify other users\' Eyes Wanted.'
     });
     return;
   }
@@ -58,7 +55,7 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
 };
 
 export {
-  isValidFreetContent,
-  isFreetExists,
-  isValidFreetModifier
+  isEyesWantedExists,
+  isEyesWantedAuthor,
+  isUserInProject,
 };
