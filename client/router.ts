@@ -4,6 +4,7 @@ import AccountPage from './components/Account/AccountPage.vue';
 import HomePage from './components/Home/HomePage.vue';
 import ProjectDashboard from './components/Project/ProjectDashboard.vue';
 import UpdatesPage from './components/Update/UpdatesPage.vue';
+import AddUpdatePage from './components/Update/AddUpdatePage.vue';
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
@@ -12,6 +13,7 @@ const routes = [
   {path: '/', name: 'Home', component: HomePage},
   {path: '/projects', name: 'Projects', component: ProjectDashboard},
   {path: '/updates/:id', name: 'Updates', component: UpdatesPage},
+  {path: '/updates/:id/add', name: 'Updates', component: AddUpdatePage},
   {path: '/account', name: 'Account', component: AccountPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
