@@ -50,10 +50,49 @@ import UpdateCollection from '../update/collection';
 };
 
 /**
+ * Checks if an update with updateId in req.body exists
+ */
+ const isUpdateExistsBody = async (req: Request, res: Response, next: NextFunction) => {
+  const updateId = req.body.updateId as string;
+  if (!updateId) {
+    res.status(400).json({
+      error: 'update ID cannot be empty.'
+    });
+    return;
+  }
+  const validFormat = Types.ObjectId.isValid(updateId);
+  const update = validFormat ? await UpdateCollection.findOneByUpdateId(updateId) : '';
+  if (!update) {
+    res.status(404).json({
+      error: `Update with ID ${updateId} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
  * Checks if the current user is the author of the update whose updateId is in req.params
  */
- const isUpdateAuthor = async (req: Request, res: Response, next: NextFunction) => {
+ const isUpdateAuthorParams = async (req: Request, res: Response, next: NextFunction) => {
   const update = await UpdateCollection.findOneByUpdateId(req.params.updateId);
+  const userId = update.authorId._id;
+  if (req.session.userId !== userId.toString()) {
+    res.status(403).json({
+      error: 'Cannot modify or delete other users\' updates.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if the current user is the author of the update whose updateId is in req.body
+ */
+ const isUpdateAuthorBody = async (req: Request, res: Response, next: NextFunction) => {
+  const update = await UpdateCollection.findOneByUpdateId(req.body.updateId);
   const userId = update.authorId._id;
   if (req.session.userId !== userId.toString()) {
     res.status(403).json({
@@ -159,7 +198,9 @@ import UpdateCollection from '../update/collection';
 export {
   isUpdateExistsQuery,
   isUpdateExistsParams,
-  isUpdateAuthor,
+  isUpdateExistsBody,
+  isUpdateAuthorParams,
+  isUpdateAuthorBody,
   isValidUpdateContent,
   isUserInProject,
 };

@@ -113,7 +113,7 @@ router.patch(
   [
     userValidator.isUserLoggedIn,
     updateValidator.isUpdateExistsParams,
-    updateValidator.isUpdateAuthor,
+    updateValidator.isUpdateAuthorParams,
     updateValidator.isValidUpdateContent,
   ],
   async (req: Request, res: Response) => {
@@ -140,7 +140,7 @@ router.patch(
   [
     userValidator.isUserLoggedIn,
     updateValidator.isUpdateExistsParams,
-    updateValidator.isUpdateAuthor,
+    updateValidator.isUpdateAuthorParams,
   ],
   async (req: Request, res: Response) => {
     await UpdateCollection.deleteOne(req.params.updateId);
