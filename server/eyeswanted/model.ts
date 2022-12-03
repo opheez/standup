@@ -18,7 +18,7 @@ export type EyesWanted = {
 
 export type PopulatedEyesWanted = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  targetusers: User[];
+  targetUsers: User[];
   updateId: Update;
   dateCreated: Date;
 };

@@ -1,14 +1,13 @@
 import type {HydratedDocument} from 'mongoose';
 import moment from 'moment';
-import type {Freet, PopulatedFreet} from '../freet/model';
+import type {EyesWanted, PopulatedEyesWanted} from './model';
 
-// Update this if you add a property to the Freet type!
-type FreetResponse = {
+// Update this if you add a property to the EyesWanted type!
+type EyesWantedResponse = {
   _id: string;
-  author: string;
+  update: any;
+  targetUsers: any[];
   dateCreated: string;
-  content: string;
-  dateModified: string;
 };
 
 /**
@@ -20,29 +19,55 @@ type FreetResponse = {
 const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:mm:ss a');
 
 /**
- * Transform a raw Freet object from the database into an object
+ * Formats populated user object
+ * 
+ * @param {Object} user - Populated user object
+ * @returns {Object} - Formatted user object
+ */
+ const formatPopulatedUser = (user: any): any => {
+  const userCopy = {...user};
+  delete userCopy.password;
+  return userCopy;
+}
+
+/**
+ * Formats populated update object
+ * 
+ * @param {Object} update - Populated update object
+ * @returns {Object} - Formatted update object
+ */
+ const formatPopulatedUpdate = (update: any): any => {
+  const updateCopy = {...update};
+  const authorCopy = updateCopy.authorId;
+  delete updateCopy.authorId;
+  updateCopy.author = formatPopulatedUser(authorCopy);
+  return updateCopy;
+}
+
+/**
+ * Transform a raw  EyesWanted object from the database into an object
  * with all the information needed by the frontend
  *
- * @param {HydratedDocument<Freet>} freet - A freet
- * @returns {FreetResponse} - The freet object formatted for the frontend
+ * @param {HydratedDocument<EyesWanted>} eyesWanted - An EyesWanted entry
+ * @returns {EyesWantedResponse} - The EyesWanted object formatted for the frontend
  */
-const constructFreetResponse = (freet: HydratedDocument<Freet>): FreetResponse => {
-  const freetCopy: PopulatedFreet = {
-    ...freet.toObject({
+const constructEyesWantedResponse = (eyesWanted: HydratedDocument<EyesWanted>): EyesWantedResponse => {
+  const eyesWantedCopy: PopulatedEyesWanted = {
+    ...eyesWanted.toObject({
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  const {username} = freetCopy.authorId;
-  delete freetCopy.authorId;
+  const update = eyesWantedCopy.updateId;
+  delete eyesWantedCopy.updateId;
   return {
-    ...freetCopy,
-    _id: freetCopy._id.toString(),
-    author: username,
-    dateCreated: formatDate(freet.dateCreated),
-    dateModified: formatDate(freet.dateModified)
+    ...eyesWantedCopy,
+    _id: eyesWantedCopy._id.toString(),
+    update: formatPopulatedUpdate(update),
+    targetUsers: eyesWantedCopy.targetUsers.map(formatPopulatedUser),
+    dateCreated: formatDate(eyesWantedCopy.dateCreated),
   };
 };
 
 export {
-  constructFreetResponse
+  constructEyesWantedResponse
 };

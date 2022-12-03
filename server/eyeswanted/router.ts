@@ -19,6 +19,9 @@ const router = express.Router();
  */
 router.get(
   '/',
+  [
+    userValidator.isUserLoggedIn,
+  ],
   async (req: Request, res: Response, next: NextFunction) => {
     const allFreets = await FreetCollection.findAll();
     const response = allFreets.map(util.constructFreetResponse);
