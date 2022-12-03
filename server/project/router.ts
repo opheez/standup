@@ -26,7 +26,9 @@ router.get(
   ],
   async (req: Request, res: Response) => {
     const invited = req.query.invited as string;
-    const authorProjects = (invited === "true") ? await ProjectCollection.findAllWithUser(req.session.userId) : await ProjectCollection.findAllInvitedUser(req.session.userId);
+    const authorProjects = (invited === "true")
+      ? await ProjectCollection.findAllInvitedUser(req.session.userId)
+      : await ProjectCollection.findAllWithUser(req.session.userId);
     const response = authorProjects.map(util.constructProjectResponse);
     res.status(200).json(response);
   }
