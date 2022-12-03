@@ -31,8 +31,11 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;700;400&display=swap');
+
 * {
   box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
 }
 
 body {
@@ -41,11 +44,12 @@ body {
   display: flex;
   padding: 0;
   margin: 0;
-  font-size: 1.2em;
+  font-size: 16px;
 }
 
 main {
-  padding: 0 5em 5em;
+  width: 75%;
+  margin: auto;
 }
 
 .alerts {
@@ -75,5 +79,13 @@ main {
 
 .alerts .success {
     background-color: rgb(45, 135, 87);
+}
+
+ul.reset,
+ul.reset li {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  list-style-type: none;
 }
 </style>

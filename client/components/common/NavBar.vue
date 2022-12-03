@@ -36,7 +36,6 @@
 <style scoped>
 nav {
     padding: 1vw 2vw;
-    background-color: #ccc;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -44,7 +43,6 @@ nav {
 }
 
 .title {
-    font-size: 32px;
     margin: 0 5px;
 }
 
@@ -58,7 +56,6 @@ img {
 }
 
 .right {
-    font-size: 20px;
     display: grid;
     gap: 16px;
     grid-auto-flow: column;
@@ -66,7 +63,14 @@ img {
 }
 
 .right a {
-    margin-left: 5px;
+  margin-left: 8px;
+  color: rgb(48, 48, 48);
+  text-decoration: none;
+}
+
+.right a.router-link-exact-active {
+  color: rgb(73, 40, 183);
+  text-decoration: underline;
 }
 
 .alerts {
