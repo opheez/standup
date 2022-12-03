@@ -140,38 +140,72 @@ import UpdateCollection from '../update/collection';
 };
 
 /**
- * Checks if the update content in req.body is valid
+ * Checks if the update content in req.body is valid for creation 
  */
- const isValidUpdateContent = async (req: Request, res: Response, next: NextFunction) => {
-  const { status, summary, details, todos, blockers } = req.body;
+ const isValidUpdateContentCreate = async (req: Request, res: Response, next: NextFunction) => {
+  const { status, summary, details, todos, blockers } = req.body as { 
+    status: string, 
+    summary: string, 
+    details: string, 
+    todos: string[], 
+    blockers: string[] 
+  };
    
   // status must be 'inprogress', 'completed', or 'blocked'
   if (!['inprogress', 'completed', 'blocked'].includes(status)) {
     res.status(400).json({
-      error: 'Status must be either.'
+      error: 'Status must be either "inprogress", "completed", or "blocked".'
     });
     return;
   }
 
-  // summary must be non-empty and fewer than 60 characters long
-  if (!summary || summary.trim() === '') {
+  // summary must be defined, a non-empty string, and fewer than 60 characters long
+  if (summary === undefined) {
     res.status(400).json({
-      error: 'Summary cannot be empty or undefined.'
+      error: 'Summary cannot be undefined.'
+    });
+    return;
+  }
+
+  if (typeof summary !== 'string') {
+    res.status(401).json({
+      error: 'Summary must be a string.'
+    });
+    return;
+  }
+
+  if (summary.trim().length === 0) {
+    res.status(401).json({
+      error: 'Summary cannot be empty.'
     });
     return;
   }
 
   if (summary.trim().length > 60) {
-    res.status(400).json({
+    res.status(401).json({
       error: 'Summary cannot be longer than 60 characters.'
     });
     return;
   }
 
-  // details must be defined
-  if (!details || details.trim() === '') {
+  // details must be defined and a non-empty string
+  if (details === undefined) {
     res.status(400).json({
-      error: 'Details cannot be empty or undefined.'
+      error: 'Details cannot be undefined.'
+    });
+    return;
+  }
+
+  if (typeof details !== 'string') {
+    res.status(401).json({
+      error: 'Details must be a string.'
+    });
+    return;
+  }
+
+  if (details.trim().length === 0) {
+    res.status(401).json({
+      error: 'Details cannot be empty.'
     });
     return;
   }
@@ -179,7 +213,7 @@ import UpdateCollection from '../update/collection';
   // todos, if defined, must be a list of strings
   if (todos) {
     if (!Array.isArray(todos)) {
-      res.status(400).json({
+      res.status(401).json({
         error: 'Todos must be a list.'
       });
       return;
@@ -187,7 +221,7 @@ import UpdateCollection from '../update/collection';
 
     for (const elt of todos) {
       if (typeof elt !== 'string') {
-        res.status(400).json({
+        res.status(401).json({
           error: 'Todos must be a list of strings.'
         });
         return;
@@ -195,10 +229,10 @@ import UpdateCollection from '../update/collection';
     }
   }
 
-  // blockers must be a list of strings
+  // blockers, if defined, must be a list of strings
   if (blockers) {
     if (!Array.isArray(blockers)) {
-      res.status(400).json({
+      res.status(401).json({
         error: 'Blockers must be a list.'
       });
       return;
@@ -206,7 +240,110 @@ import UpdateCollection from '../update/collection';
 
     for (const elt of blockers) {
       if (typeof elt !== 'string') {
-        res.status(400).json({
+        res.status(401).json({
+          error: 'Blockers must be a list of strings.'
+        });
+        return;
+      }
+    }
+  }
+
+  next();
+};
+
+/**
+ * Checks if the update content in req.body is valid for editing 
+ * (i.e., undefined is a valid value for any field)
+ */
+ const isValidUpdateContentEdit = async (req: Request, res: Response, next: NextFunction) => {
+  const { status, summary, details, todos, blockers } = req.body as { 
+    status: string, 
+    summary: string, 
+    details: string, 
+    todos: string[], 
+    blockers: string[] 
+  };
+   
+  // status, if defined, must be 'inprogress', 'completed', or 'blocked'
+  if (status && !['inprogress', 'completed', 'blocked'].includes(status)) {
+    res.status(400).json({
+      error: 'Status must be either "inprogress", "completed", or "blocked".'
+    });
+    return;
+  }
+
+  // summary, if defined, must be a non-empty string and fewer than 60 characters long
+  if (summary !== undefined) {
+    if (typeof summary !== 'string') {
+      res.status(401).json({
+        error: 'Summary must be a string.'
+      });
+      return;
+    }
+
+    if (summary.trim().length === 0) {
+      res.status(401).json({
+        error: 'Summary cannot be empty.'
+      });
+      return;
+    }
+
+    if (summary.trim().length > 60) {
+      res.status(401).json({
+        error: 'Summary cannot be longer than 60 characters.'
+      });
+      return;
+    }
+  }
+
+  // details, if defined, must be a non-empty string
+  if (details !== undefined) {
+    if (typeof details !== 'string') {
+      res.status(401).json({
+        error: 'Details must be a string.'
+      });
+      return;
+    }
+
+    if (details.trim() === '') {
+      res.status(401).json({
+        error: 'Details cannot be empty.'
+      });
+      return;
+    }
+  }
+
+  // todos, if defined, must be a list of strings
+  if (todos) {
+    if (!Array.isArray(todos)) {
+      res.status(401).json({
+        error: 'Todos must be a list.'
+      });
+      return;
+    }
+
+    for (const elt of todos) {
+      if (typeof elt !== 'string') {
+        res.status(401).json({
+          error: 'Todos must be a list of strings.'
+        });
+        return;
+      }
+    }
+  }
+
+  // blockers, if defined, must be a list of strings
+  if (blockers) {
+    if (!Array.isArray(blockers)) {
+      res.status(401).json({
+        error: 'Blockers must be a list.'
+      });
+      return;
+    }
+
+    for (const elt of blockers) {
+      if (typeof elt !== 'string') {
+        res.status(401).json({
           error: 'Blockers must be a list of strings.'
         });
         return;
@@ -223,7 +360,8 @@ export {
   isUpdateExistsBody,
   isUpdateAuthorParams,
   isUpdateAuthorBody,
-  isValidUpdateContent,
+  isValidUpdateContentCreate,
+  isValidUpdateContentEdit,
   isUserInProject,
   isUpdateInActiveProject,
 };

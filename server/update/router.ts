@@ -68,7 +68,8 @@ router.get(
  * @param {string | undefined} blockers - The blockers of the update
  * @param {string} projectId - The id of the project the update is associated with
  * @return {UpdateResponse} - An object with the new update
- * @throws {400} - If projectId is not given, or if update content is invalid
+ * @throws {400} - If projectId is not given, or if required update content is not given
+ * @throws {401} - If update content is invalid
  * @throws {403} - If user is not logged in or not part of the project
  * @throws {404} - If project with projectId is not found
  * @throws {413} - If summary exceeds 60 characters
@@ -80,7 +81,7 @@ router.post(
     projectValidator.isProjectExistsBody,
     projectValidator.isUserInProjectBody,
     projectValidator.isProjectActive,
-    updateValidator.isValidUpdateContent,
+    updateValidator.isValidUpdateContentCreate,
   ],
   async (req: Request, res: Response) => {
     const userId = req.session.userId as string;
@@ -104,21 +105,23 @@ router.post(
  * @param {string | undefined} todos - The todos of the update
  * @param {string | undefined} blockers - The blockers of the update
  * @return {UserResponse} - The updated user
- * @throws {400} - If projectId is not given, or if update content is invalid
+ * @throws {400} - If projectId is not given
+ * @throws {401} - If update content is invalid
  * @throws {403} - If user is not logged in or not part of the project
  * @throws {404} - If project with projectId is not found
  * @throws {413} - If summary exceeds 60 characters
  */
 router.patch(
-  '/',
+  '/:updateId?',
   [
     userValidator.isUserLoggedIn,
     updateValidator.isUpdateExistsParams,
     updateValidator.isUpdateAuthorParams,
-    updateValidator.isValidUpdateContent,
+    updateValidator.isValidUpdateContentEdit,
   ],
   async (req: Request, res: Response) => {
     const updateId = req.params.updateId as string;
+    console.log(req.body);
     const update = await UpdateCollection.updateOne(updateId, req.body);
     res.status(200).json({
       message: 'Your update was updated successfully.',

@@ -78,6 +78,7 @@ class UpdateCollection {
                          updateDetails: {status?: string; summary?: string; details?: string; todos?: string[]; blockers?: string[]}): Promise<HydratedDocument<Update>> {
     const date = new Date();
     const update = await UpdateModel.findOne({ _id: updateId });
+    console.log(updateDetails.todos);
     if (updateDetails.status) {
       update.status = updateDetails.status;
     }
@@ -90,11 +91,11 @@ class UpdateCollection {
       update.details = updateDetails.details;
     }
 
-    if (updateDetails.todos) {
+    if (updateDetails.todos !== undefined) {
       update.todos = updateDetails.todos;
     }
 
-    if (updateDetails.blockers) {
+    if (updateDetails.blockers !== undefined) {
       update.blockers = updateDetails.blockers;
     }
 
