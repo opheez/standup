@@ -32,8 +32,8 @@ router.get(
   '/',
   [
     userValidator.isUserLoggedIn,
-    projectValidator.isProjectExistsQuery,
-    projectValidator.isUserInProjectQuery,
+    projectValidator.isProjectExistsQueryOrUpdateId,
+    projectValidator.isUserInProjectQueryOrUpdateId,
   ],
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if updateId parameters was supplied instead
