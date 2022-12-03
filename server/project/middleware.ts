@@ -1,7 +1,7 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
 import UserCollection from '../user/collection';
-import ProjectCollection from '../project/collection';
+import ProjectCollection from './collection';
 
 /**
  * Checks if a project with projectId in req.params exists
@@ -63,7 +63,11 @@ const isProjectExists = async (req: Request, res: Response, next: NextFunction) 
  * Checks if the content of the project in req.body is valid, i.e. project name is non-empty and < 50 char, dates and users are valid values
  */
 const isValidProjectFields = async (req: Request, res: Response, next: NextFunction) => {
-  const {projectName, scheduledUpdatesReq, invitedUsersReq} = req.body as {projectName: string, scheduledUpdatesReq: any[], invitedUsersReq: string[]};
+  const {
+    projectName,
+    scheduledUpdates: scheduledUpdatesReq,
+    invitedUsers: invitedUsersReq
+  } = req.body as {projectName: string, scheduledUpdates: any[], invitedUsers: string[]};
 
   if (!projectName.trim()) {
     res.status(400).json({
