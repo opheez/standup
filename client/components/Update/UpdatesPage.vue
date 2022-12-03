@@ -20,39 +20,14 @@
 
 <script>
 import UpdatePreview from '@/components/Update/UpdatePreview.vue';
+import GetCurrentProject from '@/components/Update/GetCurrentProject.vue';
 
 export default {
   name: 'UpdatesPage',
+  mixins: [GetCurrentProject],
   components: {UpdatePreview},
-  methods: {
-    findProject(id) {
-      return this.$store.state.projects.find(
-          proj => proj.id === id);
-    },
-    // Redirect if the corresponding project does not exist
-    verifyProject() {
-      if (!this.project) {
-        this.$router.push({name: 'Not Found'});
-      }
-    },
-  },
   beforeMount() {
-    this.verifyProject();
     this.$store.commit('refreshUpdates', this.$route.params.id);
-  },
-  data() {
-    return {
-      project: this.findProject(this.$route.params.id),
-    }
-  },
-  watch: {
-    "$route.params.id": {
-      handler: function(value) {
-        this.project = this.findProject(value);
-        this.verifyProject();
-      },
-      deep: true,
-    },
   },
   computed: {
     updates() {
@@ -64,7 +39,6 @@ export default {
         groups[u.author].push(u);
         return groups;
       }, {});
-      console.log('computed updates', groupedUpdates);
       return groupedUpdates;
     }
   },
