@@ -112,4 +112,4 @@ router.patch(
   }
 );
 
-export {router as freetRouter};
+export {router as eyesWantedRouter};

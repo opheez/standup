@@ -7,10 +7,10 @@ import http from 'http';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import * as userValidator from '../server/user/middleware';
-import {userRouter} from '../server/user/router';
+import { userRouter } from '../server/user/router';
+import { updateRouter } from '../server/update/router';
 import { projectRouter } from '../server/project/router';
-// import {freetRouter} from '../server/freet/router';
-import {eyesWantedRouter} from '../server/eyeswanted/router';
+import { eyesWantedRouter } from '../server/eyeswanted/router';
 import MongoStore from 'connect-mongo';
 
 // Load environmental variables
@@ -71,8 +71,8 @@ app.use(userValidator.isCurrentSessionUserExists);
 
 // Add routers from routes folder
 app.use('/api/users', userRouter);
+app.use('/api/updates', updateRouter);
 app.use('/api/projects', projectRouter);
-// app.use('/api/freets', freetRouter);
 app.use('/api/eyeswanted', eyesWantedRouter);
 
 // Catch all the other routes and display error message
