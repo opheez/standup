@@ -147,6 +147,22 @@ const isValidProjectInvitee = async (req: Request, res: Response, next: NextFunc
   next();
 };
 
+/**
+ * Checks if the project with id in req.body is active
+ */
+ const isProjectActive = async (req: Request, res: Response, next: NextFunction) => {
+  const projectId = req.body.projectId as string;
+  const project = await ProjectCollection.findOne(projectId);
+  if (!project.active) {
+    res.status(403).json({
+      error: 'Cannot post updates to inactive projects.'
+    });
+    return;
+  }
+
+  next();
+};
+
 export {
   isValidProjectFields,
   isProjectExists,
@@ -155,4 +171,5 @@ export {
   isValidProjectInvitee,
   isUserInProjectQuery,
   isUserInProjectBody,
+  isProjectActive,
 };

@@ -79,6 +79,7 @@ router.post(
     userValidator.isUserLoggedIn,
     projectValidator.isProjectExistsQuery,
     projectValidator.isUserInProjectBody,
+    projectValidator.isProjectActive,
     updateValidator.isValidUpdateContent,
   ],
   async (req: Request, res: Response) => {
