@@ -44,10 +44,10 @@ const isEyesWantedAuthor = async (req: Request, res: Response, next: NextFunctio
   const eyesWanted = await EyesWantedCollection.findOne(req.params.eyesWantedId);
   const update = await UpdateCollection.findOneByUpdateId(eyesWanted.updateId);
   const project = await ProjectCollection.findOne(update.projectId);
-  const participants = project.participants.map((participant) => participant.toString());
-  if (!participants.includes(req.session.userId)) {
+  const participants = project.participants.map((participant) => participant._id.toString());
+  if (!participants.includes(req.session.userId as string)) {
     res.status(403).json({
-      error: 'Cannot modify other users\' Eyes Wanted.'
+      error: 'Cannot mark as read Eyes Wanted for projects you are not in.'
     });
     return;
   }

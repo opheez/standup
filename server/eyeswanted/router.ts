@@ -107,7 +107,7 @@ router.patch(
     const userId =  req.session.userId as string;
     const eyesWanted = await EyesWantedCollection.updateOneByIdAndReader(eyesWantedId, userId);
     res.status(200).json({
-      message: 'You have successfully read Eyes Wanted {ID}.',
+      message: `You have successfully read Eyes Wanted ${eyesWantedId}.`,
       eyesWanted: util.constructEyesWantedResponse(eyesWanted)
     });
   }
