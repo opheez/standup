@@ -45,6 +45,7 @@ router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
+    updateValidator.isUpdateInActiveProject,
     updateValidator.isUpdateExistsBody,
     updateValidator.isUpdateAuthorBody,
   ],

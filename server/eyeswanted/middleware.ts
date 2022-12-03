@@ -2,6 +2,7 @@ import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
 import EyesWantedCollection from './collection';
 import UpdateCollection from '../update/collection';
+import ProjectCollection from '../project/collection';
 
 /**
  * Checks if an Eyes Wanted with eyesWantedId in req.params exists
