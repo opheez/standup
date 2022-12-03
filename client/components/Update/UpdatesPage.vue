@@ -1,10 +1,10 @@
 <template>
   <main>
     <h1>
-      Project: {{ project.name }}
+      Project: {{ project.projectName }}
     </h1>
     <section
-      v-for="teammate in project.teammates"
+      v-for="teammate in project.participants"
       class="user-updates"
     >
       <h2>{{ teammate }}</h2>

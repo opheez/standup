@@ -1,9 +1,10 @@
 <template>
   <div class="project preview" @click="openProject">
-    <h3>{{ project.name }}</h3>
-    <p class="deadline">Due {{ project.deadline }}</p>
+    <h3>{{ project.projectName }}</h3>
+    <p class="deadline">
+    </p>
     <ul class="reset teammates-list">
-      <li v-for="teammate in project.teammates">
+      <li v-for="teammate in project.participants">
         {{ teammate }}
       </li>
     </ul>
@@ -28,11 +29,14 @@ export default {
     },
   },
   computed: {
+    deadline() {
+      return this.project.scheduledUpdates[this.project.scheduledUpdates.length - 1];
+    },
     status() {
       if (!this.project.active) {
         return 'Completed';
       }
-      if (moment() > moment(this.project.deadline)) {
+      if (moment() > moment(this.deadline)) {
         return 'Overdue';
       }
       return 'In-Progress';
@@ -43,7 +47,7 @@ export default {
       this.$router.push({
         name: 'Updates',
         params: {
-          id: this.project.id,
+          id: this.project._id,
         },
       });
     }
