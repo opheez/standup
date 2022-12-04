@@ -52,15 +52,16 @@
           </div>
         </div>
       </div>
-      <div v-if="(fields.status in statusToListLabel)" class="field">
-        <label>{{statusToListLabel[fields.status]}}</label>
+      <div class="field">
+        <label>Action Items</label>
         <div class="items-container">
-          <div v-for="(item, i) in listField" class="item">
+          <div v-for="(item, i) in fields.actionItems" class="item">
             ●
             <input
+              placeholder="Look into..."
               :id="i"
-              :value="listField[i]"
-              @input="listField[i] = $event.target.value"
+              :value="fields.actionItems[i]"
+              @input="fields.actionItems[i] = $event.target.value"
             />
             <button
               class="text-btn"
@@ -94,50 +95,27 @@ export default {
         summary: '',
         details: '',
         status: 'inprogress',
-        todos: [''],
-        blockers: [''],
+        actionItems: [''],
       },
       statusToText: {
         'inprogress': 'In-Progress',
         'blocked': 'Blocked',
         'completed': 'Completed',
       },
-      statusToListLabel: {
-        'inprogress': 'To-Dos',
-        'blocked': 'Blockers',
-      },
     };
-  },
-  computed: {
-    listField() {
-      switch (this.fields.status) {
-        case 'inprogress':
-          return this.fields.todos;
-        case 'blocked':
-          return this.fields.blockers;
-        default:
-          return [];
-      }
-    }
   },
   methods: {
     removeItem(index) {
-      this.listField.splice(index, 1);
+      this.fields.actionItems.splice(index, 1);
     },
     addItem(list) {
-      this.listField.push('');
+      this.fields.actionItems.push('');
     },
     async submit() {
       const body = {
         ...this.fields,
         projectId: this.$route.params.id,
       };
-      if (body.status !== 'inprogress') {
-        delete body.todos;
-      }
-      if (body.status !== 'blocked') {
-        delete body.blockers;
-      }
       const options = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
