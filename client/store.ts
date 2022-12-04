@@ -15,6 +15,8 @@ const store = new Vuex.Store({
     firstname: null, //first name of the logged in user
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     projects: [], // All projects the signed in user is a part of
+    invites: [], // All projects the signed in user is invited to
+    updates: {}, // mapping from project IDs to a list of updates
   },
   mutations: {
     alert(state, payload) {
@@ -65,34 +67,40 @@ const store = new Vuex.Store({
       /**
        * Request the server for the currently available freets.
        */
-      // TODO(AL): When backend is ready call the API instead
-      // Hardcoded dates so that we can test IN-PROGRESS, OVERDUE, COMPLETED
-      const dates = [
-        '11/12/2022',
-        '11/15/2022',
-        '12/15/2022',
-        '12/30/2022',
-        '12/1/2022',
-      ]
-      const teammates = [
-        'teammate1@gmail.com',
-        'teammate2@gmail.com',
-        'teammate3@gmail.com',
-        'teammate4@gmail.com',
-        'teammate5@gmail.com',
-        'teammate6@gmail.com',
-        'teammate7@gmail.com',
-      ];
-      const projects = [...Array(5).keys()].map(id => {
-        return {
-          id,
-          name: `Project Name #${id}`,
-          teammates: id % 2 ? teammates : teammates.slice(0, 3),
-          deadline: dates[id],
-          active: id % 2 == 0,
+      try {
+        const res = await fetch('/api/projects');
+        const resJson = await res.json();
+        if (!res.ok) {
+          throw Error(resJson.error);
         }
-      });
-      state.projects = projects;
+        state.projects = resJson;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async refreshInvites(state) {
+      try {
+        const res = await fetch('/api/projects?invited=true');
+        const resJson = await res.json();
+        if (!res.ok) {
+          throw Error(resJson.error);
+        }
+        state.invites = resJson;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async refreshUpdates(state, projectId) {
+      try {
+        const res = await fetch(`/api/updates?projectId=${projectId}`);
+        const resJson = await res.json();
+        if (!res.ok) {
+          throw Error(resJson.error);
+        }
+        Vue.set(state.updates, projectId, resJson);
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
   // Store data across page refreshes, only discard on browser close

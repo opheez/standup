@@ -64,8 +64,7 @@ router.get(
  * @param {string} status - The status of the update
  * @param {string} summary - The summary of the update
  * @param {string} details - The details of the update
- * @param {string | undefined} todos - The todos of the update
- * @param {string | undefined} blockers - The blockers of the update
+ * @param {string[] | undefined} actionItems - The action items of the update
  * @param {string} projectId - The id of the project the update is associated with
  * @return {UpdateResponse} - An object with the new update
  * @throws {400} - If projectId is not given, or if required update content is not given
@@ -85,8 +84,8 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const userId = req.session.userId as string;
-    const { status, summary, details, todos, blockers, projectId } = req.body;
-    const update = await UpdateCollection.addOne(userId, status, summary, details, todos, blockers, projectId);
+    const { status, summary, details, actionItems, projectId } = req.body;
+    const update = await UpdateCollection.addOne(userId, status, summary, details, actionItems, projectId);
     res.status(201).json({
       message: 'Your update was created successfully.',
       update: util.constructUpdateResponse(update),
@@ -102,8 +101,12 @@ router.post(
  * @param {string} status - The status of the update
  * @param {string} summary - The summary of the update
  * @param {string} details - The details of the update
+<<<<<<< HEAD
  * @param {string | undefined} todos - The todos of the update
  * @param {string | undefined} blockers - The blockers of the update
+=======
+ * @param {string[] | undefined} actionItems - The action items of the update
+>>>>>>> f64146fe83fba5342174936390c0072e49a61038
  * @return {UserResponse} - The updated user
  * @throws {400} - If projectId is not given
  * @throws {401} - If update content is invalid

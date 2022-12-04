@@ -88,4 +88,65 @@ ul.reset li {
   text-indent: 0;
   list-style-type: none;
 }
+
+button {
+  border: none;
+  border: 2px solid transparent;
+  font-family: inherit;
+  padding: 6px 20px;
+  border-radius: 100px;
+  font-size: 16px;
+  background: #c4b5e0;
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+  border-color: #50406d;
+}
+
+button:hover {
+  filter: brightness(90%);
+}
+
+button.text-btn {
+  padding: 4px 12px;
+  background: transparent;
+  border-color: transparent;
+}
+
+button.invert {
+  background: transparent;
+}
+
+button.invert:hover {
+  background: #e8e3e8;
+  filter: none;
+}
+
+button.thin-btn {
+  padding: 4px 12px;
+}
+
+.status {
+  background: #bcbcbc;
+  border-radius: 100px;
+  padding: 4px 12px;
+  width: fit-content;
+}
+
+.status.In-Progress {
+  background: #FBC358;
+}
+.status.Completed {
+  background: #69E8AB;
+}
+.preview {
+  border: 2px solid #a4a4a4;
+  border-radius: 12px;
+  background: #F8F8F8;
+  padding: 24px;
+  cursor: pointer;
+}
+
+.preview:hover {
+  background: #f0eef0;
+}
 </style>

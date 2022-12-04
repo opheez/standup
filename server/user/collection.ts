@@ -56,7 +56,7 @@ class UserCollection {
    */
   static async findOneByEmailAndPassword(email: string, password: string): Promise<HydratedDocument<User>> {
     return UserModel.findOne({
-      username: new RegExp(`^${email.trim()}$`, 'i'),
+      email: new RegExp(`^${email.trim()}$`, 'i'),
       password
     });
   }
