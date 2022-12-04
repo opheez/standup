@@ -11,6 +11,7 @@ import { userRouter } from '../server/user/router';
 import { updateRouter } from '../server/update/router';
 import { projectRouter } from '../server/project/router';
 import { eyesWantedRouter } from '../server/eyeswanted/router';
+import { thanksRouter } from '../server/thanks/router';
 import MongoStore from 'connect-mongo';
 
 // Load environmental variables
@@ -74,6 +75,7 @@ app.use('/api/users', userRouter);
 app.use('/api/updates', updateRouter);
 app.use('/api/projects', projectRouter);
 app.use('/api/eyeswanted', eyesWantedRouter);
+app.use('/api/thanks', thanksRouter);
 
 // Catch all the other routes and display error message
 app.all('*', (req: Request, res: Response) => {
