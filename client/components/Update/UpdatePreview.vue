@@ -4,8 +4,8 @@
       {{ update.dateModified }}: 
       {{ update.summary }}
     </div>
-    <p class="update-status status" :class="update.status">
-      {{ update.status }}
+    <p class="update-status status" :class="statusToText[update.status]">
+      {{ statusToText[update.status] }}
     </p>
   </article>
 </template>
@@ -18,6 +18,15 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  data()  {
+    return {
+      statusToText: {
+        'inprogress': 'In-Progress',
+        'blocked': 'Blocked',
+        'completed': 'Completed',
+      },
+    }
   },
 }
 </script>

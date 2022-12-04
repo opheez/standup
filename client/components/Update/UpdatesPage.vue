@@ -34,10 +34,10 @@ export default {
     updates() {
       const updates = this.$store.state.updates[this.$route.params.id] || [];
       const groupedUpdates = updates.reduce((groups, u) => {
-        if (!groups[u.author]) {
-          groups[u.author] = [];
+        if (!groups[u.author.email]) {
+          groups[u.author.email] = [];
         }
-        groups[u.author].push(u);
+        groups[u.author.email].push(u);
         return groups;
       }, {});
       return groupedUpdates;

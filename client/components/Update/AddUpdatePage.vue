@@ -128,17 +128,44 @@ export default {
       this.listField.push('');
     },
     async submit() {
-      this.$router.push({
-        name: 'Updates',
-        params: {
-          id: this.$route.params.id,
+      const body = {
+        ...this.fields,
+        projectId: this.$route.params.id,
+      };
+      if (body.status !== 'inprogress') {
+        delete body.todos;
+      }
+      if (body.status !== 'blocked') {
+        delete body.blockers;
+      }
+      const options = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin',
+        body: JSON.stringify(body),
+      };
+      try {
+        const res = await fetch('/api/updates', options);
+        if (!res.ok) {
+          throw Error(resJson.error);
         }
-      });
-      this.$store.commit('alert', {
-        status: 'success',
-        message: 'Successfully added update',
-      });
-      this.$store.commit('refreshUpdates', this.$route.params.id);
+        this.$store.commit('alert', {
+          status: 'success',
+          message: 'Successfully shared update!',
+        });
+        this.$store.commit('refreshUpdates', this.$route.params.id);
+        this.$router.push({
+          name: 'Updates',
+          params: {
+            id: this.$route.params.id,
+          }
+        });  
+      } catch (e) {
+        this.$store.commit('alert', {
+          status: 'error',
+          message: e,
+        });
+      }
     }
   }
 }
