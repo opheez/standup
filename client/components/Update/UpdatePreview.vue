@@ -1,5 +1,5 @@
 <template>
-  <article class="update preview">
+  <article class="update preview" @click="openUpdate">
     <div>
       {{ update.dateModified }}: 
       {{ update.summary }}
@@ -28,6 +28,17 @@ export default {
       },
     }
   },
+  methods: {
+    openUpdate() {
+      this.$router.push({
+        name: 'UpdateDetails',
+        params: {
+          projectId: this.$route.params.id,
+          updateId: this.update._id,
+        },
+      })
+    }
+  }
 }
 </script>
 
