@@ -1,10 +1,10 @@
 <template>
   <div class="project preview" @click.self="openProject">
     <h3>{{ project.projectName }}</h3>
-    <p class="deadline">
+    <p class="deadline" @click.self="openProject">
       Due: {{ deadline }}
     </p>
-    <ul class="reset teammates-list">
+    <ul class="reset teammates-list" @click="openProject">
       <li v-for="teammate in project.participants">
         {{ teammate }}
       </li>
@@ -12,15 +12,16 @@
     <div
       class="project-status status"
       :class="status"
+      @click.self="openProject"
     >
       {{ status }}
     </div>
-    <div class="edit-container">
+    <div class="edit-container" @click.stop>
       <dropdown-menu
         v-if="project.creator === $store.state.email"
         v-model="showEdit"
       >
-        <button class="thin-btn invert edit">
+        <button class="thin-btn invert edit" :class="{show: showEdit}">
             Edit
         </button>
         <div slot="dropdown">
@@ -151,6 +152,7 @@ export default {
   background: #F58870;
 }
 
+.edit-container.show,
 .project:hover .edit-container {
   visibility: visible;
 }
