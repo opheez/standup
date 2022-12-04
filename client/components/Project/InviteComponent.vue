@@ -1,10 +1,10 @@
 <template>
   <article class="invite">
     <h4>
-      {{ invite.name }}
+      {{ invite.projectName }}
     </h4>
-    <p>Due: {{ invite.deadline }}</p>
-    <p>Invited by: {{ invite.creatorId.email }}</p>
+    <p>Due: {{ deadline }}</p>
+    <p>Invited by: {{ invite.creator }}</p>
     <div class="action">
       <button class="decline-btn" @click="declineInvite">
         Decline
@@ -29,14 +29,47 @@ export default {
       required: true,
     }
   },
-  methods: {
-    declineInvite() {
-      this.$delete(this.$store.state.invites, this.index);
-    },
-    acceptInvite() {
-      this.$delete(this.$store.state.invites, this.index);
-      this.$store.state.projects.push(this.invite);
+  computed: {
+    deadline() {
+      return this.invite.scheduledUpdates[this.invite.scheduledUpdates.length - 1]
     }
+  },
+  methods: {
+    async respondToInvite(response, successCallback) {
+      const options = {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin',
+      };
+      const url = `/api/projects/${this.invite._id}/${response}`;
+      try {
+        const res = await fetch(url, options);
+        successCallback();
+        this.$store.commit('refreshInvites');
+      } catch (e) {
+        this.$store.commit('alert', {
+          status: 'error',
+          message: `Failed to respond to ${this.invite.projectName}`,
+        });
+      }
+    },
+    async declineInvite() {
+      this.respondToInvite('reject', () => {
+        this.$store.commit('alert', {
+          status: 'success',
+          message: 'Successfully declined invite',
+        });
+      });
+    },
+    async acceptInvite() {
+      this.respondToInvite('accept', () => {
+        this.$store.commit('alert', {
+          status: 'success',
+          message: 'Successfully accepted invite',
+        });
+        this.$store.commit('refreshProjects');
+      });
+    },
   }
 }
 </script>

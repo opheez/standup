@@ -1,6 +1,7 @@
 import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
 import ProjectCollection from './collection';
+import UserCollection from '../user/collection';
 import * as userValidator from '../user/middleware';
 import * as projectValidator from '../project/middleware';
 import * as util from './util';
@@ -25,7 +26,9 @@ router.get(
   ],
   async (req: Request, res: Response) => {
     const invited = req.query.invited as string;
-    const authorProjects = (invited === "true") ? await ProjectCollection.findAllWithUser(req.session.id) : await ProjectCollection.findAllInvitedUser(req.session.id);
+    const authorProjects = (invited === "true")
+      ? await ProjectCollection.findAllInvitedUser(req.session.userId)
+      : await ProjectCollection.findAllWithUser(req.session.userId);
     const response = authorProjects.map(util.constructProjectResponse);
     res.status(200).json(response);
   }
@@ -49,7 +52,11 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string);
-    const project = await ProjectCollection.addOne(userId, req.body.projectName, req.body.scheduledUpdates, req.body.invitedUsers);
+    const invitedUsers = await Promise.all((req.body.invitedUsers as string[])
+      .map(email => UserCollection.findOneByEmail(email)));
+    const invitedUserIds = invitedUsers.map(user => user._id);
+    const project = await ProjectCollection.addOne(
+      userId, req.body.projectName, req.body.scheduledUpdates, invitedUserIds);
 
     res.status(201).json({
       message: 'Your project was created successfully.',
@@ -131,7 +138,7 @@ router.patch(
     projectValidator.isValidProjectInvitee,
   ],
   async (req: Request, res: Response) => {
-    const userId = req.session.id;
+    const userId = req.session.userId;
     const project = await ProjectCollection.respondInvite(req.params.projectId, userId, req.params.response === 'accept');
     res.status(200).json({
       message: 'Your project was updated successfully.',

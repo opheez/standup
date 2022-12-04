@@ -16,6 +16,7 @@
       <AddProjectComponent/>
     </div>
     <section>
+      <p v-if="filteredProjects.length === 0">No projects found.</p>
       <ProjectComponent
         v-for="project in filteredProjects"
         :key="project.id"
@@ -53,7 +54,8 @@ export default {
   },
   computed: {
     filteredProjects() {
-      return this.$store.state.projects.filter(project => {
+      const allProjects = this.$store.state.projects;
+      return allProjects.filter(project => {
         if (this.activeFilter === null) {
           return true;
         }
@@ -75,7 +77,7 @@ export default {
   margin-bottom: 20px;
 }
 .project-filters > p {
-  margin: 0 8px;
+  margin: 0 8px 0 0;
   cursor: pointer;
   color: rgb(48, 48, 48);
 }

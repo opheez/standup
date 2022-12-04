@@ -1,6 +1,7 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
-import ProjectCollection from '../project/collection';
+import UserCollection from '../user/collection';
+import ProjectCollection from './collection';
 
 /**
  * Checks if a project with projectId in req.params exists
@@ -62,7 +63,11 @@ const isProjectExists = async (req: Request, res: Response, next: NextFunction) 
  * Checks if the content of the project in req.body is valid, i.e. project name is non-empty and < 50 char, dates and users are valid values
  */
 const isValidProjectFields = async (req: Request, res: Response, next: NextFunction) => {
-  const {projectName, scheduledUpdatesReq, invitedUsersReq} = req.body as {projectName: string, scheduledUpdatesReq: any[], invitedUsersReq: string[]};
+  const {
+    projectName,
+    scheduledUpdates: scheduledUpdatesReq,
+    invitedUsers: invitedUsersReq
+  } = req.body as {projectName: string, scheduledUpdates: any[], invitedUsers: string[]};
 
   if (!projectName.trim()) {
     res.status(400).json({
@@ -87,14 +92,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
-  const invitedUsers = await Promise.all(invitedUsersReq.map(async (user) => {
-    const validFormat = Types.ObjectId.isValid(user);
-    return validFormat ? await ProjectCollection.findOne(req.params.projectId) : '';
+  const invitedUsers = await Promise.all(invitedUsersReq.map(async (email) => {
+    return UserCollection.findOneByEmail(email);
   }));
-  const invitedUsersErr = invitedUsers.indexOf('');
-  if (invitedUsersErr !== -1) {
+  const invitedUsersErr = invitedUsers.every(user => !!user);
+  if (!invitedUsersErr) {
     res.status(404).json({
-      error: `Invited user ${invitedUsers[invitedUsersErr]} must be valid user ID`
+      error: 'Can only invite users with an existing account.'
     });
     return;
   }

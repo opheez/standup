@@ -121,4 +121,28 @@ button.invert:hover {
   filter: none;
 }
 
+.status {
+  background: #bcbcbc;
+  border-radius: 100px;
+  padding: 4px 12px;
+  width: fit-content;
+}
+
+.status.In-Progress {
+  background: #FBC358;
+}
+.status.Completed {
+  background: #69E8AB;
+}
+.preview {
+  border: 2px solid #a4a4a4;
+  border-radius: 12px;
+  background: #F8F8F8;
+  padding: 24px;
+  cursor: pointer;
+}
+
+.preview:hover {
+  background: #f0eef0;
+}
 </style>

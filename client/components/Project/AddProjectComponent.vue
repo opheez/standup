@@ -103,9 +103,36 @@ export default {
     showModal() {
       this.show = true;
     },
-    submit() {
-      console.log(this.fields);
-      this.hideModal();
+    async submit() {
+      const options = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          projectName: this.fields.name,
+          scheduledUpdates: [this.fields.deadline],
+          invitedUsers: this.fields.collaborators,
+        }),
+      };
+      try {
+        const res = await fetch('/api/projects', options);
+        if (!res.ok) {
+          const resJson = await res.json();
+          throw Error(resJson.error);
+        }
+        this.$store.commit('alert', {
+          status: 'success',
+          message: 'Successfully created project!',
+        });
+        this.$store.commit('refreshInvites');
+        this.$store.commit('refreshProjects');
+        this.hideModal();
+      } catch (e) {
+        this.$store.commit('alert', {
+          status: 'error',
+          message: e,
+        });
+      }
     },
     addCollaborator() {
       this.fields.collaborators.push('');

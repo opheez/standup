@@ -16,6 +16,7 @@ const store = new Vuex.Store({
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     projects: [], // All projects the signed in user is a part of
     invites: [], // All projects the signed in user is invited to
+    updates: {}, // mapping from project IDs to a list of updates
   },
   mutations: {
     alert(state, payload) {
@@ -66,15 +67,37 @@ const store = new Vuex.Store({
       /**
        * Request the server for the currently available freets.
        */
+      try {
+        const res = await fetch('/api/projects');
+        const resJson = await res.json();
+        if (!res.ok) {
+          throw Error(resJson.error);
+        }
+        state.projects = resJson;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async refreshInvites(state) {
+      try {
+        const res = await fetch('/api/projects?invited=true');
+        const resJson = await res.json();
+        if (!res.ok) {
+          throw Error(resJson.error);
+        }
+        state.invites = resJson;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async refreshUpdates(state, projectId) {
       // TODO(AL): When backend is ready call the API instead
-      // Hardcoded dates so that we can test IN-PROGRESS, OVERDUE, COMPLETED
       const dates = [
         '11/12/2022',
         '11/15/2022',
-        '12/15/2022',
-        '12/30/2022',
-        '12/1/2022',
-      ]
+        '11/30/2022',
+        '11/1/2022',
+      ];
       const teammates = [
         'teammate1@gmail.com',
         'teammate2@gmail.com',
@@ -84,40 +107,33 @@ const store = new Vuex.Store({
         'teammate6@gmail.com',
         'teammate7@gmail.com',
       ];
-      const projects = [...Array(5).keys()].map(id => {
+      const statuses = ['Blocked', 'In-Progress', 'Completed'];
+      const updates = [...Array(20).keys()].map(id => {
         return {
-          id,
-          name: `Project Name #${id}`,
-          teammates: id % 2 ? teammates : teammates.slice(0, 3),
-          deadline: dates[id],
-          active: id % 2 == 0,
-          pendingRequests: [],
-        }
-      });
-      state.projects = projects;
-    },
-    async refreshInvites(state) {
-      const invites = [...Array(3).keys()].map(id => {
-        return {
-          id,
-          creatorId: {
-            email: 'inviter@gmail.com',
-          },
-          name: `Invited Project Name #${id}`,
-          teammates: [
-            'teammate1@gmail.com',
-            'teammate2@gmail.com',
+          id: `update${id}project${projectId}`,
+          summary: `Update summary #${id}`,
+          author: teammates[id % teammates.length],
+          dateCreated: dates[id % dates.length],
+          dateModified: dates[id % dates.length],
+          status: statuses[id % statuses.length],
+          details: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
+          todos: [
+            'todo task',
+            'todo task',
+            'todo task',
+            'todo task',
           ],
-          deadline: '12/31/2022',
-          active: true,
-          pendingRequests: [
-            'teammate3@gmail.com',
-            'teammate4@gmail.com',
+          blockers: [
+            'blocker',
+            'blocker',
+            'blocker',
+            'blocker',
           ],
-        }
+          project: projectId,
+        };
       });
-      state.invites = invites;
-    },
+      Vue.set(state.updates, projectId, updates);
+    }
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
