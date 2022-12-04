@@ -97,7 +97,7 @@ const store = new Vuex.Store({
         if (!res.ok) {
           throw Error(resJson.error);
         }
-        Vue.set(state.updates, projectId, resJson)
+        Vue.set(state.updates, projectId, resJson);
       } catch (e) {
         console.log(e);
       }

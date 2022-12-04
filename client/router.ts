@@ -5,6 +5,7 @@ import HomePage from './components/Home/HomePage.vue';
 import ProjectDashboard from './components/Project/ProjectDashboard.vue';
 import UpdatesPage from './components/Update/UpdatesPage.vue';
 import AddUpdatePage from './components/Update/AddUpdatePage.vue';
+import UpdateDetailPage from './components/Update/UpdateDetailPage.vue';
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
@@ -12,6 +13,7 @@ Vue.use(VueRouter);
 const routes = [
   {path: '/', name: 'Home', component: HomePage},
   {path: '/projects', name: 'Projects', component: ProjectDashboard},
+  {path: '/updates/:projectId/:updateId', name: 'UpdateDetails', component: UpdateDetailPage},
   {path: '/updates/:id', name: 'Updates', component: UpdatesPage},
   {path: '/updates/:id/add', name: 'AddUpdate', component: AddUpdatePage},
   {path: '/account', name: 'Account', component: AccountPage},
@@ -21,7 +23,7 @@ const routes = [
 const router = new VueRouter({routes});
 
 const AUTH_REQUIRED_ROUTES = [
-  'Projects', 'Account', 'Updates',
+  'Projects', 'Account', 'Updates', 'AddUpdate', 'UpdateDetails'
 ];
 
 /**
