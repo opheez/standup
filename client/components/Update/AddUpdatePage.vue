@@ -99,8 +99,8 @@ export default {
       },
       statusToText: {
         'inprogress': 'In-Progress',
-        'completed': 'Completed',
         'blocked': 'Blocked',
+        'completed': 'Completed',
       },
       statusToListLabel: {
         'inprogress': 'To-Dos',
@@ -160,6 +160,9 @@ section {
 
 .status-options {
   padding: 8px 0;
+}
+.status.Blocked {
+  background: #F58870;
 }
 
 .item {
