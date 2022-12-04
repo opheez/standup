@@ -101,12 +101,7 @@ router.post(
  * @param {string} status - The status of the update
  * @param {string} summary - The summary of the update
  * @param {string} details - The details of the update
-<<<<<<< HEAD
- * @param {string | undefined} todos - The todos of the update
- * @param {string | undefined} blockers - The blockers of the update
-=======
  * @param {string[] | undefined} actionItems - The action items of the update
->>>>>>> f64146fe83fba5342174936390c0072e49a61038
  * @return {UserResponse} - The updated user
  * @throws {400} - If projectId is not given
  * @throws {401} - If update content is invalid
