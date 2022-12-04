@@ -17,8 +17,7 @@ export type Update = {
   status: string;
   summary: string;
   details: string;
-  todos: string[];
-  blockers: string[];
+  actionItems: string[];
   projectId: Types.ObjectId;
 };
 
@@ -31,8 +30,7 @@ export type PopulatedUpdate = {
   status: string;
   summary: string;
   details: string;
-  todos: string[];
-  blockers: string[];
+  actionItems: string[];
   projectId: string;
 };
 
@@ -72,13 +70,8 @@ const UpdateSchema = new Schema({
     type: String,
     required: true
   },
-  // The todos of the update
-  todos: {
-    type: [String],
-    required: true
-  },
-  // The blockers of the update
-  blockers: {
+  // The action items of the update
+  actionItems: {
     type: [String],
     required: true
   },

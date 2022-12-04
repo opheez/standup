@@ -19,8 +19,7 @@ class UpdateCollection {
    * @param {string} status - The status of the update
    * @param {string} summary - The summary of the update
    * @param {string} details - The details of the update
-   * @param {string | undefined} todos - The todos of the update
-   * @param {string | undefined} blockers - The blockers of the update
+   * @param {string[] | undefined} actionItems - The action items of the update
    * @param {Types.ObjectId | string} projectId - The id of the project the update is associated with
    * @return {Promise<HydratedDocument<Update>>} - The newly created update
    */
@@ -28,8 +27,7 @@ class UpdateCollection {
                       status: string, 
                       summary: string, 
                       details: string, 
-                      todos: string[] | undefined,
-                      blockers: string[] | undefined,
+                      actionItems: string[] | undefined,
                       projectId: Types.ObjectId | string): Promise<HydratedDocument<Update>> {
     const date = new Date();
     const update = new UpdateModel({
@@ -39,8 +37,7 @@ class UpdateCollection {
       status,
       summary,
       details,
-      todos: todos ? todos : [],
-      blockers: blockers ? blockers: [],
+      actionItems: actionItems ? actionItems : [],
       projectId,
     });
     await update.save(); // Saves update to MongoDB
@@ -75,10 +72,9 @@ class UpdateCollection {
    * @return {Promise<HydratedDocument<Update>>} - The updated update
    */
   static async updateOne(updateId: Types.ObjectId | string, 
-                         updateDetails: {status?: string; summary?: string; details?: string; todos?: string[]; blockers?: string[]}): Promise<HydratedDocument<Update>> {
+                         updateDetails: {status?: string; summary?: string; details?: string; actionItems?: string[] }): Promise<HydratedDocument<Update>> {
     const date = new Date();
     const update = await UpdateModel.findOne({ _id: updateId });
-    console.log(updateDetails.todos);
     if (updateDetails.status) {
       update.status = updateDetails.status;
     }
@@ -91,12 +87,8 @@ class UpdateCollection {
       update.details = updateDetails.details;
     }
 
-    if (updateDetails.todos !== undefined) {
-      update.todos = updateDetails.todos;
-    }
-
-    if (updateDetails.blockers !== undefined) {
-      update.blockers = updateDetails.blockers;
+    if (updateDetails.actionItems !== undefined) {
+      update.actionItems = updateDetails.actionItems;
     }
 
     // note: this will update dateModified whenever the update is updated, regardless of whether the information actually changed
