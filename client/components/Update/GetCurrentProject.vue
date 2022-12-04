@@ -32,6 +32,7 @@ export default {
         this.verifyProject();
       },
       deep: true,
+      immediate: true,
     },
   },
 }
