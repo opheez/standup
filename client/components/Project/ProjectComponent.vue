@@ -29,7 +29,7 @@
             class="dropdown-item"
             href="#"
             @click="toggleActive"
-          >Mark inactive</button>
+          >Mark complete</button>
           <button
             class="dropdown-item"
             href="#"
