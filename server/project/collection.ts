@@ -153,9 +153,9 @@ class ProjectCollection {
    * @param {string} projectId - The projectId of project to archive
    * @return {Promise<HydratedDocument<Project>>} - archived project
    */
-  static async archiveOne(projectId: Types.ObjectId | string): Promise<HydratedDocument<Project>> {
+  static async toggleActiveOfOne(projectId: Types.ObjectId | string): Promise<HydratedDocument<Project>> {
     const project = await ProjectModel.findOne({_id: projectId});
-    project.active = false;
+    project.active = !project.active;
     await project.save();
     await Promise.resolve(this.populateProject(project));
     return project;

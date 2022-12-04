@@ -21,16 +21,15 @@
         v-if="project.creator === $store.state.email"
         v-model="showEdit"
       >
-        <button class="thin-btn invert edit" :class="{show: showEdit}">
+        <button class="thin-btn invert edit">
             Edit
         </button>
         <div slot="dropdown">
           <button
-            v-if="project.active"
             class="dropdown-item"
             href="#"
             @click="toggleActive"
-          >Mark complete</button>
+          >Mark {{ project.active ? 'complete' : 'active' }}</button>
           <button
             class="dropdown-item"
             href="#"
@@ -95,12 +94,15 @@ export default {
       };
       try {
         const res = await fetch(`/api/projects/${this.project._id}`, options);
+        const resJson = await res.json();
         if (!res.ok) {
           throw Error(resJson.error);
         }
         this.$store.commit('alert', {
           status: 'success',
-          message: 'Successfully marked inactive!',
+          message: this.project.active
+            ? 'Successfully marked inactive!'
+            : 'Successfully reactivated the project!',
         });
         this.$store.commit('refreshProjects');
         this.showEdit = false;
@@ -152,12 +154,7 @@ export default {
   background: #F58870;
 }
 
-.edit-container.show,
-.project:hover .edit-container {
-  visibility: visible;
-}
 .edit-container {
-  visibility: hidden;
   position: absolute;
   top: 12px;
   right: 12px;
@@ -200,6 +197,10 @@ export default {
   background-color: transparent;
   border: 0;
   text-decoration: none;
+}
+.dropdown-item + .dropdown-item {
+  border-top: 1px solid #aaa;
+  border-radius: 0;
 }
 .dropdown-item:hover {
   background-color: rgba(0,0,0, 0.025);

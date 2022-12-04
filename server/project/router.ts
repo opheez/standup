@@ -66,7 +66,7 @@ router.post(
 );
 
 /**
- * Archive a project
+ * Toggle the activeness of a project
  *
  * @name PATCH /api/projects/:id
  *
@@ -83,7 +83,7 @@ router.patch(
     projectValidator.isValidProjectModifier
   ],
   async (req: Request, res: Response) => {
-    await ProjectCollection.archiveOne(req.params.projectId);
+    await ProjectCollection.toggleActiveOfOne(req.params.projectId);
     res.status(200).json({
       message: 'Your project was archived successfully.'
     });
