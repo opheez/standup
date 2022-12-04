@@ -3,92 +3,27 @@
     <h1>
       Project: {{ project.projectName }}
     </h1>
-    <section>
-      <h2>
-        Add update form
-      </h2>
-      <div class="field">
-        <label for="summary">
-          Summary
-        </label>
-        <input
-          name="summary"
-          placeholder="Implemented the backend for..."
-          :value="fields.summary"
-          @input="fields.summary = $event.target.value"
-        />
-      </div>
-      <div class="field">
-        <label for="details">
-          Details
-        </label>
-        <textarea
-          name="details"
-          placeholder="Broke the task up into..."
-          :value="fields.details"
-          @input="fields.details = $event.target.value"
-        ></textarea>
-      </div>
-      <div class="field">
-        <label for="details">
-          Status
-        </label>
-        <div class="field status-options">
-          <div v-for="(text, value) in statusToText" class="status-option">
-            <input
-              type="radio"
-              name="status"
-              :value="value"
-              :checked="fields.status === value"
-              @input="fields.status = $event.target.value"
-            />
-            <label
-              class="status"
-              :for="value"
-              :class="text"
-              @click="fields.status = value"
-            >{{ text }}
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="field">
-        <label>Action Items</label>
-        <div class="items-container">
-          <div v-for="(item, i) in fields.actionItems" class="item">
-            ●
-            <input
-              placeholder="Look into..."
-              :id="i"
-              :value="fields.actionItems[i]"
-              @input="fields.actionItems[i] = $event.target.value"
-            />
-            <button
-              class="text-btn"
-              @click="$event.preventDefault(); removeItem(i)"
-            >
-              🗑
-            </button>
-          </div>
-        </div>
-        <button
-          class="text-btn"
-          @click="$event.preventDefault(); addItem()"
-        >
-          + Add item
-        </button>
-      </div>
-      <button type="submit" @click="submit">Add Update</button>
-    </section>
+    <UpdateForm
+      :fields="fields"
+    >
+      <template #header>
+          Add update form
+      </template>
+      <template #submit>
+        <button type="submit" @click="submit">Add Update</button>
+      </template>
+    </UpdateForm>
   </main>
 </template>
 
 <script>
 import GetCurrentProject from '@/components/Update/GetCurrentProject.vue';
+import UpdateForm from '@/components/Update/UpdateForm.vue';
 
 export default {
   name: 'AddUpdatePage',
   mixins: [GetCurrentProject],
+  components: {UpdateForm},
   data() {
     return {
       fields: {
