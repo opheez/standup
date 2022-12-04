@@ -2,6 +2,7 @@
   <div class="project preview" @click="openProject">
     <h3>{{ project.projectName }}</h3>
     <p class="deadline">
+      Due: {{ deadline }}
     </p>
     <ul class="reset teammates-list">
       <li v-for="teammate in project.participants">
