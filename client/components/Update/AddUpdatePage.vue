@@ -77,7 +77,7 @@
           + Add item
         </button>
       </div>
-      <button type="submit">Add Update</button>
+      <button type="submit" @click="submit">Add Update</button>
     </section>
   </main>
 </template>
@@ -126,6 +126,19 @@ export default {
     },
     addItem(list) {
       this.listField.push('');
+    },
+    async submit() {
+      this.$router.push({
+        name: 'Updates',
+        params: {
+          id: this.$route.params.id,
+        }
+      });
+      this.$store.commit('alert', {
+        status: 'success',
+        message: 'Successfully added update',
+      });
+      this.$store.commit('refreshUpdates', this.$route.params.id);
     }
   }
 }
