@@ -288,11 +288,14 @@ export default {
   padding-left: 24px;
 }
 
+<<<<<<< HEAD
 .thanks-number {
   font-size: 80%;
   color:rgb(125, 125, 125);
 }
 
+=======
+>>>>>>> Enable editing of updates
 .update {
   position: relative;
 }
