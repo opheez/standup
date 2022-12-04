@@ -121,6 +121,10 @@ button.invert:hover {
   filter: none;
 }
 
+button.thin-btn {
+  padding: 4px 12px;
+}
+
 .status {
   background: #bcbcbc;
   border-radius: 100px;

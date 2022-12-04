@@ -19,27 +19,16 @@
       <p>
         {{ update.details }}
       </p>
-      <div v-if="update.status === 'blocked'">
-        <h3>Blockers</h3>
+      <div class="action-items">
+        <h3>Action Items</h3>
         <ul class="reset">
           <li
-            v-for="blocker in update.blockers"
+            v-for="item in update.actionItems"
           >
-            {{ bocker }}
+            {{ item }}
           </li>
         </ul>
-        <p v-if="!update.blockers.length">No blockers were specified.</p>
-      </div>
-      <div v-if="update.status === 'inprogress'">
-        <h3>To-Dos</h3>
-        <ul class="reset">
-          <li
-            v-for="todo in update.todos"
-          >
-            {{ todo }}
-          </li>
-        </ul>
-        <p v-if="!update.todos.length">No to-dos were specified.</p>
+        <p v-if="!update.actionItems.length">No action items were specified.</p>
       </div>
     </section>
   </main>
@@ -56,7 +45,6 @@ export default {
           proj => proj._id === projectId);
       const update = (this.$store.state.updates[projectId] || []).find(
           u => u._id === updateId);
-      console.log(projectId, updateId, project, update)
       return {project, update};
     },
     // Redirect if the corresponding update does not exist
