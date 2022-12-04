@@ -15,6 +15,7 @@
         No updates have been shared.
       </p>
     </section>
+    <button class="add-update-btn" @click="goToAddForm">+ Add Update</button>
   </main>
 </template>
 
@@ -42,6 +43,16 @@ export default {
       return groupedUpdates;
     }
   },
+  methods: {
+    goToAddForm() {
+      this.$router.push({
+        name: 'AddUpdate',
+        params: {
+          id: this.project._id, 
+        }
+      });
+    },
+  }
 }
 </script>
 
@@ -50,4 +61,9 @@ export default {
   padding-bottom: 8px;
 }
 
+.add-update-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+}
 </style>
