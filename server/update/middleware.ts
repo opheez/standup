@@ -143,12 +143,11 @@ import UpdateCollection from '../update/collection';
  * Checks if the update content in req.body is valid for creation 
  */
  const isValidUpdateContentCreate = async (req: Request, res: Response, next: NextFunction) => {
-  const { status, summary, details, todos, blockers } = req.body as { 
+  const { status, summary, details, actionItems } = req.body as { 
     status: string, 
     summary: string, 
     details: string, 
-    todos: string[], 
-    blockers: string[] 
+    actionItems: string[],
   };
    
   // status must be 'inprogress', 'completed', or 'blocked'
@@ -210,38 +209,19 @@ import UpdateCollection from '../update/collection';
     return;
   }
 
-  // todos, if defined, must be a list of strings
-  if (todos) {
-    if (!Array.isArray(todos)) {
+  // action items, if defined, must be a list of strings
+  if (actionItems) {
+    if (!Array.isArray(actionItems)) {
       res.status(401).json({
-        error: 'Todos must be a list.'
+        error: 'Action items must be a list.'
       });
       return;
     }
 
-    for (const elt of todos) {
+    for (const elt of actionItems) {
       if (typeof elt !== 'string') {
         res.status(401).json({
-          error: 'Todos must be a list of strings.'
-        });
-        return;
-      }
-    }
-  }
-
-  // blockers, if defined, must be a list of strings
-  if (blockers) {
-    if (!Array.isArray(blockers)) {
-      res.status(401).json({
-        error: 'Blockers must be a list.'
-      });
-      return;
-    }
-
-    for (const elt of blockers) {
-      if (typeof elt !== 'string') {
-        res.status(401).json({
-          error: 'Blockers must be a list of strings.'
+          error: 'Action items must be a list of strings.'
         });
         return;
       }
@@ -256,12 +236,11 @@ import UpdateCollection from '../update/collection';
  * (i.e., undefined is a valid value for any field)
  */
  const isValidUpdateContentEdit = async (req: Request, res: Response, next: NextFunction) => {
-  const { status, summary, details, todos, blockers } = req.body as { 
+  const { status, summary, details, actionItems } = req.body as { 
     status: string, 
     summary: string, 
     details: string, 
-    todos: string[], 
-    blockers: string[] 
+    actionItems: string[], 
   };
    
   // status, if defined, must be 'inprogress', 'completed', or 'blocked'
@@ -313,38 +292,19 @@ import UpdateCollection from '../update/collection';
     }
   }
 
-  // todos, if defined, must be a list of strings
-  if (todos) {
-    if (!Array.isArray(todos)) {
+  // action items, if defined, must be a list of strings
+  if (actionItems) {
+    if (!Array.isArray(actionItems)) {
       res.status(401).json({
-        error: 'Todos must be a list.'
+        error: 'Action items must be a list.'
       });
       return;
     }
 
-    for (const elt of todos) {
+    for (const elt of actionItems) {
       if (typeof elt !== 'string') {
         res.status(401).json({
-          error: 'Todos must be a list of strings.'
-        });
-        return;
-      }
-    }
-  }
-
-  // blockers, if defined, must be a list of strings
-  if (blockers) {
-    if (!Array.isArray(blockers)) {
-      res.status(401).json({
-        error: 'Blockers must be a list.'
-      });
-      return;
-    }
-
-    for (const elt of blockers) {
-      if (typeof elt !== 'string') {
-        res.status(401).json({
-          error: 'Blockers must be a list of strings.'
+          error: 'Action items must be a list of strings.'
         });
         return;
       }
