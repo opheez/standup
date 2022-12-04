@@ -147,6 +147,31 @@ router.patch(
   }
 );
 
+/**
+ * Delete a project
+ *
+ * @name DELETE /api/projects/:id
+ *
+ * @return {string} - A success message
+ * @throws {403} - if the user is not logged in or not the author of
+ *                 of the project
+ * @throws {404} - If the projectId is not valid
+ */
+ router.delete(
+  '/:projectId?',
+  [
+    userValidator.isUserLoggedIn,
+    projectValidator.isProjectExists,
+    projectValidator.isValidProjectModifier,
+  ],
+  async (req: Request, res: Response) => {
+    await ProjectCollection.deleteOne(req.params.projectId);
+    res.status(200).json({
+      message: 'Your project was deleted successfully.',
+    });
+  }
+);
+
 // /**
 //  * Remove a user from a project
 //  *
