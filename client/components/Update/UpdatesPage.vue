@@ -4,14 +4,14 @@
       Project: {{ project.projectName }}
     </h1>
     <section
-      v-for="teammate in project.participants"
+      v-for="(updateList, key) in updates"
       class="user-updates"
     >
-      <h2>{{ teammate }}</h2>
-      <template v-for="update in (updates[teammate] || [])">
+      <h2>{{ key }}</h2>
+      <template v-for="update in updateList">
         <UpdatePreview :update="update" />
       </template>
-      <p v-if="!updates[teammate]">
+      <p v-if="!updateList.length">
         No updates have been shared.
       </p>
     </section>
@@ -33,19 +33,6 @@ export default {
   components: {UpdatePreview},
   beforeMount() {
     this.$store.commit('refreshUpdates', this.$route.params.id);
-  },
-  computed: {
-    updates() {
-      const updates = this.$store.state.updates[this.$route.params.id] || [];
-      const groupedUpdates = updates.reduce((groups, u) => {
-        if (!groups[u.author.email]) {
-          groups[u.author.email] = [];
-        }
-        groups[u.author.email].push(u);
-        return groups;
-      }, {});
-      return groupedUpdates;
-    }
   },
   methods: {
     goToAddForm() {
