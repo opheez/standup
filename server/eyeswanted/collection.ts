@@ -51,6 +51,19 @@ class EyesWantedCollection {
   }
 
   /**
+   * Get all the eyeswanted in the database
+   *
+   * @return {Promise<HydratedDocument<EyesWanted>[]>} - An array of all of the thanks
+   */
+     static async findAll(): Promise<Array<HydratedDocument<EyesWanted>>> {
+      // Retrieves thanks and sorts them from most to least recent
+      return EyesWantedModel.find({}).populate(['updateId', 'targetUsers', {
+        path: 'updateId',
+        populate: { path: 'authorId' }
+      }]);
+    }
+
+  /**
    * Get an EyesWanted by id
    *
    * @param {Types.ObjectId | string} eyesWantedId - The id of the EyesWanted

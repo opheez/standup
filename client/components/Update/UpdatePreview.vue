@@ -7,10 +7,22 @@
     <p class="update-status status" :class="statusToText[update.status]">
       {{ statusToText[update.status] }}
     </p>
+    <div 
+        v-if="$store.state.email === update.author.email"
+        class="eyeswanted">
+        <AddEyesWantedComponent
+        :update="update"/>
+      </div>
+    <p
+      v-if="this.update.author.email === $store.state.email"
+      class="thanks-number">
+      {{ existingThanks() }} thanks
+    </p>
   </article>
 </template>
 
 <script>
+import AddEyesWantedComponent from '@/components/EyesWanted/AddEyesWanted.vue';
 export default {
   name: 'UpdatePreview',
   props: {
@@ -19,6 +31,7 @@ export default {
       required: true,
     },
   },
+  components: {AddEyesWantedComponent},
   data()  {
     return {
       statusToText: {
@@ -28,7 +41,18 @@ export default {
       },
     }
   },
+
   methods: {
+    existingThanks() {
+        /**
+         * Return if user has liked freet
+         */
+        const allThanks = this.$store.state.allthanks;
+        const exists = allThanks
+                        .filter(thanks => thanks.updateId._id === this.update._id)
+                        .length;
+        return exists;
+      },
     openUpdate() {
       this.$router.push({
         name: 'UpdateDetails',

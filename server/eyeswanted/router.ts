@@ -31,6 +31,27 @@ router.get(
 );
 
 /**
+ * Get All EyesWanted for the logged-in user.
+ *
+ * @name GET /api/eyeswanted/all
+ * 
+ * @return {EyesWantedResponse[]} - An array of EyesWanted targeting the logged-in user
+ * @throws {403} - If the user is not logged in
+ *
+ */
+ router.get(
+  '/all',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    const allEyesWanted = await EyesWantedCollection.findAll();
+    const response = allEyesWanted.map(util.constructEyesWantedResponse);
+    res.status(200).json(response);
+  },
+);
+
+/**
  * Create a new EyesWanted.
  *
  * @name POST /api/eyeswanted

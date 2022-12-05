@@ -18,6 +18,20 @@ type ThanksResponse = {
 const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:mm:ss a');
 
 /**
+ * Formats populated update object
+ * 
+ * @param {Object} update - Populated update object
+ * @returns {Object} - Formatted update object
+ */
+ const formatPopulatedUpdate = (update: any): any => {
+  const updateCopy = {...update};
+  const authorCopy = updateCopy.authorId;
+  delete updateCopy.authorId;
+  updateCopy.author = formatPopulatedUser(authorCopy);
+  return updateCopy;
+}
+
+/**
  * Transform a raw Thanks object from the database into an object
  * with all the information needed by the frontend
  *
@@ -30,11 +44,14 @@ const constructThanksResponse = (thanks: HydratedDocument<Thanks>): ThanksRespon
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
+  const update = thanksCopy.updateId;
+  delete thanksCopy.updateId;
   return {
     ...thanksCopy,
     _id: thanksCopy._id.toString(),
     postUser: formatPopulatedUser(thanksCopy.postUser),
-    updateId: thanksCopy.updateId.toString(),
+    updateId: formatPopulatedUpdate(update),
+    // updateId: thanksCopy.updateId.toString(),
   };
 };
 

@@ -25,7 +25,7 @@ class ThanksCollection {
       updateId,
     });
     await thanks.save(); // Saves thanks to MongoDB
-    return thanks.populate('postUser');
+    return thanks.populate(['postUser', 'updateId']);
   }
 
   /**
@@ -35,7 +35,7 @@ class ThanksCollection {
    * @return {Promise<HydratedDocument<Thanks>> | Promise<null> } - The thanks with the given thanksId, if any
    */
   static async findOne(thanksId: Types.ObjectId | string): Promise<HydratedDocument<Thanks>> {
-    return ThanksModel.findOne({_id: thanksId}).populate('postUser');
+    return ThanksModel.findOne({_id: thanksId}).populate(['postUser', 'updateId']);
   }
 
    /**
@@ -45,7 +45,7 @@ class ThanksCollection {
    * @return {Promise<HydratedDocument<Thanks>> | Promise<null> } - The thanks with the given thanksId, if any
    */
      static async findOnebyUpdateandUser(updateId: Types.ObjectId | string, postUser: Types.ObjectId | string): Promise<HydratedDocument<Thanks>> {
-      return ThanksModel.findOne({updateId: updateId, postUser: postUser}).populate('updateId');
+      return ThanksModel.findOne({updateId: updateId, postUser: postUser}).populate(['postUser', 'updateId']);
     }
 
   /**
@@ -55,7 +55,7 @@ class ThanksCollection {
    */
   static async findAll(): Promise<Array<HydratedDocument<Thanks>>> {
     // Retrieves thanks and sorts them from most to least recent
-    return ThanksModel.find({}).sort({dateModified: -1}).populate('updateId');
+    return ThanksModel.find({}).sort({dateModified: -1}).populate(['postUser', 'updateId']);
   }
 
   /**
@@ -65,18 +65,18 @@ class ThanksCollection {
    * @return {Promise<HydratedDocument<Thanks>[]>} - An array of all of the thanks
    */
   static async findAllByUpdateId(updateId: Types.ObjectId | string): Promise<Array<HydratedDocument<Thanks>>> {
-    const update = await UpdateCollection.findOneByUpdateId(updateId);
-    return ThanksModel.find({updateId: update._id}).sort({dateModified: -1}).populate('postUser');
+    return ThanksModel.find({updateId: updateId}).populate(['postUser', 'updateId']);
   }
 
   /**
-   * Delete a thanks with given thanksId.
+   * Delete a thanks with given updateId and userId.
    *
-   * @param {string} thanksId - The thanksId of thanks to delete
-   * @return {Promise<Boolean>} - true if the thanks has been deleted, false otherwise
+   * @param {string} postUser - The id of the poster of the thanks
+   * @param {string} updateId - The id of the update
+   * @return {Promise<HydratedDocument<Thanks>>} - The newly created thanks
    */
-  static async deleteOne(thanksId: Types.ObjectId | string): Promise<boolean> {
-    const thanks = await ThanksModel.deleteOne({_id: thanksId});
+  static async deleteOne(postUser: Types.ObjectId | string, updateId: string): Promise<boolean> {
+    const thanks = await ThanksModel.deleteOne({updateId: updateId, postUser: postUser});
     return thanks !== null;
   }
 
@@ -92,7 +92,7 @@ class ThanksCollection {
   /**
    * Delete all the thanks by the given poster
    *
-   * @param {string} authorId - The id of poster of thanks
+   * @param {string} postUser - The id of poster of thanks
    */
      static async deleteManybyUser(postUser: Types.ObjectId | string): Promise<void> {
       await ThanksModel.deleteMany({postUser});

@@ -22,8 +22,8 @@ const isThanksExists = async (req: Request, res: Response, next: NextFunction) =
  * Checks if a user has not already thanked the update
  */
  const isThanksNotExist = async (req: Request, res: Response, next: NextFunction) => {
-  const validFormat = Types.ObjectId.isValid(req.body.updateId);
-  const thanks = validFormat ? await ThanksCollection.findOnebyUpdateandUser(req.body.updateId, req.session.userId) : '';
+  const validFormat = Types.ObjectId.isValid(req.params.updateId);
+  const thanks = validFormat ? await ThanksCollection.findOnebyUpdateandUser(req.params.updateId, req.session.userId) : '';
   if (thanks) {
     res.status(409).json({
       error: `You have already thanked the post.`

@@ -17,6 +17,9 @@ const store = new Vuex.Store({
     projects: [], // All projects the signed in user is a part of
     invites: [], // All projects the signed in user is invited to
     updates: {}, // mapping from project IDs to a list of updates
+    allthanks: [], // All thanks in the app
+    eyeswanted: [], // mapping from user to a list of eyes wanted updates
+    alleyeswanted: [], // All eyes wanted in the app
   },
   mutations: {
     alert(state, payload) {
@@ -63,6 +66,27 @@ const store = new Vuex.Store({
        */
       state.projects = projects;
     },
+    updateThanks(state, thanks){
+      /**
+       * Update the stored thanks to the provided thanks.
+       * @param thanks - Thanks to store
+       */
+      state.allthanks = thanks;
+    },
+    updateEyesWanted(state, eyeswanted){
+      /**
+       * Update the stored thanks to the provided thanks.
+       * @param eyeswanted - Thanks to store
+       */
+      state.eyeswanted = eyeswanted;
+    },
+    updateAllEyesWanted(state, alleyeswanted){
+      /**
+       * Update the stored thanks to the provided thanks.
+       * @param alleyeswanted - Thanks to store
+       */
+      state.alleyeswanted = alleyeswanted;
+    },
     async refreshProjects(state) {
       /**
        * Request the server for the currently available freets.
@@ -101,7 +125,37 @@ const store = new Vuex.Store({
       } catch (e) {
         console.log(e);
       }
-    }
+    },
+    async refreshEyesWanted(state) {
+      try {
+        const res = await fetch(`/api/eyeswanted`);
+        const resJson = await res.json();
+        if (!res.ok) {
+          throw Error(resJson.error);
+        }
+        state.eyeswanted = resJson;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async refreshAllThanks(state){
+      /**
+       * Request the server for all the alerts (risks) the user posted.
+       */
+       const url = '/api/thanks/';
+       const res = await fetch(url).then(async r => r.json());
+       console.log(res);
+       state.allthanks = res;
+     },
+     async refreshAllEyesWanted(state){
+      /**
+       * Request the server for all the alerts (risks) the user posted.
+       */
+       const url = '/api/eyeswanted/all';
+       const res = await fetch(url).then(async r => r.json());
+       console.log(res);
+       state.alleyeswanted = res;
+     },
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]

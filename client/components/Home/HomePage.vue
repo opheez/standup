@@ -1,7 +1,7 @@
 <template>
   <main class="home">
     <div v-if="$store.state.email">
-      Reading List
+      <ReadingList/>
     </div>
     <template v-else="$store.state.email">
       <h2>Welcome to Standup!</h2>
@@ -31,12 +31,14 @@
 <script>
 import RegisterForm from '@/components/Login/RegisterForm.vue';
 import LoginForm from '@/components/Login/LoginForm.vue';
+import ReadingList from '@/components/Home/Readinglist.vue';
 
 export default {
   name: 'HomePage',
   components: {
     RegisterForm,
-    LoginForm
+    LoginForm,
+    ReadingList,
   },
   data() {
     return {
