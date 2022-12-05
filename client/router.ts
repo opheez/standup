@@ -18,7 +18,7 @@ const routes = [
   {path: '/updates/:id', name: 'Updates', component: AllUpdatesView},
   {path: '/updates/:id/users', name: 'UpdatesPerUser', component: UserView},
   {path: '/updates/:id/add', name: 'AddUpdate', component: AddUpdatePage},
-  {path: '/updates/:projectId/:updateId', name: 'UpdateDetails', component: UpdateDetailPage},
+  {path: '/updates/:id/:updateId', name: 'UpdateDetails', component: UpdateDetailPage},
   {path: '/account', name: 'Account', component: AccountPage},
   {path: '/accountsettings', name: 'Account Settings', component: AccountSettingsPage},
   {path: '*', name: 'Not Found', component: NotFound}

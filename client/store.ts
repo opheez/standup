@@ -20,6 +20,7 @@ const store = new Vuex.Store({
     allthanks: [], // All thanks in the app
     eyeswanted: [], // mapping from user to a list of eyes wanted updates
     alleyeswanted: [], // All eyes wanted in the app
+    userFilter: null,
   },
   mutations: {
     alert(state, payload) {
@@ -156,6 +157,9 @@ const store = new Vuex.Store({
        console.log(res);
        state.alleyeswanted = res;
      },
+    setUserFilter(state, userFilter) {
+      state.userFilter = userFilter;
+    }
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]

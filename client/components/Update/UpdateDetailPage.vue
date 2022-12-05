@@ -1,52 +1,54 @@
 <template>
-  <main>
-    <h1>
-      Project: {{ project.projectName }}
-    </h1>
-    <section class="update">
-      <div
-        class="edit-btns"
-        v-if="(update.author.email === $store.state.email && !editing)"
-      >
-        <button
-          class="thin-btn invert"
-          @click="startEditing">
-          ✏️ Edit
-        </button>
-        <button
-          class="thin-btn invert"
-          @click="deleteUpdate">
-          🗑️ Delete
-        </button>
-      </div>
-      <div v-if="editing">
-        <div class=field>
-          <UpdateForm :fields="draft">
-            <template #header>
-              Edit update form
-            </template>
-            <template #submit>
-              <div class="edit-btns">
-                <button
-                  class="thin-btn invert"
-                  @click="saveEdits">
-                  ✅ Save
-                </button>
-                <button
-                  class="thin-btn invert"
-                  @click="stopEditing">
-                  🚫 Discard
-                </button>
-                <button
-                  class="thin-btn invert"
-                  @click="deleteUpdate">
-                  🗑️ Delete
-                </button>
-              </div>
-            </template>
-          </UpdateForm>
+  <div class="container">
+    <UpdateSidebar :project="project"/>
+    <main>
+      <h1>
+        Project: {{ project.projectName }}
+      </h1>
+      <section class="update">
+        <div
+          class="edit-btns"
+          v-if="(update.author.email === $store.state.email && !editing)"
+        >
+          <button
+            class="thin-btn invert"
+            @click="startEditing">
+            ✏️ Edit
+          </button>
+          <button
+            class="thin-btn invert"
+            @click="deleteUpdate">
+            🗑️ Delete
+          </button>
         </div>
-      </div>
+        <div v-if="editing">
+          <div class="field">
+            <UpdateForm :fields="draft">
+              <template #header>
+                Edit update form
+              </template>
+              <template #submit>
+                <div class="edit-btns">
+                  <button
+                    class="thin-btn invert"
+                    @click="saveEdits">
+                    ✅ Save
+                  </button>
+                  <button
+                    class="thin-btn invert"
+                    @click="stopEditing">
+                    🚫 Discard
+                  </button>
+                  <button
+                    class="thin-btn invert"
+                    @click="deleteUpdate">
+                    🗑️ Delete
+                  </button>
+                </div>
+              </template>
+            </UpdateForm>
+          </div>
+        </div>
       <div class="update-metadata" v-else>
         <h2>
           {{ update.summary }}
@@ -109,16 +111,18 @@
       </div>
     </section>
   </main>
+</div>
 </template>
 <script>
 import UpdateForm from '@/components/Update/UpdateForm.vue';
 import AddThanksComponent from '@/components/Thanks/AddThanks.vue';
 import AddEyesWantedComponent from '@/components/EyesWanted/AddEyesWanted.vue';
 import CompleteEyesWantedComponent from '@/components/EyesWanted/CompleteEyesWanted.vue';
+import UpdateSidebar from '@/components/Update/UpdateSidebar.vue';
 
 export default {
   name: 'UpdateDetailPage',
-  components: {UpdateForm, AddThanksComponent, AddEyesWantedComponent, CompleteEyesWantedComponent},
+  components: {UpdateForm, UpdateSidebar, AddThanksComponent, AddEyesWantedComponent, CompleteEyesWantedComponent},
   computed: {
     inReadingList() {
       const eyeswanted = this.$store.state.eyeswanted;
@@ -181,7 +185,7 @@ export default {
         credentials: 'same-origin',
         body: JSON.stringify({
           ...this.draft,
-          projectId: this.$route.params.projectId,
+          projectId: this.$route.params.id,
         }),
       };
       try {
@@ -195,7 +199,7 @@ export default {
           status: 'success',
           message: 'Successfully updated update!',
         });
-        this.$store.commit('refreshUpdates', this.$route.params.projectId);
+        this.$store.commit('refreshUpdates', this.$route.params.id);
         this.stopEditing();
       } catch (e) {
         this.$store.commit('alert', {
@@ -221,11 +225,11 @@ export default {
           status: 'success',
           message: 'Successfully deleted update!',
         });
-        this.$store.commit('refreshUpdates', this.$route.params.projectId);
+        this.$store.commit('refreshUpdates', this.$route.params.id);
         this.$router.push({
           name: 'Updates',
           params: {
-            id: this.$route.params.projectId,
+            id: this.$route.params.id,
           }
         });  
       } catch (e) {
@@ -238,7 +242,7 @@ export default {
   },
   data() {
     const {project, update} = this.findFields(
-        this.$route.params.projectId, this.$route.params.updateId);
+        this.$route.params.id, this.$route.params.updateId);
     return {
       update,
       project,
@@ -255,9 +259,9 @@ export default {
   watch: {
     "$route.params": {
       handler: function(value) {
-        const {projectId, updateId} = value;
+        const {id, updateId} = value;
         const {project, update} = this.findFields(
-          projectId, updateId);
+          id, updateId);
         this.project = project;
         this.update = update;
         this.verifyUpdate();
@@ -268,7 +272,7 @@ export default {
     "$store.state.updates": {
       handler: function(value) {
         const { update } = this.findFields(
-          this.$route.params.projectId, this.$route.params.updateId);
+          this.$route.params.id, this.$route.params.updateId);
         this.update = update;
         this.verifyUpdate();
       },
@@ -288,14 +292,11 @@ export default {
   padding-left: 24px;
 }
 
-<<<<<<< HEAD
 .thanks-number {
   font-size: 80%;
   color:rgb(125, 125, 125);
 }
 
-=======
->>>>>>> Enable editing of updates
 .update {
   position: relative;
 }

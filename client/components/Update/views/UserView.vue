@@ -6,15 +6,23 @@ export default {
   computed: {
     updates() {
       const updates = this.$store.state.updates[this.$route.params.id] || [];
-      const groupedUpdates = this.project.participants.reduce(((groups, email) => {
-        groups[email] = [];
-        return groups;
-      }), {});
-      return updates.reduce((groups, u) => {
-        if (!groups[u.author.email]) {
-          groups[u.author.email] = [];
+      let groupedUpdates = {};
+      if (!this.$store.state.userFilter) {
+        // Prefill with all participants
+        groupedUpdates = this.project.participants.reduce(((groups, email) => {
+            groups[email] = [];
+            return groups;
+        }), {});
+      } else {
+        // Otherwise prefill with the filtered for email
+        groupedUpdates = {
+            [this.$store.state.userFilter]: [],
         }
-        groups[u.author.email].push(u);
+      }
+      return updates.reduce((groups, u) => {
+        if (u.author.email in groups) {
+            groups[u.author.email].push(u);
+        }
         return groups;
       }, groupedUpdates);
     }
