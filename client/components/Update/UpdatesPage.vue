@@ -22,7 +22,7 @@
         class="add-update-btn"
         @click="goToAddForm"
       >+ Add Update</button>
-      </main>
+    </main>
   </div>
 </template>
 
