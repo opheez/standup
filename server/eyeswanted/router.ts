@@ -121,7 +121,7 @@ router.patch(
   [
     userValidator.isUserLoggedIn,
     eyesWantedValidator.isEyesWantedExists,
-    eyesWantedValidator.isUserInProject,
+    // eyesWantedValidator.isUserInProject,
   ],
   async (req: Request, res: Response) => {
     const eyesWantedId = req.params.eyesWantedId as string;

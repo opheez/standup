@@ -7,12 +7,6 @@
     <p class="update-status status" :class="statusToText[update.status]">
       {{ statusToText[update.status] }}
     </p>
-    <div 
-        v-if="$store.state.email === update.author.email"
-        class="eyeswanted">
-        <AddEyesWantedComponent
-        :update="update"/>
-      </div>
     <p
       v-if="this.update.author.email === $store.state.email"
       class="thanks-number">
@@ -31,7 +25,6 @@ export default {
       required: true,
     },
   },
-  components: {AddEyesWantedComponent},
   data()  {
     return {
       statusToText: {
@@ -57,7 +50,7 @@ export default {
       this.$router.push({
         name: 'UpdateDetails',
         params: {
-          projectId: this.$route.params.id,
+          projectId: this.update.projectId,
           updateId: this.update._id,
         },
       })
