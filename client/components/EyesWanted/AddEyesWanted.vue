@@ -8,7 +8,7 @@
         Eyes Wanted!
       </button>
       <button class="addeyeswantedbutton"
-      v-if="existingEyesWanted()"
+      
         @click="removeEyesWanted"
       >
         Remove Eyes Wanted!
@@ -49,17 +49,19 @@
          * Return if user has thanked the update
          */
         const alleyeswanted = this.$store.state.alleyeswanted;
+        console.log(alleyeswanted[1].updateId);
         const exists = alleyeswanted
-                        .filter(alleyeswanted => eyeswanted.upateId === this.update._id)
+                        .filter(alleyeswanted => alleyeswanted.upateId === this.update._id)
                         .length === 1;
         return exists;
       },
       async addEyesWanted() {
         const body = {
-            updateId: this.update._id,
+          updateId: this.update._id,
         };
         const requestOptions = {
           method: 'POST',
+          headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(body)
         };
         const url =`/api/eyeswanted/`;

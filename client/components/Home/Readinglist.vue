@@ -3,18 +3,13 @@
       <h1>
         Reading List
       </h1>
-      <section
-        v-for="teammate in eyeswanted.author"
-        class="user-updates"
-      >
-        <h2>{{ teammate }}</h2>
-        <template v-for="eyeswanted in (eyeswanted[teammate] || [])">
-          <UpdatePreview :update="eyeswanted" />
-        </template>
-        <p v-if="!eyeswanted">
-          No eyes wanted updates now.
-        </p>
-      </section>
+      <template
+      v-for="eyeswanted in $store.state.eyeswanted">
+      <UpdatePreview :update="eyeswanted.update" />
+    </template>
+    <article v-if="$store.state.eyeswanted.length===0">
+        <p> No eyes wanted updates. </p>
+    </article>
     </main>
   </template>
   
@@ -32,14 +27,7 @@
     computed: {
       eyeswanted() {
         const eyeswanted = this.$store.state.eyeswanted || [];
-        const groupedUpdates = eyeswanted.reduce((groups, u) => {
-          if (!groups[u.author.email]) {
-            groups[u.author.email] = [];
-          }
-          groups[u.author.email].push(u);
-          return groups;
-        }, {});
-        return groupedUpdates;
+        return eyeswanted;
       }
     },
   }

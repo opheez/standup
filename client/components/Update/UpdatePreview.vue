@@ -51,8 +51,6 @@ export default {
         const exists = allThanks
                         .filter(thanks => thanks.updateId._id === this.update._id)
                         .length;
-        console.log(allThanks[1].updateId);
-        console.log(this.update);
         return exists;
       },
     openUpdate() {

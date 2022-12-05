@@ -154,7 +154,7 @@ const store = new Vuex.Store({
        const url = '/api/eyeswanted/all';
        const res = await fetch(url).then(async r => r.json());
        console.log(res);
-       state.allthanks = res;
+       state.alleyeswanted = res;
      },
   },
   // Store data across page refreshes, only discard on browser close

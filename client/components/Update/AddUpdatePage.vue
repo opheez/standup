@@ -116,7 +116,6 @@ export default {
         ...this.fields,
         projectId: this.$route.params.id,
       };
-      console.log(body);
       const options = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
