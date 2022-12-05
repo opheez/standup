@@ -126,7 +126,7 @@ import UpdateCollection from '../update/collection';
  * Checks if the update with id in req.body is in an active project
  */
  const isUpdateInActiveProject = async (req: Request, res: Response, next: NextFunction) => {
-  const updateId = req.body.updateId as string;
+  const updateId = (req.body.updateId || req.params.updateId) as string;
   const update = await UpdateCollection.findOneByUpdateId(updateId);
   const project = await ProjectCollection.findOne(update.projectId);
   if (!project.active) {

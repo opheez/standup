@@ -11,13 +11,13 @@ import type {Update} from '../update/model';
 // Type definition for EyesWanted on the backend
 export type Thanks = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  postUser: Types.ObjectId[];
+  postUser: Types.ObjectId;
   updateId: Types.ObjectId;
 };
 
 export type PopulatedThanks = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  postUser: User[];
+  postUser: User;
   updateId: Update;
 };
 
@@ -26,12 +26,12 @@ export type PopulatedThanks = {
 // type given by the type property, inside MongoDB
 const ThanksSchema = new Schema<Thanks>({
   // The users who posted the thanks (thank the other user)
-  postUser: [{
+  postUser: {
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'User'
-  }],
+  },
   // The update for the EyesWanted
   updateId: {
     // Use Types.ObjectId outside of the schema

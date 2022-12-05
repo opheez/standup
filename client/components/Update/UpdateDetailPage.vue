@@ -15,6 +15,12 @@
       <p class="status" :class="statusToText[update.status]">
         {{ statusToText[update.status] }}
       </p>
+      <div 
+        v-if="$store.state.email === update.author.email"
+        class="eyeswanted">
+        <AddEyesWantedComponent
+        :update="update"/>
+      </div>
       <h3>Details</h3>
       <p>
         {{ update.details }}
@@ -30,12 +36,23 @@
         </ul>
         <p v-if="!update.actionItems.length">No action items were specified.</p>
       </div>
+      </br>
+      <div 
+        v-if="$store.state.email !== update.author.email"
+        class="thanks">
+        <AddThanksComponent
+        :update="update"/>
+      </div>
     </section>
   </main>
 </template>
 <script>
+import AddThanksComponent from '@/components/Thanks/AddThanks.vue';
+import AddEyesWantedComponent from '@/components/EyesWanted/AddEyesWanted.vue';
+
 export default {
   name: 'UpdateDetailPage',
+  components: {AddThanksComponent, AddEyesWantedComponent},
   methods: {
     findFields(projectId, updateId) {
       if (!(projectId in this.$store.state.updates)) {

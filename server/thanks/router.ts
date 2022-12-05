@@ -28,6 +28,25 @@ router.get(
 );
 
 /**
+ * Get all Thanks for one update
+ *
+ * @name GET /api/thanks/:updateId?
+ *
+ * @return {ThanksResponse[]} - An array of Thanks got by the given user
+ * @throws {400} - If userId is not given
+ * @throws {404} - If no user has the given userId
+ *
+ */
+ router.get(
+  '/:updateId?',
+  async (req: Request, res: Response, next: NextFunction) => {
+    const allThanks = await ThanksCollection.findAllByUpdateId(req.params.updateId);
+    const response = allThanks.map(util.constructThanksResponse);
+    res.status(200).json(response);
+  },
+);
+
+/**
  * Create a new thanks.
  *
  * @name POST /api/thanks
@@ -39,15 +58,15 @@ router.get(
  * @throws {404} - If the update user wants to thank does not exist
  */
 router.post(
-  '/',
+  '/:updateId?',
   [
     userValidator.isUserLoggedIn,
     thanksValidator.isThanksNotExist,
-    updateValidator.isUpdateExistsQuery,
+    // updateValidator.isUpdateExistsQuery,
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const thanks = await ThanksCollection.addOne(userId, req.body.updateId);
+    const thanks = await ThanksCollection.addOne(userId, req.params.updateId);
 
     res.status(201).json({
       message: 'Your thanks was created successfully.',
@@ -68,15 +87,16 @@ router.post(
  * @throws {404} - If the updateId is not valid
  */
 router.delete(
-  '/:thanksId?',
+  '/:updateId?',
   [
     userValidator.isUserLoggedIn,
-    thanksValidator.isThanksExists,
-    updateValidator.isUpdateExistsQuery,
-    thanksValidator.isValidThanksModifier
+    // thanksValidator.isThanksExists,
+    // updateValidator.isUpdateExistsQuery,
+    // thanksValidator.isValidThanksModifier
   ],
   async (req: Request, res: Response) => {
-    await ThanksCollection.deleteOne(req.params.thanksId);
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    await ThanksCollection.deleteOne(userId, req.params.updateId);
     res.status(200).json({
       message: 'Your thanks was deleted successfully.'
     });

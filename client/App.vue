@@ -23,7 +23,8 @@ export default {
       this.$store.commit('setLastname', user ? user.lastName : null);
       this.$store.commit('setFirstname', user ? user.firstName : null);
     });
-
+    this.$store.commit('refreshAllThanks');
+    this.$store.commit('refreshAllEyesWanted');
     // Clear alerts on page refresh
     this.$store.state.alerts = {};
   }
