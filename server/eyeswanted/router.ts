@@ -66,8 +66,8 @@ router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
-    updateValidator.isUpdateInActiveProject,
     updateValidator.isUpdateExistsBody,
+    updateValidator.isUpdateInActiveProject,
     updateValidator.isUpdateAuthorBody,
   ],
   async (req: Request, res: Response) => {
