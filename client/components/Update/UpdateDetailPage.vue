@@ -38,6 +38,13 @@
       </div>
       </br>
       <div 
+        v-if="inReadingList()"
+        class="eyeswanted">
+        <CompleteEyesWantedComponent
+        :update="update"
+        :eyewanted="eyewanted"/>
+      </div>
+      <div 
         v-if="$store.state.email !== update.author.email"
         class="thanks">
         <AddThanksComponent
@@ -49,10 +56,11 @@
 <script>
 import AddThanksComponent from '@/components/Thanks/AddThanks.vue';
 import AddEyesWantedComponent from '@/components/EyesWanted/AddEyesWanted.vue';
+import CompleteEyesWantedComponent from '@/components/EyesWanted/CompleteEyesWanted.vue';
 
 export default {
   name: 'UpdateDetailPage',
-  components: {AddThanksComponent, AddEyesWantedComponent},
+  components: {AddThanksComponent, AddEyesWantedComponent, CompleteEyesWantedComponent},
   methods: {
     findFields(projectId, updateId) {
       if (!(projectId in this.$store.state.updates)) {
@@ -70,11 +78,18 @@ export default {
         this.$router.push({name: 'Not Found'});
       }
     },
+    inReadingList() {
+      const eyewanted = this.$store.state.eyeswanted;
+      this.eyewanted = eyewanted.filter(eyewanted => eyewanted.update._id === this.update._id)[0] || '';
+      console.log(this.eyewanted);
+      return this.eyewanted;
+    }
   },
   data() {
     const {project, update} = this.findFields(
         this.$route.params.projectId, this.$route.params.updateId);
     return {
+      eyewanted: '',
       update,
       project,
       statusToText: {

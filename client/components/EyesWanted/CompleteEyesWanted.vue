@@ -2,16 +2,9 @@
     <article>
     <section class="addeyeswantedsection">
       <button class="addeyeswantedbutton"
-        v-if="this.eyeswantedId===''"
-        @click="addEyesWanted"
+        @click="completeEyesWanted"
       >
-        Eyes Wanted!
-      </button>
-      <button class="addeyeswantedbutton"
-        v-else
-        @click="removeEyesWanted"
-      >
-        Remove Eyes Wanted!
+        Read!
       </button>
     </section>
 
@@ -29,64 +22,33 @@
   
   <script>
   export default {
-    name: 'AddEyesWantedComponent',
+    name: 'CompleteEyesWantedComponent',
     props: {
       // Data from the stored update
       update: {
         type: Object,
         required: true
         },
+       eyewanted: {
+        type: Object,
+        required: true
+        }, 
     },
     data() {
       return {
-        eyeswantedId: '',
         alerts: {} // Displays success/error messages encountered during freet modification
       };
     },
     methods: {
-      existingEyesWanted() {
-        /**
-         * Return if user has thanked the update
-         */
-        const alleyeswanted = this.$store.state.alleyeswanted;
-        const exists = alleyeswanted
-                        .filter(alleyeswanted => alleyeswanted.upateId === this.update._id)
-                        .length === 1;
-        return exists;
-      },
-      async addEyesWanted() {
-        const body = {
-          updateId: this.update._id,
-        };
-        const requestOptions = {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(body)
-        };
-        const url =`/api/eyeswanted/`;
-        try {
-          const r = await fetch(url, requestOptions);
-          const res = await r.json();
-          this.eyeswantedId = res.eyesWanted._id;
-          if (!r.ok) {
-            throw new Error(res.error);
-          }
-          const message = 'Successfully add eyes wanted!';
-          this.$set(this.alerts, message, 'success');
-          setTimeout(() => this.$delete(this.alerts, message), 3000);
-        } catch (e) {
-          this.$set(this.alerts, e, 'error');
-          setTimeout(() => this.$delete(this.alerts, e), 3000);
-        }
-      },
-      async removeEyesWanted() {
+      async completeEyesWanted() {
          /**
-         * Logged in user unfollows another user
+         * Mark an eye wanted update as complete
          */
          const requestOptions = {
-              method: 'DELETE',
+              method: 'PATCH',
           };
-        const url = `/api/eyeswanted/${this.eyeswantedId}`;
+        console.log(this.eyewanted);
+        const url = `/api/eyeswanted/${this.eyewanted._id}`;
         try {
           const r = await fetch(url, requestOptions);
           const res = await r.json();

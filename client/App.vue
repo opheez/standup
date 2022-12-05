@@ -25,6 +25,7 @@ export default {
     });
     this.$store.commit('refreshAllThanks');
     this.$store.commit('refreshAllEyesWanted');
+    this.$store.commit('refreshEyesWanted');
     // Clear alerts on page refresh
     this.$store.state.alerts = {};
   }
