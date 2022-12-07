@@ -16,7 +16,8 @@
         {{ statusToText[update.status] }}
       </p>
       <div 
-        v-if="$store.state.email === update.author.email"
+        v-if="($store.state.email === update.author.email
+                && project.active === true)"
         class="eyeswanted">
         <AddEyesWantedComponent
         :update="update"/>
@@ -45,7 +46,8 @@
         :eyewanted="eyewanted"/>
       </div>
       <div 
-        v-if="$store.state.email !== update.author.email"
+        v-if="($store.state.email !== update.author.email
+                && project.active === true)"
         class="thanks">
         <AddThanksComponent
         :update="update"/>
@@ -81,7 +83,6 @@ export default {
     inReadingList() {
       const eyewanted = this.$store.state.eyeswanted;
       this.eyewanted = eyewanted.filter(eyewanted => eyewanted.update._id === this.update._id)[0] || '';
-      console.log(this.eyewanted);
       return this.eyewanted;
     }
   },

@@ -2,13 +2,13 @@
     <article>
     <section class="addeyeswantedsection">
       <button class="addeyeswantedbutton"
-        v-if="this.eyeswantedId===''"
+        v-if="!existingEyesWanted()"
         @click="addEyesWanted"
       >
         Eyes Wanted!
       </button>
       <button class="addeyeswantedbutton"
-        v-else
+        v-if="existingEyesWanted()"
         @click="removeEyesWanted"
       >
         Remove Eyes Wanted!
@@ -46,12 +46,19 @@
     methods: {
       existingEyesWanted() {
         /**
-         * Return if user has thanked the update
+         * Return if user has added eye wanted the update
          */
         const alleyeswanted = this.$store.state.alleyeswanted;
         const exists = alleyeswanted
-                        .filter(alleyeswanted => alleyeswanted.upateId === this.update._id)
+                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id)
                         .length === 1;
+        if (exists) {
+          this.eyeswantedId = alleyeswanted
+                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id)[0]._id;
+        };
+        console.log(exists);
+        console.log(alleyeswanted
+                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id))
         return exists;
       },
       async addEyesWanted() {
