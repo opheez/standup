@@ -15,7 +15,11 @@
         No updates have been shared.
       </p>
     </section>
-    <button class="add-update-btn" @click="goToAddForm">+ Add Update</button>
+    <button
+      v-if="project.active"
+      class="add-update-btn"
+      @click="goToAddForm"
+    >+ Add Update</button>
   </main>
 </template>
 
