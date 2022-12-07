@@ -28,6 +28,20 @@ export default {
     this.$store.commit('refreshEyesWanted');
     // Clear alerts on page refresh
     this.$store.state.alerts = {};
+  },
+  watch: {
+    '$route': {
+      handler: function(value) {
+        const validRoutes = [
+          'Updates', 'UpdatesPerUser', 'UpdateDetails',
+        ];
+        if (!validRoutes.includes(value.name)) {
+          this.$store.commit('setCurrentUpdate', null);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
   }
 };
 </script>
@@ -146,6 +160,7 @@ button.thin-btn {
   background: #F8F8F8;
   padding: 24px;
   cursor: pointer;
+  width: inherit;
 }
 
 .preview:hover {
