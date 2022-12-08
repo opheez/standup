@@ -31,29 +31,6 @@ router.get(
 );
 
 /**
- * Get EyesWanted for the update.
- *
- * @name GET /api/eyeswanted/:updateId
- * 
- * @return {EyesWantedResponse[]} - An array of EyesWanted targeting the logged-in user
- * @throws {403} - If the user is not logged in
- *
- */
-router.get(
-  '/:updateId?',
-  [
-    userValidator.isUserLoggedIn,
-    updateValidator.isUpdateExistsParams,
-  ],
-  async (req: Request, res: Response) => {
-    const updateId = req.params.updateId as string;
-    const updateEyesWanted = await EyesWantedCollection.findOneByUpdateId(updateId);
-    const response = util.constructEyesWantedResponse(updateEyesWanted);
-    res.status(200).json(response);
-  },
-);
-
-/**
  * Get All EyesWanted for the logged-in user.
  *
  * @name GET /api/eyeswanted/all
