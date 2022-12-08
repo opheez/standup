@@ -18,9 +18,8 @@ const store = new Vuex.Store({
     invites: [], // All projects the signed in user is invited to
     updates: {}, // mapping from project IDs to a list of updates
     allthanks: [], // All thanks in the app
-    eyeswanted: [], // mapping from user to a list of eyes wanted 
+    eyeswanted: [], // mapping from user to a list of eyes wanted updates
     alleyeswanted: [], // All eyes wanted in the app
-    updateseyeswanted: [], // mapping from updates to a list of eyes wanted 
   },
   mutations: {
     alert(state, payload) {
@@ -88,9 +87,6 @@ const store = new Vuex.Store({
        */
       state.alleyeswanted = alleyeswanted;
     },
-    updateUpdatesEyesWanted(state, updateseyeswanted){
-      state.updateseyeswanted = updateseyeswanted;
-    },
     async refreshProjects(state) {
       /**
        * Request the server for the currently available freets.
@@ -126,19 +122,6 @@ const store = new Vuex.Store({
           throw Error(resJson.error);
         }
         Vue.set(state.updates, projectId, resJson);
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    async refreshUpdatesEyeswanted(state, updateId) {
-      try {
-        const res = await fetch(`/api/eyeswanted?updateId=${updateId}`);
-        const resJson = await res.json();
-        if (!res.ok) {
-          throw Error(resJson.error);
-        }
-        state.updateseyeswanted = resJson;
-        console.log(state.updateseyeswanted)
       } catch (e) {
         console.log(e);
       }

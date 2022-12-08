@@ -2,20 +2,20 @@
     <article>
     <section class="addeyeswantedsection">
       <button class="addeyeswantedbutton"
-        v-if="!this.eyeswanted"
+        v-if="!existingEyesWanted"
         @click="addEyesWanted"
       >
         Eyes Wanted!
       </button>
       <button class="addeyeswantedbutton"
-        v-if="this.eyeswanted"
+        v-if="existingEyesWanted"
         @click="removeEyesWanted"
       >
         Remove Eyes Wanted!
       </button>
     </section>
 
-    <section v-if="this.eyeswanted"
+    <section v-if="existingEyesWanted"
         class = "viewedby">
       <p v-for="viewed in this.viewed">
         Viewed by {{ viewed }} 
@@ -51,9 +51,6 @@
         required: true
         },
     },
-    beforeMount(){
-      this.$store.commit('refreshUpdatesEyeswanted', this.$route.params.updateId);
-    },
     data() {
       return {
         viewed: '',
@@ -61,13 +58,19 @@
       };
     },
     computed: {
-      eyeswanted() {
-        const eyeswanteds = this.$store.state.updateseyeswanted[this.$route.params.updateId] || [];
-        if (eyeswanteds !== []){
-          console.log(this.$store.state.updateseyeswanted)
-          const eyeswanted = eyeswanteds[0];
-          return eyeswanted;
-        }
+      existingEyesWanted() {
+        /**
+         * Return if user has added eye wanted the update
+         */
+        const alleyeswanted = this.$store.state.alleyeswanted;
+        const exists = alleyeswanted
+                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id)
+                        .length === 1;
+        if (exists) {
+          this.eyeswanted = alleyeswanted
+                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id)[0];
+        };
+        return exists;
       },
       viewedby(){
         if (this.eyeswanted){
@@ -94,6 +97,7 @@
         try {
           const r = await fetch(url, requestOptions);
           const res = await r.json();
+          this.eyeswantedId = res.eyesWanted._id;
           if (!r.ok) {
             throw new Error(res.error);
           }
@@ -104,8 +108,7 @@
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
         };
-        this.$store.commit('refreshUpdatesEyeswanted', this.$route.params.updateId);
-        this.eyeswanted();
+        this.EyesWantedRequest('');
       },
       async removeEyesWanted() {
          /**
@@ -121,15 +124,43 @@
           if (!r.ok) {
             throw new Error(res.error);
           }
-          const message = `Successfully removed eyes wanted!`;
+          const message = `Successfully removed thanks!`;
           this.$set(this.alerts, message, 'success');
           setTimeout(() => this.$delete(this.alerts, message), 3000);
         } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
         };
-        this.$store.commit('refreshUpdatesEyeswanted', this.$route.params.updateId);
+        this.EyesWantedRequest('${this.eyeswanted._id}');
       },
+      async EyesWantedRequest(params) {
+        /**
+         * Submits a request to the like's endpoint
+         * @param params - Options for the request
+         * @param params.body - Body for the request, if it exists
+         * @param params.callback - Function to run if the the request succeeds
+         */
+        const options = {
+          method: params.method, 
+          headers: {'Content-Type': 'application/json'},
+        };
+        if (params.body) {
+          options.body = params.body;
+        }
+        try {
+          const r = await fetch('/api/eyeswanted', options);
+          if (!r.ok) {
+            const res = await r.json();
+            throw new Error(res.error);
+          }
+          this.$store.commit('refreshAllEyesWanted'); 
+          params.callback();
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }
+        
+      }
     },
   };
   </script>
