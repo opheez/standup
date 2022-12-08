@@ -7,11 +7,15 @@
     <p class="update-status status" :class="statusToText[update.status]">
       {{ statusToText[update.status] }}
     </p>
-    <p
-      v-if="this.update.author.email === $store.state.email"
-      class="thanks-number">
-      {{ existingThanks() }} thanks
-    </p>
+    <div
+        v-if="(this.update.author.email === $store.state.email && isThankedby())">
+        <p class="thanks-number">
+        {{ this.thanks.length }} thanks </p>
+        <p v-for="thanks in this.thanks"
+        class="thanks-number">
+          by {{ thanks.postUser.firstName }} {{thanks.postUser.lastName}}
+        </p>
+      </div>
   </article>
 </template>
 
@@ -36,16 +40,11 @@ export default {
   },
 
   methods: {
-    existingThanks() {
-        /**
-         * Return if user has liked freet
-         */
-        const allThanks = this.$store.state.allthanks;
-        const exists = allThanks
-                        .filter(thanks => thanks.updateId._id === this.update._id)
-                        .length;
-        return exists;
-      },
+    isThankedby() {
+      const allthanks = this.$store.state.allthanks;
+      this.thanks = allthanks.filter(thanks => thanks.updateId._id === this.update._id);
+      return this.thanks;
+    },
     openUpdate() {
       this.$router.push({
         name: 'UpdateDetails',
@@ -73,5 +72,10 @@ export default {
 }
 .update-status.Blocked {
   background-color: #F58870;
+}
+
+.thanks-number {
+  font-size: 80%;
+  color:rgb(125, 125, 125);
 }
 </style>

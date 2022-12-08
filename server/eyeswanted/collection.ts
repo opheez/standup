@@ -138,8 +138,8 @@ class EyesWantedCollection {
    * @param {Types.ObjectId | string} eyesWantedId - The id of the Eyes Wanted entry to delete
    * @return {Promise<Boolean>} - true if the EyesWanted has been deleted, false otherwise
    */
-   static async deleteOne(updateId: Types.ObjectId | string): Promise<boolean> {
-    const eyesWanted = await EyesWantedModel.deleteOne({ updateId });
+   static async deleteOne(eyesWantedId: Types.ObjectId | string): Promise<boolean> {
+    const eyesWanted = await EyesWantedModel.deleteOne({ eyesWantedId });
     return eyesWanted !== null;
   }
 

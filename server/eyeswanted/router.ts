@@ -97,7 +97,7 @@ router.delete(
   [
     userValidator.isUserLoggedIn,
     eyesWantedValidator.isEyesWantedExists,
-    eyesWantedValidator.isEyesWantedAuthor,
+    // eyesWantedValidator.isEyesWantedAuthor,
   ],
   async (req: Request, res: Response) => {
     await EyesWantedCollection.deleteOne(req.params.eyesWantedId);

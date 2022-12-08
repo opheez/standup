@@ -62,7 +62,7 @@ router.post(
   [
     userValidator.isUserLoggedIn,
     thanksValidator.isThanksNotExist,
-    // updateValidator.isUpdateExistsQuery,
+    updateValidator.isUpdateExistsParams,
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
@@ -90,9 +90,8 @@ router.delete(
   '/:updateId?',
   [
     userValidator.isUserLoggedIn,
-    // thanksValidator.isThanksExists,
-    // updateValidator.isUpdateExistsQuery,
-    // thanksValidator.isValidThanksModifier
+    updateValidator.isUpdateExistsParams,
+    thanksValidator.isValidThanksModifier
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
