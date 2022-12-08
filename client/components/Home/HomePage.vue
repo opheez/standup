@@ -1,5 +1,8 @@
 <template>
-  <ReadingList v-if="$store.state.email"/>
+  <div v-if="$store.state.email">
+    <ReadingList/>
+    <ProjectDashboard/>
+  </div>
   <main class="home" v-else>
     <h2>Welcome to Standup!</h2>
     <h3>A team project management application for students</h3>
@@ -28,6 +31,7 @@
 import RegisterForm from '@/components/Login/RegisterForm.vue';
 import LoginForm from '@/components/Login/LoginForm.vue';
 import ReadingList from '@/components/Home/Readinglist.vue';
+import ProjectDashboard from '@/components/Project/ProjectDashboard.vue';
 
 export default {
   name: 'HomePage',
@@ -35,6 +39,7 @@ export default {
     RegisterForm,
     LoginForm,
     ReadingList,
+    ProjectDashboard
   },
   data() {
     return {
