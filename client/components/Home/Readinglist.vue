@@ -27,7 +27,7 @@
       />
     </div>
   </div>
-  </template>
+</template>
   
   <script>
   import UpdatePreview from '@/components/Update/UpdatePreview.vue';
@@ -69,6 +69,11 @@
     position: fixed;
     right: 20px;
     bottom: 20px;
+  }
+
+  .readingList{
+    height: 20em;
+    overflow: auto;
   }
   </style>
   
