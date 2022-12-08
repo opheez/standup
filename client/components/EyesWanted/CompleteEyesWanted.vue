@@ -29,7 +29,7 @@
         type: Object,
         required: true
         },
-       eyewanted: {
+       eyeswanted: {
         type: Object,
         required: true
         }, 
@@ -47,8 +47,7 @@
          const requestOptions = {
               method: 'PATCH',
           };
-        console.log(this.eyewanted);
-        const url = `/api/eyeswanted/${this.eyewanted._id}`;
+        const url = `/api/eyeswanted/${this.eyeswanted._id}`;
         try {
           const r = await fetch(url, requestOptions);
           const res = await r.json();
@@ -61,7 +60,8 @@
         } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
-        }
+        };
+        EyesWantedRequest('${this.eyeswanted._id}');
       },
       async EyesWantedRequest(params) {
         /**

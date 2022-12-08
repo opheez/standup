@@ -2,13 +2,13 @@
     <article>
     <section class="addthankssection">
       <button class="thanksbutton"
-        v-if="!existingThanks()"
+        v-if="!existingThanks"
         @click="addThanks"
       >
         Thanks!
       </button>
       <button class="thanksbutton"
-      v-if="existingThanks()"
+      v-if="existingThanks"
         @click="removeThanks"
       >
         Remove Thanks!
@@ -39,11 +39,10 @@
     },
     data() {
       return {
-        // thanks: '',
         alerts: {} // Displays success/error messages encountered during freet modification
       };
     },
-    methods: {
+    computed: {
       existingThanks() {
         /**
          * Return if user has thanked the update
@@ -53,11 +52,10 @@
                         .filter(thanks => thanks.postUser.email === this.$store.state.email)
                         .filter(filtered => filtered.updateId._id === this.update._id)
                         .length === 1;
-        const bla = allThanks
-                        .filter(thanks => thanks.updateId._id === this.update._id);
-        console.log(bla);
         return exists;
       },
+    },
+    methods: {
       async addThanks() {
         const requestOptions = {
           method: 'POST',
@@ -76,7 +74,8 @@
         } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
-        }
+        };
+        this.ThanksRequest('');
       },
       async removeThanks() {
          /**
@@ -98,7 +97,8 @@
         } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
-        }
+        };
+        this.ThanksRequest('${this.update._id}');
       },
       async ThanksRequest(params) {
         /**

@@ -27,6 +27,8 @@ const isEyesWantedAuthor = async (req: Request, res: Response, next: NextFunctio
   const eyesWanted = await EyesWantedCollection.findOne(req.params.eyesWantedId);
   const update = await UpdateCollection.findOneByUpdateId(eyesWanted.updateId);
   const userId = update.authorId._id;
+  console.log(update.authorId);
+  console.log(req.session.userId);
   if (req.session.userId !== userId.toString()) {
     res.status(403).json({
       error: 'Cannot modify other users\' Eyes Wanted.'

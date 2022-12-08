@@ -39,11 +39,10 @@ const isThanksExists = async (req: Request, res: Response, next: NextFunction) =
  * Checks if the current user is the author of the thanks whose thanksId is in req.params
  */
 const isValidThanksModifier = async (req: Request, res: Response, next: NextFunction) => {
-  const thanks = await ThanksCollection.findOne(req.params.thanksId);
-  const userId = thanks.postUser;
-  if (req.session.userId !== userId.toString()) {
+  const thanks = await ThanksCollection.findOnebyUpdateandUser(req.params.updateId, req.session.userId);
+  if (!thanks) {
     res.status(403).json({
-      error: 'Cannot modify other users\' thanks.'
+      error: 'Cannot modify thanks.'
     });
     return;
   }

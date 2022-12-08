@@ -20,7 +20,8 @@
                 && project.active === true)"
         class="eyeswanted">
         <AddEyesWantedComponent
-        :update="update"/>
+        :update="update"
+        :project="project"/>
       </div>
       <h3>Details</h3>
       <p>
@@ -43,7 +44,7 @@
         class="eyeswanted">
         <CompleteEyesWantedComponent
         :update="update"
-        :eyewanted="eyewanted"/>
+        :eyeswanted="this.eyeswanted"/>
       </div>
       <div 
         v-if="($store.state.email !== update.author.email
@@ -51,6 +52,15 @@
         class="thanks">
         <AddThanksComponent
         :update="update"/>
+      </div>
+      <div
+        v-if="(this.update.author.email === $store.state.email && isThankedby())">
+        <p class="thanks-number">
+        {{ this.thanks.length }} thanks </p>
+        <p v-for="thanks in this.thanks"
+          class="thanks-number">
+          by {{ thanks.postUser.firstName }} {{thanks.postUser.lastName}}
+        </p>
       </div>
     </section>
   </main>
@@ -81,16 +91,22 @@ export default {
       }
     },
     inReadingList() {
-      const eyewanted = this.$store.state.eyeswanted;
-      this.eyewanted = eyewanted.filter(eyewanted => eyewanted.update._id === this.update._id)[0] || '';
-      return this.eyewanted;
+      const eyeswanted = this.$store.state.eyeswanted;
+      this.eyeswanted = eyeswanted.filter(eyeswanted => eyeswanted.update._id === this.update._id)[0] || '';
+      return this.eyeswanted;
+    },
+    isThankedby() {
+      const allthanks = this.$store.state.allthanks;
+      this.thanks = allthanks.filter(thanks => thanks.updateId._id === this.update._id);
+      console.log(this.thanks);
+      return this.thanks;
     }
   },
   data() {
     const {project, update} = this.findFields(
         this.$route.params.projectId, this.$route.params.updateId);
     return {
-      eyewanted: '',
+      eyeswanted: '',
       update,
       project,
       statusToText: {
@@ -126,5 +142,9 @@ export default {
   padding-left: 24px;
 }
 
+.thanks-number {
+  font-size: 80%;
+  color:rgb(125, 125, 125);
+}
 
 </style>

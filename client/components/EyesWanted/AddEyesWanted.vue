@@ -2,17 +2,27 @@
     <article>
     <section class="addeyeswantedsection">
       <button class="addeyeswantedbutton"
-        v-if="!existingEyesWanted()"
+        v-if="!existingEyesWanted"
         @click="addEyesWanted"
       >
         Eyes Wanted!
       </button>
       <button class="addeyeswantedbutton"
-        v-if="existingEyesWanted()"
+        v-if="existingEyesWanted"
         @click="removeEyesWanted"
       >
         Remove Eyes Wanted!
       </button>
+    </section>
+
+    <section v-if="existingEyesWanted"
+        class = "viewedby">
+      <p v-for="viewed in this.viewed">
+        Viewed by {{ viewed }} 
+      </p>
+      <p v-if="!this.viewed" >
+        Waiting for review. 
+      </p>
     </section>
 
       <section class="alerts">
@@ -36,14 +46,18 @@
         type: Object,
         required: true
         },
+      project: {
+        type: Object,
+        required: true
+        },
     },
     data() {
       return {
-        eyeswantedId: '',
+        viewed: '',
         alerts: {} // Displays success/error messages encountered during freet modification
       };
     },
-    methods: {
+    computed: {
       existingEyesWanted() {
         /**
          * Return if user has added eye wanted the update
@@ -53,14 +67,23 @@
                         .filter(alleyeswanted => alleyeswanted.update._id === this.update._id)
                         .length === 1;
         if (exists) {
-          this.eyeswantedId = alleyeswanted
-                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id)[0]._id;
+          this.eyeswanted = alleyeswanted
+                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id)[0];
         };
-        console.log(exists);
-        console.log(alleyeswanted
-                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id))
         return exists;
       },
+      viewedby(){
+        if (this.eyeswanted){
+          const unviewed = this.eyeswanted.targetUsers;
+          const teammates = this.project.participants;
+          for (let n=0; n < unviewed.length; n++){
+            this.viewed = teammates.filter(email => !email.includes(unviewed[n].email))
+          };
+          return this.viewed;
+        }
+      }
+    },
+    methods: {
       async addEyesWanted() {
         const body = {
           updateId: this.update._id,
@@ -84,7 +107,8 @@
         } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
-        }
+        };
+        this.EyesWantedRequest('');
       },
       async removeEyesWanted() {
          /**
@@ -93,7 +117,7 @@
          const requestOptions = {
               method: 'DELETE',
           };
-        const url = `/api/eyeswanted/${this.eyeswantedId}`;
+        const url = `/api/eyeswanted/${this.eyeswanted._id}`;
         try {
           const r = await fetch(url, requestOptions);
           const res = await r.json();
@@ -106,7 +130,8 @@
         } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
-        }
+        };
+        this.EyesWantedRequest('${this.eyeswanted._id}');
       },
       async EyesWantedRequest(params) {
         /**
@@ -141,4 +166,8 @@
   </script>
   
   <style scoped>
+
+.viewedby {
+  font-size: 80%;
+}
   </style>
