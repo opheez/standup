@@ -66,7 +66,7 @@ router.post(
 );
 
 /**
- * Archive a project
+ * Toggle the activeness of a project
  *
  * @name PATCH /api/projects/:id
  *
@@ -83,7 +83,7 @@ router.patch(
     projectValidator.isValidProjectModifier
   ],
   async (req: Request, res: Response) => {
-    await ProjectCollection.archiveOne(req.params.projectId);
+    await ProjectCollection.toggleActiveOfOne(req.params.projectId);
     res.status(200).json({
       message: 'Your project was archived successfully.'
     });
@@ -143,6 +143,31 @@ router.patch(
     res.status(200).json({
       message: 'Your project was updated successfully.',
       project: util.constructProjectResponse(project)
+    });
+  }
+);
+
+/**
+ * Delete a project
+ *
+ * @name DELETE /api/projects/:id
+ *
+ * @return {string} - A success message
+ * @throws {403} - if the user is not logged in or not the author of
+ *                 of the project
+ * @throws {404} - If the projectId is not valid
+ */
+ router.delete(
+  '/:projectId?',
+  [
+    userValidator.isUserLoggedIn,
+    projectValidator.isProjectExists,
+    projectValidator.isValidProjectModifier,
+  ],
+  async (req: Request, res: Response) => {
+    await ProjectCollection.deleteOne(req.params.projectId);
+    res.status(200).json({
+      message: 'Your project was deleted successfully.',
     });
   }
 );

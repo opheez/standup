@@ -21,34 +21,46 @@
         v-if="project.creator === $store.state.email"
         v-model="showEdit"
       >
-        <button class="thin-btn invert edit" :class="{show: showEdit}">
+        <button class="thin-btn invert edit">
             Edit
         </button>
         <div slot="dropdown">
           <button
-            v-if="project.active"
             class="dropdown-item"
             href="#"
             @click="toggleActive"
-          >Mark complete</button>
+          >Mark {{ project.active ? 'complete' : 'active' }}</button>
           <button
             class="dropdown-item"
             href="#"
-            @click="markDelete"
+            @click="openDeleteWarning"
           >Delete</button>
         </div>
       </dropdown-menu>
     </div>
+    <Modal v-show="showDeleteWarning" :hideModal="hideDeleteWarning">
+      <h3>Delete {{ project.projectName }}</h3>
+      <p>This project will also be deleted for all participants of the project. The action is also irreversible.</p>
+      <div class="modal-actions">
+        <button class="invert" @click="hideDeleteWarning">
+          Cancel
+        </button>
+        <button @click="markDelete">
+          Delete
+        </button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
 import DropdownMenu from '@innologica/vue-dropdown-menu';
+import Modal from '@/components/common/Modal.vue';
 
 export default {
   name: 'ProjectComponent',
-  components: {DropdownMenu},
+  components: {DropdownMenu, Modal},
   props: {
     project: {
       type: Object,
@@ -57,6 +69,7 @@ export default {
   },
   data() {
     return {
+      showDeleteWarning: false,
       showEdit: false,
     }
   },
@@ -83,9 +96,36 @@ export default {
         },
       });
     },
-    markDelete() {
-      // TODO(AL): call backend when ready
-      this.showEdit = false;
+    openDeleteWarning() {
+      this.showDeleteWarning = true;
+    },
+    hideDeleteWarning() {
+      this.showDeleteWarning = false;
+    },
+    async markDelete() {
+      const options = {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin',
+      };
+      try {
+        const res = await fetch(`/api/projects/${this.project._id}`, options);
+        const resJson = await res.json();
+        if (!res.ok) {
+          throw Error(resJson.error);
+        }
+        this.$store.commit('alert', {
+          status: 'success',
+          message: 'Successfully deleted project!'
+        });
+        this.$store.commit('refreshProjects');
+        this.hideDeleteWarning();
+      } catch (e) {
+        this.$store.commit('alert', {
+          status: 'error',
+          message: e,
+        });
+      }
     },
     async toggleActive() {
       const options = {
@@ -95,12 +135,15 @@ export default {
       };
       try {
         const res = await fetch(`/api/projects/${this.project._id}`, options);
+        const resJson = await res.json();
         if (!res.ok) {
           throw Error(resJson.error);
         }
         this.$store.commit('alert', {
           status: 'success',
-          message: 'Successfully marked inactive!',
+          message: this.project.active
+            ? 'Successfully marked inactive!'
+            : 'Successfully reactivated the project!',
         });
         this.$store.commit('refreshProjects');
         this.showEdit = false;
@@ -152,12 +195,7 @@ export default {
   background: #F58870;
 }
 
-.edit-container.show,
-.project:hover .edit-container {
-  visibility: visible;
-}
 .edit-container {
-  visibility: hidden;
   position: absolute;
   top: 12px;
   right: 12px;
@@ -173,7 +211,7 @@ export default {
   position: absolute;
   top: 100%;
   right: 0;
-  z-index: 1000;
+  z-index: 100;
   display: none;
   float: left;
   min-width: 10rem;
@@ -201,7 +239,15 @@ export default {
   border: 0;
   text-decoration: none;
 }
+.dropdown-item + .dropdown-item {
+  border-top: 1px solid #aaa;
+  border-radius: 0;
+}
 .dropdown-item:hover {
   background-color: rgba(0,0,0, 0.025);
+}
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

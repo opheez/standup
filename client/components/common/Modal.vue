@@ -33,7 +33,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9998;
+  z-index: 1000;
 }
 
 .modal-container {
@@ -46,6 +46,6 @@ export default {
   border: 2px solid #4A4A4A;
   border-radius: 12px;
   overflow-y: scroll;
-  z-index: 9999;
+  z-index: 1001;
 }
 </style>
