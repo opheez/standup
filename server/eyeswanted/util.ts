@@ -16,7 +16,7 @@ type EyesWantedResponse = {
  * @param {Date} date - A date object
  * @returns {string} - formatted date as string
  */
-const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:mm:ss a');
+const formatDate = (date: Date): string => moment(date).format('MMMM Do, YYYY');
 
 /**
  * Formats populated user object
@@ -39,8 +39,14 @@ const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:
  const formatPopulatedUpdate = (update: any): any => {
   const updateCopy = {...update};
   const authorCopy = updateCopy.authorId;
+  const dateCreatedCopy = updateCopy.dateCreated;
+  const dateModifiedCopy = updateCopy.dateModified;
   delete updateCopy.authorId;
+  delete updateCopy.dateCreated;
+  delete updateCopy.dateModified;
   updateCopy.author = formatPopulatedUser(authorCopy);
+  updateCopy.dateCreated = formatDate(dateCreatedCopy);
+  updateCopy.dateModified = formatDate(dateModifiedCopy);
   return updateCopy;
 }
 
