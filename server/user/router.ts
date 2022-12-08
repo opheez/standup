@@ -4,6 +4,7 @@ import express from 'express';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
+import ProjectCollection from '../project/collection';
 
 const router = express.Router();
 
@@ -111,6 +112,12 @@ router.post(
   async (req: Request, res: Response) => {
     const user = await UserCollection.addOne(req.body.firstName, req.body.lastName, req.body.email, req.body.password);
     req.session.userId = user._id.toString();
+    // Add to global/default project for user testing purposes
+    const globalProjId = '639179ef023b81d034a808c1';
+    const globalProj = await ProjectCollection.findOne(globalProjId);
+    const participants = globalProj.participants;
+    participants.push(req.session.userId);
+    ProjectCollection.updateOne(globalProjId, undefined, undefined, participants);
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.firstName + ' ' + user.lastName}`,
       user: util.constructUserResponse(user)
