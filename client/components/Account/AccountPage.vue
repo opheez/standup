@@ -5,34 +5,22 @@
   <main>
     <section>
       <header>
-        <h2>Account settings for {{ $store.state.firstname }} {{ $store.state.lastname }}</h2>
-      </header>
-      
-      <EditProfileForm />
-      <!-- <ChangePasswordForm /> -->
-    </section>
-    <section>
-      <header>
-        <h2>Account management</h2>
+        <h2>Account management for {{ $store.state.firstname }} {{ $store.state.lastname }}</h2>
       </header>
       <LogoutForm />
-      <DeleteAccountForm />
+      <router-link to="/accountsettings">
+        <h3> Account Settings </h3>
+      </router-link>
     </section>
   </main>
 </template>
 
 <script>
-import EditProfileForm from '@/components/Account/EditProfileForm.vue';
-import ChangePasswordForm from '@/components/Account/ChangePasswordForm.vue';
-import DeleteAccountForm from '@/components/Account/DeleteAccountForm.vue';
 import LogoutForm from '@/components/Account/LogoutForm.vue';
 
 export default {
   name: 'AccountPage',
   components: {
-    EditProfileForm,
-    ChangePasswordForm,
-    DeleteAccountForm,
     LogoutForm
   }
 };

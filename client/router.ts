@@ -6,6 +6,7 @@ import ProjectDashboard from './components/Project/ProjectDashboard.vue';
 import UpdatesPage from './components/Update/UpdatesPage.vue';
 import AddUpdatePage from './components/Update/AddUpdatePage.vue';
 import UpdateDetailPage from './components/Update/UpdateDetailPage.vue';
+import AccountSettingsPage from './components/Account/AccountSettingsPage.vue';
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
@@ -17,6 +18,7 @@ const routes = [
   {path: '/updates/:id', name: 'Updates', component: UpdatesPage},
   {path: '/updates/:id/add', name: 'AddUpdate', component: AddUpdatePage},
   {path: '/account', name: 'Account', component: AccountPage},
+  {path: '/accountsettings', name: 'Account Settings', component: AccountSettingsPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
 
