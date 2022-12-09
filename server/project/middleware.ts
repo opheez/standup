@@ -60,14 +60,16 @@ const isProjectExists = async (req: Request, res: Response, next: NextFunction) 
 };
 
 /**
- * Checks if the content of the project in req.body is valid, i.e. project name is non-empty and < 50 char, dates and users are valid values
+ * Checks if the content of the project in req.body is valid, 
+ * i.e. project name is non-empty and < 50 char, dates and users are valid values
  */
 const isValidProjectFields = async (req: Request, res: Response, next: NextFunction) => {
   const {
     projectName,
     scheduledUpdates: scheduledUpdatesReq,
-    invitedUsers: invitedUsersReq
-  } = req.body as {projectName: string, scheduledUpdates: any[], invitedUsers: string[]};
+    invitedUsers: invitedUsersReq,
+    tags,
+  } = req.body as {projectName: string, scheduledUpdates: any[], invitedUsers: string[], tags: string[]};
 
   if (!projectName.trim()) {
     res.status(400).json({
@@ -101,6 +103,25 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
       error: 'Can only invite users with an existing account.'
     });
     return;
+  }
+
+  // if defined, tags must be a list of strings
+  if (tags !== undefined) {
+    if (!Array.isArray(tags)) {
+      res.status(401).json({
+        error: 'Tags must be a list.'
+      });
+      return;
+    }
+
+    for (const elt of tags) {
+      if (typeof elt !== 'string') {
+        res.status(401).json({
+          error: 'Tags must be a list of strings.'
+        });
+        return;
+      }
+    }
   }
 
   next();
