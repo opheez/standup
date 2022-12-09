@@ -55,7 +55,7 @@
           if (!r.ok) {
             throw new Error(res.error);
           }
-          const message = `Successfully removed thanks!`;
+          const message = `Successfully read update!`;
           this.$set(this.alerts, message, 'success');
           this.$store.commit('refreshEyesWanted');
           setTimeout(() => this.$delete(this.alerts, message), 3000);
