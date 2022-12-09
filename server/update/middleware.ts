@@ -143,11 +143,12 @@ import UpdateCollection from '../update/collection';
  * Checks if the update content in req.body is valid for creation 
  */
  const isValidUpdateContentCreate = async (req: Request, res: Response, next: NextFunction) => {
-  const { status, summary, details, actionItems } = req.body as { 
+  const { status, summary, details, actionItems, tags } = req.body as { 
     status: string, 
     summary: string, 
     details: string, 
     actionItems: string[],
+    tags: string[],
   };
    
   // status must be 'inprogress', 'completed', or 'blocked'
@@ -228,6 +229,33 @@ import UpdateCollection from '../update/collection';
     }
   }
 
+  // tags, if defined, must be a list of strings corresponding to tags in the project
+  if (tags !== undefined) {
+    if (!Array.isArray(tags)) {
+      res.status(401).json({
+        error: 'Tags must be a list.'
+      });
+      return;
+    }
+
+    const project = await ProjectCollection.findOne(req.body.projectId);
+    const projectTags = project.tags;
+
+    for (const tag of tags) {
+      if (typeof tag !== 'string') {
+        res.status(401).json({
+          error: 'Tags must be a list of strings.'
+        });
+        return;
+      } else if (!projectTags.includes(tag)) {
+        res.status(401).json({
+          error: `Tag '${tag}' is not registered in the project.`
+        });
+        return;
+      }
+    }
+  }
+
   next();
 };
 
@@ -236,11 +264,12 @@ import UpdateCollection from '../update/collection';
  * (i.e., undefined is a valid value for any field)
  */
  const isValidUpdateContentEdit = async (req: Request, res: Response, next: NextFunction) => {
-  const { status, summary, details, actionItems } = req.body as { 
+  const { status, summary, details, actionItems, tags } = req.body as { 
     status: string, 
     summary: string, 
     details: string, 
     actionItems: string[], 
+    tags: string[],
   };
    
   // status, if defined, must be 'inprogress', 'completed', or 'blocked'
@@ -293,7 +322,7 @@ import UpdateCollection from '../update/collection';
   }
 
   // action items, if defined, must be a list of strings
-  if (actionItems) {
+  if (actionItems !== undefined) {
     if (!Array.isArray(actionItems)) {
       res.status(401).json({
         error: 'Action items must be a list.'
@@ -305,6 +334,34 @@ import UpdateCollection from '../update/collection';
       if (typeof elt !== 'string') {
         res.status(401).json({
           error: 'Action items must be a list of strings.'
+        });
+        return;
+      }
+    }
+  }
+
+  // tags, if defined, must be a list of tags in the project
+  if (tags !== undefined) {
+    if (!Array.isArray(tags)) {
+      res.status(401).json({
+        error: 'Tags must be a list.'
+      });
+      return;
+    }
+
+    const update = await UpdateCollection.findOneByUpdateId(req.params.updateId);
+    const project = await ProjectCollection.findOne(update.projectId);
+    const projectTags = project.tags;
+
+    for (const tag of tags) {
+      if (typeof tag !== 'string') {
+        res.status(401).json({
+          error: 'Tags must be a list of strings.'
+        });
+        return;
+      } else if (!projectTags.includes(tag)) {
+        res.status(401).json({
+          error: `Tag '${tag}' is not registered in the project.`
         });
         return;
       }
