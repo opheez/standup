@@ -50,7 +50,7 @@ body {
 }
 
 main {
-  width: 75%;
+  width: 66%;
   margin: auto;
 }
 

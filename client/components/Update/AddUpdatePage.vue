@@ -1,29 +1,33 @@
 <template>
-  <main>
-    <h1>
-      Project: {{ project.projectName }}
-    </h1>
-    <UpdateForm
-      :fields="fields"
-    >
-      <template #header>
-          Add update form
-      </template>
-      <template #submit>
-        <button type="submit" @click="submit">Add Update</button>
-      </template>
-    </UpdateForm>
-  </main>
+  <div class="container">
+    <UpdateSidebar :project="project"/>
+    <main>
+      <h1>
+        Project: {{ project.projectName }}
+      </h1>
+      <UpdateForm
+        :fields="fields"
+      >
+        <template #header>
+            Add update form
+        </template>
+        <template #submit>
+          <button type="submit" @click="submit">Add Update</button>
+        </template>
+      </UpdateForm>
+    </main>
+  </div>
 </template>
 
 <script>
 import GetCurrentProject from '@/components/Update/GetCurrentProject.vue';
 import UpdateForm from '@/components/Update/UpdateForm.vue';
+import UpdateSidebar from '@/components/Update/UpdateSidebar.vue';
 
 export default {
   name: 'AddUpdatePage',
   mixins: [GetCurrentProject],
-  components: {UpdateForm},
+  components: {UpdateForm, UpdateSidebar},
   data() {
     return {
       fields: {

@@ -3,7 +3,8 @@ import VueRouter from 'vue-router';
 import AccountPage from './components/Account/AccountPage.vue';
 import HomePage from './components/Home/HomePage.vue';
 import ProjectDashboard from './components/Project/ProjectDashboard.vue';
-import UpdatesPage from './components/Update/UpdatesPage.vue';
+import AllUpdatesView from './components/Update/views/AllUpdatesView.vue';
+import UserView from './components/Update/views/UserView.vue';
 import AddUpdatePage from './components/Update/AddUpdatePage.vue';
 import UpdateDetailPage from './components/Update/UpdateDetailPage.vue';
 import AccountSettingsPage from './components/Account/AccountSettingsPage.vue';
@@ -14,9 +15,10 @@ Vue.use(VueRouter);
 const routes = [
   {path: '/', name: 'Home', component: HomePage},
   {path: '/projects', name: 'Projects', component: ProjectDashboard},
-  {path: '/updates/:projectId/:updateId', name: 'UpdateDetails', component: UpdateDetailPage},
-  {path: '/updates/:id', name: 'Updates', component: UpdatesPage},
+  {path: '/updates/:id', name: 'Updates', component: AllUpdatesView},
+  {path: '/updates/:id/users', name: 'UpdatesPerUser', component: UserView},
   {path: '/updates/:id/add', name: 'AddUpdate', component: AddUpdatePage},
+  {path: '/updates/:id/:updateId', name: 'UpdateDetails', component: UpdateDetailPage},
   {path: '/account', name: 'Account', component: AccountPage},
   {path: '/accountsettings', name: 'Account Settings', component: AccountSettingsPage},
   {path: '*', name: 'Not Found', component: NotFound}

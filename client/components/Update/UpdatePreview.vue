@@ -49,7 +49,7 @@ export default {
       this.$router.push({
         name: 'UpdateDetails',
         params: {
-          projectId: this.update.projectId,
+          id: this.update.projectId,
           updateId: this.update._id,
         },
       })

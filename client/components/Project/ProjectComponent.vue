@@ -162,8 +162,8 @@ export default {
 .project {
   display: inline-flex;
   flex-direction: column;
-  width: 340px;
-  height: 260px;
+  width: 300px;
+  height: 240px;
   margin: 0 12px 12px 0;
   cursor: pointer;
   position: relative;

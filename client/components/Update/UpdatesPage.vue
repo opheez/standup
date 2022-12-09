@@ -1,51 +1,42 @@
 <template>
-  <main>
-    <h1>
-      Project: {{ project.projectName }}
-    </h1>
-    <section
-      v-for="teammate in project.participants"
-      class="user-updates"
-    >
-      <h2>{{ teammate }}</h2>
-      <template v-for="update in (updates[teammate] || [])">
-        <UpdatePreview :update="update" />
-      </template>
-      <p v-if="!updates[teammate]">
-        No updates have been shared.
-      </p>
-    </section>
-    <button
-      v-if="project.active"
-      class="add-update-btn"
-      @click="goToAddForm"
-    >+ Add Update</button>
-  </main>
+  <div class="container">
+    <UpdateSidebar :project="project"/>
+    <main>
+      <h1>
+        Project: {{ project.projectName }}
+      </h1>
+      <section
+        v-for="(updateList, key) in updates"
+        class="user-updates"
+      >
+        <h2>{{ key }}</h2>
+        <template v-for="update in updateList">
+          <UpdatePreview :update="update" />
+        </template>
+        <p v-if="!updateList.length">
+          No updates have been shared.
+        </p>
+      </section>
+      <button
+        v-if="project.active"
+        class="add-update-btn"
+        @click="goToAddForm"
+      >+ Add Update</button>
+      </main>
+  </div>
 </template>
 
 <script>
 import UpdatePreview from '@/components/Update/UpdatePreview.vue';
 import GetCurrentProject from '@/components/Update/GetCurrentProject.vue';
+import UpdateSidebar from '@/components/Update/UpdateSidebar.vue';
 
 export default {
   name: 'UpdatesPage',
   mixins: [GetCurrentProject],
-  components: {UpdatePreview},
+  components: {UpdatePreview, UpdateSidebar},
   beforeMount() {
     this.$store.commit('refreshUpdates', this.$route.params.id);
-  },
-  computed: {
-    updates() {
-      const updates = this.$store.state.updates[this.$route.params.id] || [];
-      const groupedUpdates = updates.reduce((groups, u) => {
-        if (!groups[u.author.email]) {
-          groups[u.author.email] = [];
-        }
-        groups[u.author.email].push(u);
-        return groups;
-      }, {});
-      return groupedUpdates;
-    }
   },
   methods: {
     goToAddForm() {
@@ -69,5 +60,8 @@ export default {
   position: fixed;
   right: 20px;
   bottom: 20px;
+}
+.container {
+  position: relative;
 }
 </style>
