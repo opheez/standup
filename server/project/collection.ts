@@ -2,7 +2,7 @@ import {HydratedDocument, Types} from 'mongoose';
 import type {Project} from './model';
 import ProjectModel from './model';
 import UserCollection from '../user/collection';
-import UpdateCollection from 'server/update/collection';
+import UpdateCollection from '../update/collection';
 
 /**
  * This files contains a class that has the functionality to explore projects
@@ -133,7 +133,7 @@ class ProjectCollection {
       for (const tag of removedTags) {
         await UpdateCollection.deleteTagByProject(tag, projectId);
       }
-      
+
       project.tags = newTags;
     }
     await project.save();
