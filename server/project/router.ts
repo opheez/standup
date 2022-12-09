@@ -116,7 +116,8 @@ router.patch(
   ],
   async (req: Request, res: Response) => {
     const tags = req.body.tags ? util.cleanTags(req.body.tags) : undefined;
-    const project = await ProjectCollection.updateOne(req.params.projectId, req.body.projectName, req.body.scheduledUpdates, req.body.invitedUsers, tags);
+    console.log(tags);
+    const project = await ProjectCollection.updateOne(req.params.projectId, req.body.projectName, req.body.scheduledUpdates, undefined, req.body.invitedUsers, tags);
     res.status(200).json({
       message: 'Your project was updated successfully.',
       project: util.constructProjectResponse(project)
