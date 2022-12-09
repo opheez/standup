@@ -65,6 +65,7 @@ router.get(
  * @param {string} summary - The summary of the update
  * @param {string} details - The details of the update
  * @param {string[] | undefined} actionItems - The action items of the update
+ * @param {string[] | undefined} tags - The tags of the update
  * @param {string} projectId - The id of the project the update is associated with
  * @return {UpdateResponse} - An object with the new update
  * @throws {400} - If projectId is not given, or if required update content is not given
@@ -84,8 +85,8 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const userId = req.session.userId as string;
-    const { status, summary, details, actionItems, projectId } = req.body;
-    const update = await UpdateCollection.addOne(userId, status, summary, details, actionItems, projectId);
+    const { status, summary, details, actionItems, tags, projectId } = req.body;
+    const update = await UpdateCollection.addOne(userId, status, summary, details, actionItems, projectId, tags);
     res.status(201).json({
       message: 'Your update was created successfully.',
       update: util.constructUpdateResponse(update),
@@ -102,6 +103,7 @@ router.post(
  * @param {string} summary - The summary of the update
  * @param {string} details - The details of the update
  * @param {string[] | undefined} actionItems - The action items of the update
+ * @param {string[] | undefined} tags - The tags of the update
  * @return {UserResponse} - The updated user
  * @throws {400} - If projectId is not given
  * @throws {401} - If update content is invalid
@@ -119,7 +121,6 @@ router.patch(
   ],
   async (req: Request, res: Response) => {
     const updateId = req.params.updateId as string;
-    console.log(req.body);
     const update = await UpdateCollection.updateOne(updateId, req.body);
     res.status(200).json({
       message: 'Your update was updated successfully.',
