@@ -56,7 +56,7 @@ router.post(
     const invitedUsers = await Promise.all((req.body.invitedUsers as string[])
       .map(email => UserCollection.findOneByEmail(email)));
     const invitedUserIds = invitedUsers.map(user => user._id);
-    const tags = util.cleanTags(req.body.tags);
+    const tags = req.body.tags ? util.cleanTags(req.body.tags) : undefined;
     const project = await ProjectCollection.addOne(
       userId, req.body.projectName, req.body.scheduledUpdates, invitedUserIds, tags);
 
@@ -115,7 +115,7 @@ router.patch(
     projectValidator.isValidProjectFields
   ],
   async (req: Request, res: Response) => {
-    const tags = util.cleanTags(req.body.tags);
+    const tags = req.body.tags ? util.cleanTags(req.body.tags) : undefined;
     const project = await ProjectCollection.updateOne(req.params.projectId, req.body.projectName, req.body.scheduledUpdates, req.body.invitedUsers, tags);
     res.status(200).json({
       message: 'Your project was updated successfully.',
