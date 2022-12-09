@@ -71,7 +71,7 @@ const ProjectSchema = new Schema<Project>({
   },
   // tags on the project
   tags: {
-    type: [Date],
+    type: [String],
     required: true
   }
 }, {
