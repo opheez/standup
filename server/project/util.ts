@@ -23,6 +23,18 @@ type ProjectResponse = {
 const formatDate = (date: Date): string => moment(date).format('MMMM Do, YYYY');
 
 /**
+ * Given a Tags array, cleans it to remove duplicates and trim whitespace.
+ * Also returns all tags as lowercase.
+ *
+ * @param {string[]} tags - An array of strings
+ * @returns {string} - formatted date as string
+ */
+ const cleanTags = (tags: string[]): string[] => {
+   const processedTags = tags.map((tag) => tag.toLowerCase().trim());
+   return [...new Set(processedTags)];
+ }
+
+/**
  * Transform a raw Project object from the database into an object
  * with all the information needed by the frontend
  *
@@ -52,5 +64,6 @@ const constructProjectResponse = (project: HydratedDocument<Project>): ProjectRe
 };
 
 export {
-  constructProjectResponse
+  constructProjectResponse,
+  cleanTags,
 };
