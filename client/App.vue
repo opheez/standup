@@ -22,6 +22,7 @@ export default {
       this.$store.commit('setEmail', user ? user.email : null);
       this.$store.commit('setLastname', user ? user.lastName : null);
       this.$store.commit('setFirstname', user ? user.firstName : null);
+      this.$store.commit('refreshProjects');
     });
     this.$store.commit('refreshAllThanks');
     this.$store.commit('refreshAllEyesWanted');
@@ -160,10 +161,42 @@ button.thin-btn {
   background: #F8F8F8;
   padding: 24px;
   cursor: pointer;
-  width: inherit;
 }
 
 .preview:hover {
   background: #f0eef0;
+}
+
+main.left-panel {
+  margin: 0 0 0 17%;
+  display: inline-block;
+  transition: width 1ms ease-in-out;
+  background-color: #fff;
+  padding-right: 20px;
+}
+main.left-panel.thin {
+  width: 50%;
+}
+.details-container {
+  display: inline-block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #f8f8f8;
+  border-left: 2px solid #a4a4a4;
+  width: 17%;
+  height: 100%;
+  margin-left: 8px;
+  padding: 40px 36px;
+}
+
+.details-container > button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  text-decoration: underline;
+}
+main.left-panel.thin + .details-container {
+  width: 33%;
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
     <section class="update">
+      <h2 v-if="showProjectTitle">{{ project.projectName }}</h2>
       <div v-if="editing">
         <div class=field>
           <UpdateForm :fields="draft">
@@ -127,7 +128,8 @@ export default {
     project: {
       type: Object,
       required: true,
-    }
+    },
+    showProjectTitle: Boolean,
   },
   computed: {
     inReadingList() {

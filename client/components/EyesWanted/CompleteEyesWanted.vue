@@ -8,7 +8,6 @@
         Read!
       </button>
     </section>
-
       <section class="alerts">
         <article
           v-for="(status, alert, index) in alerts"
@@ -55,13 +54,20 @@
           if (!r.ok) {
             throw new Error(res.error);
           }
-          const message = `Successfully read update!`;
-          this.$set(this.alerts, message, 'success');
+          const message = ``;
+          if (this.eyeswanted.update._id === this.$store.state.currentUpdate?._id) {
+            this.$store.commit('setCurrentUpdate', null);  
+          }
           this.$store.commit('refreshEyesWanted');
-          setTimeout(() => this.$delete(this.alerts, message), 3000);
+          this.$store.commit('alert', {
+            status: 'success',
+            message: 'Successfully marked update as read!'
+          });
         } catch (e) {
-          this.$set(this.alerts, e, 'error');
-          setTimeout(() => this.$delete(this.alerts, e), 3000);
+          this.$store.commit('alert', {
+            status: 'error',
+            message: e
+          });
         };
       },
     },
