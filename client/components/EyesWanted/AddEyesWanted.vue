@@ -124,7 +124,7 @@
           if (!r.ok) {
             throw new Error(res.error);
           }
-          const message = `Successfully removed thanks!`;
+          const message = `Successfully removed eyes wanted!`;
           this.$set(this.alerts, message, 'success');
           setTimeout(() => this.$delete(this.alerts, message), 3000);
         } catch (e) {
