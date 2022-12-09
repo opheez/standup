@@ -86,7 +86,7 @@ router.post(
   async (req: Request, res: Response) => {
     const userId = req.session.userId as string;
     const { status, summary, details, actionItems, tags, projectId } = req.body;
-    const update = await UpdateCollection.addOne(userId, status, summary, details, actionItems, projectId, tags);
+    const update = await UpdateCollection.addOne(userId, status, summary, details, actionItems, tags, projectId);
     res.status(201).json({
       message: 'Your update was created successfully.',
       update: util.constructUpdateResponse(update),
