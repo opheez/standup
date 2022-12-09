@@ -32,15 +32,17 @@ class ProjectCollection {
    *
    * @param {string} creatorId - The id of the creator of the project
    * @param {string} projectName - The name of the project
+   * @param {string[]} tags - The tags of the project
    * @return {Promise<HydratedDocument<Project>>} - The newly created project
    */
-  static async addOne(creatorId: Types.ObjectId | string, projectName: string, scheduledUpdates?: string[], invitedUsers?: (Types.ObjectId | string)[]): Promise<HydratedDocument<Project>> {
+  static async addOne(creatorId: Types.ObjectId | string, projectName: string, scheduledUpdates?: string[], invitedUsers?: (Types.ObjectId | string)[], tags?: string[]): Promise<HydratedDocument<Project>> {
     const project = new ProjectModel({
       creatorId,
       projectName,
       scheduledUpdates,
       invitedUsers,
       participants: [creatorId],
+      tags: tags ? tags : [],
     });
     await project.save(); // Saves project to MongoDB
     await Promise.resolve(this.populateProject(project));
@@ -103,13 +105,15 @@ class ProjectCollection {
    * @param {Date[]} newDates? - The new scheduled dates of the project
    * @param {(Types.ObjectId | string)[]} newParticipants? - The id of the project participants
    * @param {(Types.ObjectId | string)[]} newInvitedUsers? - The id of the invited users
+   * @param {string[]} newTags? - The new tags of the project
    * @return {Promise<HydratedDocument<Project>>} - The newly updated project
    */
   static async updateOne(projectId: Types.ObjectId | string,
                          newName?: string,
                          newDates?: Date[],
                          newParticipants?: (Types.ObjectId | string)[],
-                         newInvitedUsers?: (Types.ObjectId | string)[]): Promise<HydratedDocument<Project>> {
+                         newInvitedUsers?: (Types.ObjectId | string)[],
+                         newTags?: string[]): Promise<HydratedDocument<Project>> {
     const project = await ProjectModel.findOne({_id: projectId});
     if (newName !== undefined){
       project.projectName = newName;
@@ -122,6 +126,9 @@ class ProjectCollection {
     }
     if (newInvitedUsers !== undefined){
       project.invitedUsers = newInvitedUsers.map(user => new Types.ObjectId(user));
+    }
+    if (newTags !== undefined) {
+      project.tags = newTags;
     }
     await project.save();
     await Promise.resolve(this.populateProject(project));

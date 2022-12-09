@@ -41,7 +41,8 @@ router.get(
  *
  * @param {string} projectName - the name for the project
  * @param {string} scheduledUpdates - the scheduled dates for the project
- * @param {string} invitedUsers - the invitees for the project
+ * @param {string[]} invitedUsers - the invitees for the project
+ * @param {string[]} tags - the tags on the project
  * @throws {403} - If the user is not logged in
  */
 router.post(
@@ -56,7 +57,7 @@ router.post(
       .map(email => UserCollection.findOneByEmail(email)));
     const invitedUserIds = invitedUsers.map(user => user._id);
     const project = await ProjectCollection.addOne(
-      userId, req.body.projectName, req.body.scheduledUpdates, invitedUserIds);
+      userId, req.body.projectName, req.body.scheduledUpdates, invitedUserIds, req.body.tags);
 
     res.status(201).json({
       message: 'Your project was created successfully.',
@@ -97,7 +98,8 @@ router.patch(
  *
  * @param {string} projectName - the new name for the project
  * @param {string} scheduledUpdates - the new scheduled dates for the project
- * @param {string} invitedUsers - the new invitees for the project
+ * @param {string[]} invitedUsers - the new invitees for the project
+ * @param {string[]} tags - the new tags for the project
  * @return {ProjectResponse} - the updated project
  * @throws {403} - if the user is not logged in or not the author of
  *                 of the project
@@ -112,7 +114,7 @@ router.patch(
     projectValidator.isValidProjectFieldsEdit,
   ],
   async (req: Request, res: Response) => {
-    const project = await ProjectCollection.updateOne(req.params.projectId, req.body.projectName, req.body.scheduledUpdates, req.body.invitedUsers);
+    const project = await ProjectCollection.updateOne(req.params.projectId, req.body.projectName, req.body.scheduledUpdates, req.body.invitedUsers, req.body.tags);
     res.status(200).json({
       message: 'Your project was updated successfully.',
       project: util.constructProjectResponse(project)

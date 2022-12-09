@@ -11,6 +11,7 @@ type ProjectResponse = {
   participants: string[];
   invitedUsers: string[];
   scheduledUpdates: string[]; 
+  tags: string[];
 };
 
 /**
