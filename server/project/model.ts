@@ -16,6 +16,7 @@ export type Project = {
   participants: Types.ObjectId[];
   invitedUsers: Types.ObjectId[];
   scheduledUpdates: Date[]; 
+  tags: string[];
 };
 
 export type PopulatedProject = {
@@ -26,6 +27,7 @@ export type PopulatedProject = {
   participants: User[];
   invitedUsers: User[];
   scheduledUpdates: Date[]; 
+  tags: string[];
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -66,6 +68,11 @@ const ProjectSchema = new Schema<Project>({
   scheduledUpdates: {
     type: [Date],
     required: false
+  },
+  // tags on the project
+  tags: {
+    type: [Date],
+    required: true
   }
 }, {
   toObject: {virtuals: true, versionKey: false},
