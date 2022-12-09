@@ -68,6 +68,17 @@ class UpdateCollection {
   }
 
   /**
+   * Deletes a given tag from every update in the project with given project id.
+   *
+   * @param {string} tag - The tag to delete
+   * @param {string} projectId - The id of the project
+   * @return {Promise<void>} - The updates with the given projectId
+   */
+   static async deleteTagByProject(tag: string, projectId: Types.ObjectId | string): Promise<void> {
+    await UpdateModel.updateMany({ projectId }, { $pull: { tags: tag }});
+  }
+
+  /**
    * Updates an update
    *
    * @param {string} updateId - The id of the update to update
