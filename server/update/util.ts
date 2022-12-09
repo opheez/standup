@@ -13,6 +13,7 @@ type UpdateResponse = {
   summary: string;
   details: string;
   actionItems: string[];
+  tags: string[];
   projectId: string;
 };
 
