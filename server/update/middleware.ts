@@ -242,12 +242,7 @@ import UpdateCollection from '../update/collection';
     const projectTags = project.tags;
 
     for (const tag of tags) {
-      if (typeof tag !== 'string') {
-        res.status(401).json({
-          error: 'Tags must be a list of strings.'
-        });
-        return;
-      } else if (!projectTags.includes(tag)) {
+      if (!projectTags.includes(tag)) {
         res.status(401).json({
           error: `Tag '${tag}' is not registered in the project.`
         });
@@ -354,12 +349,7 @@ import UpdateCollection from '../update/collection';
     const projectTags = project.tags;
 
     for (const tag of tags) {
-      if (typeof tag !== 'string') {
-        res.status(401).json({
-          error: 'Tags must be a list of strings.'
-        });
-        return;
-      } else if (!projectTags.includes(tag)) {
+      if (!projectTags.includes(tag)) {
         res.status(401).json({
           error: `Tag '${tag}' is not registered in the project.`
         });
