@@ -19,6 +19,7 @@ export type Update = {
   details: string;
   actionItems: string[];
   projectId: Types.ObjectId;
+  tags: string[];
 };
 
 // Type definition for Update on the backend
@@ -32,6 +33,7 @@ export type PopulatedUpdate = {
   details: string;
   actionItems: string[];
   projectId: string;
+  tags: string[];
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -79,6 +81,11 @@ const UpdateSchema = new Schema({
   projectId: {
     type: Schema.Types.ObjectId,
     required: true,
+  },
+  // The tags of the update
+  tags: {
+    type: [String],
+    required: true
   },
 });
 
