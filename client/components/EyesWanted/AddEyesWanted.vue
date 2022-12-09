@@ -108,7 +108,7 @@
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
         };
-        this.EyesWantedRequest('');
+        this.$store.commit('refreshAllEyesWanted'); 
       },
       async removeEyesWanted() {
          /**
@@ -131,35 +131,7 @@
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
         };
-        this.EyesWantedRequest('${this.eyeswanted._id}');
-      },
-      async EyesWantedRequest(params) {
-        /**
-         * Submits a request to the like's endpoint
-         * @param params - Options for the request
-         * @param params.body - Body for the request, if it exists
-         * @param params.callback - Function to run if the the request succeeds
-         */
-        const options = {
-          method: params.method, 
-          headers: {'Content-Type': 'application/json'},
-        };
-        if (params.body) {
-          options.body = params.body;
-        }
-        try {
-          const r = await fetch('/api/eyeswanted', options);
-          if (!r.ok) {
-            const res = await r.json();
-            throw new Error(res.error);
-          }
-          this.$store.commit('refreshAllEyesWanted'); 
-          params.callback();
-        } catch (e) {
-          this.$set(this.alerts, e, 'error');
-          setTimeout(() => this.$delete(this.alerts, e), 3000);
-        }
-        
+        this.$store.commit('refreshAllEyesWanted'); 
       }
     },
   };
