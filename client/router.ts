@@ -27,7 +27,7 @@ const routes = [
 const router = new VueRouter({routes});
 
 const AUTH_REQUIRED_ROUTES = [
-  'Projects', 'Account', 'Updates', 'AddUpdate', 'UpdateDetails'
+  'Projects', 'Account', 'Account Settings', 'Updates', 'AddUpdate', 'UpdateDetails', 'UpdatesPerUser'
 ];
 
 /**

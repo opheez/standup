@@ -45,10 +45,12 @@ export default {
         {
           name: 'Users',
           onClick: () => {
-            this.$router.push({
-              params,
-              name: userViewName,
-            });
+            if (this.$route.name !== userViewName) {
+              this.$router.push({
+                params,
+                name: userViewName,
+              });
+            }
             this.$store.commit('setUserFilter', null);
           },
           active: this.$route.name === userViewName
@@ -56,10 +58,12 @@ export default {
           children: this.project.participants.map(email => ({
             name: email,
             onClick: () => {
-              this.$router.push({
-                params,
-                name: userViewName,
-              });
+              if (this.$route.name !== userViewName) {
+                this.$router.push({
+                  params,
+                  name: userViewName,
+                });
+              }
               this.$store.commit('setUserFilter', email);
             },
             active: this.$route.name === userViewName
