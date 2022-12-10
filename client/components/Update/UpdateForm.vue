@@ -74,18 +74,38 @@
         + Add item
       </button>
     </div>
+    <div class="field">
+      <label>Tags</label>
+      <multiselect 
+        v-model="fields.tags"
+        :options="options"
+        :multiple="true"
+        :close-on-select="false">
+      </multiselect>
+    </div>
     <slot name="submit"></slot>
   </section>
 </template>
 
 <script>
+import Vue from 'vue';
+import Multiselect from 'vue-multiselect'
+
+// register globally
+Vue.component('multiselect', Multiselect)
+
 export default {
   name: 'UpdateForm',
+  components: {Multiselect},
   props: {
     fields: {
       type: Object,
       required: true,
     },
+    options: {
+      type: Array,
+      required: true
+    }
   },
   data() {
     return {
@@ -107,6 +127,7 @@ export default {
 }
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style scoped>
 section {
   display: flex;

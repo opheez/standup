@@ -7,6 +7,7 @@
       </h1>
       <UpdateForm
         :fields="fields"
+        :options="project.tags"
       >
         <template #header>
             Add update form
@@ -35,6 +36,7 @@ export default {
         details: '',
         status: 'inprogress',
         actionItems: [''],
+        tags: [],
       },
       statusToText: {
         'inprogress': 'In-Progress',
@@ -64,6 +66,7 @@ export default {
       try {
         const res = await fetch('/api/updates', options);
         if (!res.ok) {
+          const resJson = await res.json();
           throw Error(resJson.error);
         }
         this.$store.commit('alert', {
