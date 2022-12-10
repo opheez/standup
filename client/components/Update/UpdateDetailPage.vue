@@ -96,7 +96,7 @@
             🗑️ Delete
           </button>
         </div>
-        </br>
+        <hr/>
         <div 
           v-if="inReadingList"
           class="eyeswanted">
@@ -280,5 +280,9 @@ export default {
 }
 .update-metadata .field {
   margin-bottom: 20px;
+}
+
+hr {
+  margin: 20px;
 }
 </style>

@@ -132,9 +132,14 @@ button.invert {
   background: transparent;
 }
 
+
 button.invert:hover {
   background: #e8e3e8;
   filter: none;
+}
+
+button.invert.active {
+  background: #e2dce5;
 }
 
 button.thin-btn {
@@ -143,7 +148,7 @@ button.thin-btn {
 
 .status {
   background: #bcbcbc;
-  border-radius: 100px;
+  border-radius: 8px;
   padding: 4px 12px;
   width: fit-content;
   display: inline-block;
