@@ -1,5 +1,9 @@
 <template>
-  <article class="update preview" @click="openUpdate(update)">
+  <article
+    class="update preview"
+    :class="{flagged: inReadingList}"
+    @click="openUpdate(update)"
+  >
     <div>
       {{ update.dateModified }}: 
       {{ update.summary }}
@@ -51,6 +55,11 @@ export default {
       },
     }
   },
+  computed: {
+    inReadingList() {
+      return this.update._id in this.$store.state.eyeswanted;
+    }
+  },
   beforeMount() {
     this.$store.commit('refreshAllThanks', this.update._id); 
   },
@@ -67,6 +76,10 @@ export default {
 <style scoped>
 .update {
   margin-bottom: 16px;
+}
+
+.update.flagged {
+  border-color: #993636;
 }
 
 .update > p {

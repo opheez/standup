@@ -1,27 +1,28 @@
 <template>
     <article>
     <section class="addeyeswantedsection">
-      <button class="addeyeswantedbutton"
-        v-if="!existingEyesWanted"
+      <h4>Get your teammates' attention!</h4>
+      <button class="addeyeswantedbutton thin-btn"
+        v-if="!existingEyesWanted || project.participants.length - 1 > waitingFor.length"
         @click="addEyesWanted"
       >
-        Eyes Wanted!
+        Eye's wanted!
       </button>
-      <button class="addeyeswantedbutton"
+      <button class="addeyeswantedbutton thin-btn invert"
         v-if="existingEyesWanted"
         @click="removeEyesWanted"
       >
-        Remove Eyes Wanted!
+        Resolve
       </button>
     </section>
 
     <section v-if="existingEyesWanted"
-        class = "viewedby">
-      <p v-for="viewed in this.viewed">
-        Viewed by {{ viewed }} 
+        class = "waitingFor">
+      <p v-if="waitingFor">
+        Waiting for reviews from: {{ waitingFor.join(', ') }} 
       </p>
-      <p v-if="!this.viewed" >
-        Waiting for review. 
+      <p v-else>
+        All teammates have read the update!
       </p>
     </section>
 
@@ -53,7 +54,6 @@
     },
     data() {
       return {
-        viewed: '',
         alerts: {} // Displays success/error messages encountered during freet modification
       };
     },
@@ -62,25 +62,13 @@
         /**
          * Return if user has added eye wanted the update
          */
-        const alleyeswanted = this.$store.state.alleyeswanted;
-        const exists = alleyeswanted
-                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id)
-                        .length === 1;
-        if (exists) {
-          this.eyeswanted = alleyeswanted
-                        .filter(alleyeswanted => alleyeswanted.update._id === this.update._id)[0];
-        };
-        return exists;
+        return this.$store.state.alleyeswanted[this.update._id];
       },
-      viewedby(){
-        if (this.eyeswanted){
-          const unviewed = this.eyeswanted.targetUsers;
-          const teammates = this.project.participants;
-          for (let n=0; n < unviewed.length; n++){
-            this.viewed = teammates.filter(email => !email.includes(unviewed[n].email))
-          };
-          return this.viewed;
+      waitingFor(){
+        if (this.existingEyesWanted){
+          return this.existingEyesWanted.targetUsers.map(user => user.email);
         }
+        return this.project.participants;
       }
     },
     methods: {
@@ -101,14 +89,11 @@
           if (!r.ok) {
             throw new Error(res.error);
           }
-          const message = 'Successfully add eyes wanted!';
-          this.$set(this.alerts, message, 'success');
-          setTimeout(() => this.$delete(this.alerts, message), 3000);
+          this.$store.commit('refreshUpdateEyesWanted', this.update._id); 
         } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
         };
-        this.$store.commit('refreshAllEyesWanted'); 
       },
       async removeEyesWanted() {
          /**
@@ -117,29 +102,32 @@
          const requestOptions = {
               method: 'DELETE',
           };
-        const url = `/api/eyeswanted/${this.eyeswanted._id}`;
+        const url = `/api/eyeswanted/${this.existingEyesWanted._id}`;
         try {
           const r = await fetch(url, requestOptions);
           const res = await r.json();
           if (!r.ok) {
             throw new Error(res.error);
           }
-          const message = `Successfully removed eyes wanted!`;
-          this.$set(this.alerts, message, 'success');
-          setTimeout(() => this.$delete(this.alerts, message), 3000);
+          this.$store.commit('refreshUpdateEyesWanted', this.update._id);
         } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
         };
-        this.$store.commit('refreshAllEyesWanted'); 
       }
     },
   };
   </script>
   
   <style scoped>
-
-.viewedby {
-  font-size: 80%;
+h4 {
+  margin-bottom: 8px;
 }
-  </style>
+.waitingFor {
+  font-size: 80%;
+  color:rgb(125, 125, 125);
+}
+button + button {
+  margin-left: 8px;
+}
+</style>

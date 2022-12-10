@@ -56,14 +56,6 @@
           </p>
           <p v-if="!update.tags.length">No tags were specified.</p>
         </div>
-        <div 
-          v-if="($store.state.email === update.author.email
-                  && project.active === true)"
-          class="eyeswanted">
-          <AddEyesWantedComponent
-          :update="update"
-          :project="project"/>
-        </div>
         <div class="field">
           <h4>Details</h4>
           <p>{{ update.details }}</p>
@@ -96,14 +88,17 @@
             🗑️ Delete
           </button>
         </div>
-        <hr/>
-        <div 
-          v-if="inReadingList"
-          class="eyeswanted">
-          <CompleteEyesWantedComponent
+        <AddEyesWantedComponent
+          v-if="$store.state.email === update.author.email
+                && project.active"
           :update="update"
-          :eyeswanted="this.eyeswanted"/>
-        </div>
+          :project="project"
+        />
+        <CompleteEyesWantedComponent
+          v-if="inReadingList"
+          :update="update"
+        />
+        <hr/>
         <div 
           v-if="($store.state.email !== update.author.email
                   && project.active === true)"
@@ -138,9 +133,7 @@ export default {
   },
   computed: {
     inReadingList() {
-      const eyeswanted = this.$store.state.eyeswanted;
-      this.eyeswanted = eyeswanted.filter(eyeswanted => eyeswanted.update._id === this.update._id)[0] || '';
-      return this.eyeswanted;
+      return this.update._id in this.$store.state.eyeswanted;
     },
   },
   methods: {
@@ -246,6 +239,11 @@ export default {
       },
     }
   },
+  beforeMount() {
+    if (this.update.author.email === this.$store.state.email) {
+      this.$store.commit('refreshUpdateEyesWanted', this.update._id);
+    }
+  }
 }
 </script>
 <style scoped>

@@ -3,13 +3,12 @@
     <h1>
       Reading List
     </h1>
-    <template
-      v-for="eyeswanted in $store.state.eyeswanted">
-      <UpdatePreview
-        :update="eyeswanted.update"
-        :openUpdate="openUpdate" />
-    </template>
-    <article v-if="$store.state.eyeswanted.length===0">
+    <UpdatePreview
+      v-for="eyeswanted in $store.state.eyeswanted"
+      :update="eyeswanted.update"
+      :openUpdate="openUpdate"
+    />
+    <article v-if="Object.keys($store.state.eyeswanted).length===0">
       <p> No eyes wanted updates. </p>
     </article>
   </div>
