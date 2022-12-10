@@ -151,7 +151,7 @@ const store = new Vuex.Store({
       const url = `/api/thanks/${updateId}`;
       const res = await fetch(url);
       const resJson = await res.json();
-      Vue.set(state, updateId, resJson);
+      Vue.set(state.allthanks, updateId, resJson);
      },
      async refreshAllEyesWanted(state){
       /**

@@ -22,12 +22,16 @@
           by {{ thanks.postUser.firstName }} {{thanks.postUser.lastName}}
         </p>
       </div>
+    <ThanksCount :update="update"/>
   </article>
 </template>
 
 <script>
+import ThanksCount from '@/components/Thanks/ThanksCount.vue';
+
 export default {
   name: 'UpdatePreview',
+  components: {ThanksCount},
   props: {
     update: {
       type: Object,

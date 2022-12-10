@@ -111,28 +111,21 @@
           <AddThanksComponent
           :update="update"/>
         </div>
-        <div
-          v-if="(this.update.author.email === $store.state.email && isThankedby())">
-          <p class="thanks-number">
-          {{ this.thanks.length }} thanks </p>
-          <p v-for="thanks in this.thanks"
-            class="thanks-number">
-            by {{ thanks.postUser.firstName }} {{thanks.postUser.lastName}}
-          </p>
-        </div>
+        <ThanksCount :update="update"/>
       </div>
     </section>
 </template>
 <script>
 import UpdateForm from '@/components/Update/UpdateForm.vue';
 import AddThanksComponent from '@/components/Thanks/AddThanks.vue';
+import ThanksCount from '@/components/Thanks/ThanksCount.vue';
 import AddEyesWantedComponent from '@/components/EyesWanted/AddEyesWanted.vue';
 import CompleteEyesWantedComponent from '@/components/EyesWanted/CompleteEyesWanted.vue';
 import UpdateSidebar from '@/components/Update/UpdateSidebar.vue';
 
 export default {
   name: 'UpdateDetailPage',
-  components: {UpdateForm, UpdateSidebar, AddThanksComponent, AddEyesWantedComponent, CompleteEyesWantedComponent},
+  components: {UpdateForm, UpdateSidebar, AddThanksComponent, AddEyesWantedComponent, CompleteEyesWantedComponent, ThanksCount},
   props: {
     update: {
       type: Object,
