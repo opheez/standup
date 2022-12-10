@@ -120,7 +120,7 @@
             const res = await r.json();
             throw new Error(res.error);
           }
-          this.$store.commit('refreshAllThanks'); 
+          this.$store.commit('refreshAllThanks', this.update._id); 
           params.callback();
         } catch (e) {
           this.$set(this.alerts, e, 'error');

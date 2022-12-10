@@ -47,7 +47,9 @@ export default {
       },
     }
   },
-
+  beforeMount() {
+    this.$store.commit('refreshAllThanks', this.update._id); 
+  },
   methods: {
     isThankedby() {
       const allthanks = this.$store.state.allthanks;

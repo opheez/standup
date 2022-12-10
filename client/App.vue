@@ -24,7 +24,6 @@ export default {
       this.$store.commit('setFirstname', user ? user.firstName : null);
       this.$store.commit('refreshProjects');
     });
-    this.$store.commit('refreshAllThanks');
     this.$store.commit('refreshAllEyesWanted');
     this.$store.commit('refreshEyesWanted');
     // Clear alerts on page refresh
