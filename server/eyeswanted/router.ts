@@ -17,6 +17,42 @@ const router = express.Router();
  * @throws {403} - If the user is not logged in
  *
  */
+/**
+ * Get EyesWanted for the given update
+ *
+ * @name GET /api/eyeswanted?updateId=updateId
+ * 
+ * @return {EyesWantedResponse[]} - An array of EyesWanted targeting the logged-in user
+ * @throws {403} - If the user is not logged in
+ *
+ */
+router.get(
+  '/',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.session.userId as string;
+    if (req.query.updateId !== undefined) {
+      next();
+      return;
+    }
+    const readingList = await EyesWantedCollection.findAllByUserId(userId);
+    const response = readingList.map(util.constructEyesWantedResponse);
+    res.status(200).json(response);
+  },
+  [
+    updateValidator.isUpdateExistsQuery,
+    updateValidator.isUserInProject,
+  ],
+  async (req: Request, res: Response, next: NextFunction) => {
+    const eyesWanted = await EyesWantedCollection.findOneByUpdateId(req.query.updateId as string);
+    res.status(200).json({
+      eyesWanted: eyesWanted ? util.constructEyesWantedResponse(eyesWanted) : null,
+    });
+  },
+);
+
 router.get(
   '/',
   [
