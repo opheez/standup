@@ -18,13 +18,8 @@ const store = new Vuex.Store({
     invites: [], // All projects the signed in user is invited to
     updates: {}, // mapping from project IDs to a list of updates
     allthanks: {}, // mapping from update ID to all thanks for that update
-<<<<<<< HEAD
     eyeswanted: {}, // mapping from user to a list of eyes wanted updates
     alleyeswanted: {}, // All eyes wanted in the app
-=======
-    eyeswanted: [], // mapping from user to a list of eyes wanted updates
-    alleyeswanted: [], // All eyes wanted in the app
->>>>>>> Only fetch thanks for the projects that the user is involved in
     userFilter: null,
     tagFilter: null,
     currentUpdate: null,
@@ -170,15 +165,6 @@ const store = new Vuex.Store({
       }
     },
     async refreshAllThanks(state, updateId){
-      /**
-       * Request the server for all the alerts (risks) the user posted.
-       */
-      const url = `/api/thanks/${updateId}`;
-      const res = await fetch(url);
-      const resJson = await res.json();
-      Vue.set(state.allthanks, updateId, resJson);
-     },
-     async refreshAllEyesWanted(state){
       /**
        * Request the server for all the alerts (risks) the user posted.
        */
