@@ -84,6 +84,17 @@
             🗑️ Delete
           </button>
         </div>
+        <div class="tags">
+          <h3>Tags</h3>
+          <ul class="reset">
+            <li
+              v-for="item in update.tags"
+            >
+              {{ item }}
+            </li>
+          </ul>
+          <p v-if="!update.tags.length">No tags were specified.</p>
+        </div>
         </br>
         <div 
           v-if="inReadingList"
