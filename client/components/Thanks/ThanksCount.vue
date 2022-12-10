@@ -4,7 +4,7 @@
     class="thanks-container"
   >
     <p class="thanks-number">
-      {{ thanks.length }} teammates thanked you!
+      {{ thanks.length }} teammate{{thanks.length === 1 ? '' : 's'}} thanked you!
       ({{ thanks.join(', ') }})
     </p>
   </div>
