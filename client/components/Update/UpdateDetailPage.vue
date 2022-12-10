@@ -161,7 +161,7 @@ export default {
       const contentUnchanged = Object.entries(this.draft).every(([key, value]) => {
         const otherValue = this.update[key];
         if (value instanceof Array) {
-          return value.every((val, i) => val === otherValue[i]);
+          return value.length === otherValue.length && value.every((val, i) => val === otherValue[i]);
         }
         return otherValue === value;
       });
