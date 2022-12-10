@@ -3,7 +3,7 @@
 <!-- This navbar takes advantage of both flex and grid layouts for positioning elements; feel free to redesign as you see fit! -->
 
 <template>
-  <nav>
+  <nav :class="{thin: $store.state.currentUpdate}">
     <div class="left">
       <img src="../../public/logo.svg">
       <h1 class="title">
@@ -75,5 +75,9 @@ img {
 
 .alerts {
     width: 25%;
+}
+
+nav.thin {
+  margin-right: 33%;
 }
 </style>

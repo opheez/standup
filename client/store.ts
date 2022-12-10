@@ -21,6 +21,7 @@ const store = new Vuex.Store({
     eyeswanted: [], // mapping from user to a list of eyes wanted updates
     alleyeswanted: [], // All eyes wanted in the app
     userFilter: null,
+    currentUpdate: null,
   },
   mutations: {
     alert(state, payload) {
@@ -59,6 +60,9 @@ const store = new Vuex.Store({
        * @param filter - Username of the user to fitler freets by
        */
       state.filter = filter;
+    },
+    setCurrentUpdate(state, update) {
+      state.currentUpdate = update;
     },
     updateProjects(state, projects) {
       /**

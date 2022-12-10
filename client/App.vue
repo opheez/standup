@@ -22,12 +22,27 @@ export default {
       this.$store.commit('setEmail', user ? user.email : null);
       this.$store.commit('setLastname', user ? user.lastName : null);
       this.$store.commit('setFirstname', user ? user.firstName : null);
+      this.$store.commit('refreshProjects');
     });
     this.$store.commit('refreshAllThanks');
     this.$store.commit('refreshAllEyesWanted');
     this.$store.commit('refreshEyesWanted');
     // Clear alerts on page refresh
     this.$store.state.alerts = {};
+  },
+  watch: {
+    '$route': {
+      handler: function(value) {
+        const validRoutes = [
+          'Updates', 'UpdatesPerUser', 'UpdateDetails',
+        ];
+        if (!validRoutes.includes(value.name)) {
+          this.$store.commit('setCurrentUpdate', null);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
   }
 };
 </script>
@@ -150,5 +165,38 @@ button.thin-btn {
 
 .preview:hover {
   background: #f0eef0;
+}
+
+main.left-panel {
+  margin: 0 0 0 17%;
+  display: inline-block;
+  transition: width 1ms ease-in-out;
+  background-color: #fff;
+  padding-right: 20px;
+}
+main.left-panel.thin {
+  width: 50%;
+}
+.details-container {
+  display: inline-block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #f8f8f8;
+  border-left: 2px solid #a4a4a4;
+  width: 17%;
+  height: 100%;
+  margin-left: 8px;
+  padding: 40px 36px;
+}
+
+.details-container > button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  text-decoration: underline;
+}
+main.left-panel.thin + .details-container {
+  width: 33%;
 }
 </style>

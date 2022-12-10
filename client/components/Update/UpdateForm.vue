@@ -114,10 +114,6 @@ section {
   position: relative;
 }
 
-section h2 {
-  margin-top: 0;
-}
-
 .field {
   margin-bottom: 12px;
 }

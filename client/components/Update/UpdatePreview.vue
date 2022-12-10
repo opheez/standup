@@ -1,5 +1,5 @@
 <template>
-  <article class="update preview" @click="openUpdate">
+  <article class="update preview" @click="openUpdate(update)">
     <div>
       {{ update.dateModified }}: 
       {{ update.summary }}
@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import AddEyesWantedComponent from '@/components/EyesWanted/AddEyesWanted.vue';
 export default {
   name: 'UpdatePreview',
   props: {
@@ -28,6 +27,10 @@ export default {
       type: Object,
       required: true,
     },
+    openUpdate: {
+      type: Function,
+      required: true,
+    }
   },
   data()  {
     return {
@@ -45,15 +48,6 @@ export default {
       this.thanks = allthanks.filter(thanks => thanks.updateId._id === this.update._id);
       return this.thanks;
     },
-    openUpdate() {
-      this.$router.push({
-        name: 'UpdateDetails',
-        params: {
-          id: this.update.projectId,
-          updateId: this.update._id,
-        },
-      })
-    }
   }
 }
 </script>
