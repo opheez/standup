@@ -134,7 +134,7 @@ export default {
         credentials: 'same-origin',
       };
       try {
-        const res = await fetch(`/api/projects/${this.project._id}`, options);
+        const res = await fetch(`/api/projects/${this.project._id}/archive`, options);
         const resJson = await res.json();
         if (!res.ok) {
           throw Error(resJson.error);
