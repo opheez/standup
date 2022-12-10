@@ -76,7 +76,7 @@ router.post(
  * @throws {404} - If the projectId is not valid
  */
 router.patch(
-  '/:projectId?',
+  '/:projectId?/archive',
   [
     userValidator.isUserLoggedIn,
     projectValidator.isProjectExists,
