@@ -109,7 +109,7 @@ router.patch(
     userValidator.isUserLoggedIn,
     projectValidator.isProjectExists,
     projectValidator.isValidProjectModifier,
-    projectValidator.isValidProjectFields
+    projectValidator.isValidProjectFieldsEdit,
   ],
   async (req: Request, res: Response) => {
     const project = await ProjectCollection.updateOne(req.params.projectId, req.body.projectName, req.body.scheduledUpdates, req.body.invitedUsers);

@@ -107,6 +107,60 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
 };
 
 /**
+ * Checks if the content of the project in req.body is valid for an edit
+ * i.e. project name is non-empty and < 50 char, dates and users are valid values, and fields can be undefined
+ */
+ const isValidProjectFieldsEdit = async (req: Request, res: Response, next: NextFunction) => {
+  const {
+    projectName,
+    scheduledUpdates: scheduledUpdatesReq,
+    invitedUsers: invitedUsersReq
+  } = req.body as {projectName: string, scheduledUpdates: any[], invitedUsers: string[]};
+
+  if (projectName !== undefined) {
+    if (!projectName.trim()) {
+      res.status(400).json({
+        error: 'Project name must be at least one character long.'
+      });
+      return;
+    }
+
+    if (projectName.length > 50) {
+      res.status(413).json({
+        error: 'Project content must be no more than 50 characters.'
+      });
+      return;
+    }
+  }
+
+  if (scheduledUpdatesReq !== undefined) {
+    const scheduledUpdates = scheduledUpdatesReq.map(date => !isNaN(new Date(date).getTime()));
+    const scheduledUpdatesErr = scheduledUpdates.indexOf(false);
+    if (scheduledUpdatesErr !== -1) {
+      res.status(400).json({
+        error: `Project deadline ${scheduledUpdatesReq[scheduledUpdatesErr]} must be valid dates.`
+      });
+      return;
+    }
+  }
+
+  if (invitedUsersReq !== undefined) {
+    const invitedUsers = await Promise.all(invitedUsersReq.map(async (email) => {
+      return UserCollection.findOneByEmail(email);
+    }));
+    const invitedUsersErr = invitedUsers.every(user => !!user);
+    if (!invitedUsersErr) {
+      res.status(404).json({
+        error: 'Can only invite users with an existing account.'
+      });
+      return;
+    }
+  }
+
+  next();
+};
+
+/**
  * Checks if the current user is a member of the project whose projectId is in req.params
  */
 const isValidProjectModifier = async (req: Request, res: Response, next: NextFunction) => {
@@ -198,6 +252,7 @@ const isValidProjectInvitee = async (req: Request, res: Response, next: NextFunc
 
 export {
   isValidProjectFields,
+  isValidProjectFieldsEdit,
   isProjectExists,
   isProjectExistsQueryOrUpdateId,
   isProjectExistsBody,
