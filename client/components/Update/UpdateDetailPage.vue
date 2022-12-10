@@ -3,7 +3,7 @@
       <h2 v-if="showProjectTitle">{{ project.projectName }}</h2>
       <div v-if="editing">
         <div class=field>
-          <UpdateForm :fields="draft">
+          <UpdateForm :fields="draft" :options="project.tags">
             <template #header>
               Edit Update
             </template>
@@ -150,6 +150,7 @@ export default {
       this.draft = {
         ...this.update,
         actionItems: [...this.update.actionItems],
+        tags: [...this.update.tags],
       };
     },
     stopEditing() {
