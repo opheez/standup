@@ -38,7 +38,7 @@ export default {
             this.$router.push({
               params,
               name: 'Updates',
-            })
+            }).catch(()=>{});
           },
           active: this.$route.name === 'Updates',
           children: [],
@@ -49,7 +49,7 @@ export default {
             this.$router.push({
               params,
               name: userViewName,
-            });
+            }).catch(()=>{});
             this.$store.commit('setUserFilter', null);
           },
           active: this.$route.name === userViewName
@@ -60,7 +60,7 @@ export default {
               this.$router.push({
                 params,
                 name: userViewName,
-              });
+              }).catch(()=>{});
               this.$store.commit('setUserFilter', email);
             },
             active: this.$route.name === userViewName
@@ -85,7 +85,7 @@ export default {
               this.$router.push({
                 params,
                 name: tagViewName,
-              });
+              }).catch(()=>{});
               this.$store.commit('setTagFilter', tag);
             },
             active: this.$route.name === tagViewName
