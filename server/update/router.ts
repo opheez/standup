@@ -148,10 +148,10 @@ router.patch(
     updateValidator.isUpdateAuthorParams,
   ],
   async (req: Request, res: Response) => {
-    await UpdateCollection.deleteOne(req.params.updateId);
-
     await ThanksCollection.deleteManybyUpdate(req.params.updateId);
     await EyesWantedCollection.deleteOneByUpdateId(req.params.updateId);
+
+    await UpdateCollection.deleteOne(req.params.updateId);
 
     res.status(200).json({
       message: 'Your update was deleted successfully.'

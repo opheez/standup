@@ -171,18 +171,19 @@ router.delete(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    await UserCollection.deleteOne(userId);
     
-    await ProjectCollection.deleteMany(userId);
-
     const updates = await UpdateCollection.findAllByAuthorId(userId);
     const updateIds = updates.map((update) => update._id);
     await EyesWantedCollection.deleteMany(updateIds);
-    
-    await UpdateCollection.deleteManyByAuthorId(userId);
 
     await ThanksCollection.deleteManybyUser(userId);
 
+    await UpdateCollection.deleteManyByAuthorId(userId);
+
+    await ProjectCollection.deleteMany(userId);
+
+    await UserCollection.deleteOne(userId);
+    
     req.session.userId = undefined;
     res.status(200).json({
       message: 'Your account has been deleted successfully.'
