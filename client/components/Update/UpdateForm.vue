@@ -3,7 +3,7 @@
     <h2>
       <slot name="header"></slot>
     </h2>
-    <div class="field">
+    <div class="field required">
       <label for="summary">
         Summary
       </label>
@@ -15,7 +15,7 @@
         :onChange="(value) => {fields.summary = value}"
       />
     </div>
-    <div class="field">
+    <div class="field required">
       <label for="details">
         Details
       </label>
@@ -56,9 +56,11 @@
           ●
           <input
             placeholder="Look into..."
+            :class="{error: errors[i]}"
             :id="i"
             :value="fields.actionItems[i]"
             @input="fields.actionItems[i] = $event.target.value"
+            @blur="validate($event.target.value, i)"
           />
           <button
             class="text-btn"
@@ -68,6 +70,9 @@
           </button>
         </div>
       </div>
+      <p v-if="hasErrors" class="error">
+        ⚠️ Action items cannot be empty
+      </p>
       <button
         class="text-btn"
         @click="$event.preventDefault(); addItem()"
@@ -116,6 +121,7 @@ export default {
         'blocked': 'Blocked',
         'completed': 'Completed',
       },
+      errors: this.fields.actionItems.map(i => null),
     };
   },
   methods: {
@@ -125,7 +131,24 @@ export default {
     addItem(list) {
       this.fields.actionItems.push('');
     },
+    validate(actionItem, i) {
+      if (this.errors.length <= i) {
+        for (let j = 0; j <= i - this.errors.length; ++j) {
+          this.errors.push(null);
+        }
+      }
+      if (!actionItem) {
+        this.$set(this.errors, i, 'Cannot be left empty');
+        return;
+      }
+      this.$set(this.errors, i, null);
+    },
   },
+  computed: {
+    hasErrors() {
+      return this.errors.some(error => error !== null);
+    }
+  }
 }
 </script>
 
@@ -144,6 +167,15 @@ section {
 .field > input {
   width: 100%;
   margin-top: 4px;
+}
+.field > label {
+  font-weight: bold;
+}
+.field.required label:after {
+  color: #8b0000;
+  content: '*';
+  display:inline;
+  font-weight: bold;
 }
 
 .field > textarea {
@@ -173,5 +205,11 @@ section {
 .item > input {
   flex-grow: 1;
   margin-left: 8px;
+}
+
+.error {
+  color: #8b0000;
+  font-size: 80%;
+  margin: 0 0 0 16px;
 }
 </style>

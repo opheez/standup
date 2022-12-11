@@ -207,4 +207,11 @@ main.left-panel.thin {
 main.left-panel.thin + .details-container {
   width: 33%;
 }
+input {
+  outline: none;
+}
+
+input.error {
+  border: 1px solid #8b0000;
+}
 </style>

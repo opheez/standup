@@ -10,6 +10,7 @@
     ></textarea>
     <input
       v-else
+      required
       type="text"
       :name="name"
       :placeholder="placeholder"
