@@ -46,6 +46,16 @@
             {{ statusToText[update.status] }}
           </p>
         </div>
+        <div class="field">
+          <h4>Tags</h4>
+          <p
+            v-for="tag in this.update.tags"
+            class="update-status status"
+          >
+            {{ tag }}
+          </p>
+          <p v-if="!update.tags.length">No tags were specified.</p>
+        </div>
         <div 
           v-if="($store.state.email === update.author.email
                   && project.active === true)"
@@ -83,17 +93,6 @@
             @click="deleteUpdate">
             🗑️ Delete
           </button>
-        </div>
-        <div class="tags">
-          <h3>Tags</h3>
-          <ul class="reset">
-            <li
-              v-for="item in update.tags"
-            >
-              {{ item }}
-            </li>
-          </ul>
-          <p v-if="!update.tags.length">No tags were specified.</p>
         </div>
         </br>
         <div 
