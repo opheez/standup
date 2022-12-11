@@ -116,8 +116,8 @@ export default {
       };
       try {
         const res = await fetch('/api/projects', options);
+        const resJson = await res.json();
         if (!res.ok) {
-          const resJson = await res.json();
           throw Error(resJson.error);
         }
         this.$store.commit('alert', {

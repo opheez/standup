@@ -63,7 +63,9 @@ export default {
       };
       try {
         const res = await fetch('/api/updates', options);
+        const resJson = await res.json();
         if (!res.ok) {
+          console.log(resJson);
           throw Error(resJson.error);
         }
         this.$store.commit('alert', {
