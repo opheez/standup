@@ -143,11 +143,11 @@ import UpdateCollection from '../update/collection';
  * Checks if the update content in req.body is valid for creation 
  */
  const isValidUpdateContentCreate = async (req: Request, res: Response, next: NextFunction) => {
-  const { status, summary, details, actionItems, tags } = req.body as { 
+  const { status, summary, details, nextSteps, tags } = req.body as { 
     status: string, 
     summary: string, 
     details: string, 
-    actionItems: string[],
+    nextSteps: string[],
     tags: string[],
   };
    
@@ -210,19 +210,19 @@ import UpdateCollection from '../update/collection';
     return;
   }
 
-  // action items, if defined, must be a list of strings
-  if (actionItems) {
-    if (!Array.isArray(actionItems)) {
+  // next steps, if defined, must be a list of strings
+  if (nextSteps) {
+    if (!Array.isArray(nextSteps)) {
       res.status(401).json({
-        error: 'Action items must be a list.'
+        error: 'Next Steps must be a list.'
       });
       return;
     }
 
-    for (const elt of actionItems) {
+    for (const elt of nextSteps) {
       if (typeof elt !== 'string') {
         res.status(401).json({
-          error: 'Action items must be a list of strings.'
+          error: 'Next Steps must be a list of strings.'
         });
         return;
       }
@@ -259,11 +259,11 @@ import UpdateCollection from '../update/collection';
  * (i.e., undefined is a valid value for any field)
  */
  const isValidUpdateContentEdit = async (req: Request, res: Response, next: NextFunction) => {
-  const { status, summary, details, actionItems, tags } = req.body as { 
+  const { status, summary, details, nextSteps, tags } = req.body as { 
     status: string, 
     summary: string, 
     details: string, 
-    actionItems: string[], 
+    nextSteps: string[], 
     tags: string[],
   };
    
@@ -316,19 +316,19 @@ import UpdateCollection from '../update/collection';
     }
   }
 
-  // action items, if defined, must be a list of strings
-  if (actionItems !== undefined) {
-    if (!Array.isArray(actionItems)) {
+  // next steps, if defined, must be a list of strings
+  if (nextSteps !== undefined) {
+    if (!Array.isArray(nextSteps)) {
       res.status(401).json({
-        error: 'Action items must be a list.'
+        error: 'Next Steps must be a list.'
       });
       return;
     }
 
-    for (const elt of actionItems) {
+    for (const elt of nextSteps) {
       if (typeof elt !== 'string') {
         res.status(401).json({
-          error: 'Action items must be a list of strings.'
+          error: 'Next Steps must be a list of strings.'
         });
         return;
       }

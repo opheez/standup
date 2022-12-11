@@ -12,7 +12,7 @@ type UpdateResponse = {
   status: string;
   summary: string;
   details: string;
-  actionItems: string[];
+  nextSteps: string[];
   tags: string[];
   projectId: string;
 };

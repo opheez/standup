@@ -49,15 +49,15 @@
       </div>
     </div>
     <div class="field">
-      <label>Action Items</label>
+      <label>Next Steps</label>
       <div class="items-container">
-        <div v-for="(item, i) in fields.actionItems" class="item">
+        <div v-for="(item, i) in fields.nextSteps" class="item">
           ●
           <input
             placeholder="Look into..."
             :id="i"
-            :value="fields.actionItems[i]"
-            @input="fields.actionItems[i] = $event.target.value"
+            :value="fields.nextSteps[i]"
+            @input="fields.nextSteps[i] = $event.target.value"
           />
           <button
             class="text-btn"
@@ -98,10 +98,10 @@ export default {
   },
   methods: {
     removeItem(index) {
-      this.fields.actionItems.splice(index, 1);
+      this.fields.nextSteps.splice(index, 1);
     },
     addItem(list) {
-      this.fields.actionItems.push('');
+      this.fields.nextSteps.push('');
     },
   },
 }

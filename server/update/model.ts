@@ -17,7 +17,7 @@ export type Update = {
   status: string;
   summary: string;
   details: string;
-  actionItems: string[];
+  nextSteps: string[];
   tags: string[];
   projectId: Types.ObjectId;
 };
@@ -31,7 +31,7 @@ export type PopulatedUpdate = {
   status: string;
   summary: string;
   details: string;
-  actionItems: string[];
+  nextSteps: string[];
   tags: string[];
   projectId: string;
 };
@@ -72,8 +72,8 @@ const UpdateSchema = new Schema({
     type: String,
     required: true
   },
-  // The action items of the update
-  actionItems: {
+  // The next steps of the update
+  nextSteps: {
     type: [String],
     required: true
   },

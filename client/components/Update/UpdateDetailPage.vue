@@ -59,15 +59,15 @@
           <p>{{ update.details }}</p>
         </div>
         <div class="action-items field">
-          <h4>Action Items</h4>
+          <h4>Next Steps</h4>
           <ul class="reset">
             <li
-              v-for="item in update.actionItems"
+              v-for="item in update.nextSteps"
             >
               {{ item }}
             </li>
           </ul>
-          <p v-if="!update.actionItems.length">No action items were specified.</p>
+          <p v-if="!update.nextSteps.length">No next steps were specified.</p>
         </div>
         <div
           class="edit-btns"
@@ -149,7 +149,7 @@ export default {
       this.editing = true;
       this.draft = {
         ...this.update,
-        actionItems: [...this.update.actionItems],
+        nextSteps: [...this.update.nextSteps],
       };
     },
     stopEditing() {

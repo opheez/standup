@@ -19,7 +19,7 @@ class UpdateCollection {
    * @param {string} status - The status of the update
    * @param {string} summary - The summary of the update
    * @param {string} details - The details of the update
-   * @param {string[] | undefined} actionItems - The action items of the update
+   * @param {string[] | undefined} nextSteps - The next steps of the update
    * @param {string[] | undefined} tags - The tags of the update
    * @param {Types.ObjectId | string} projectId - The id of the project the update is associated with
    * @return {Promise<HydratedDocument<Update>>} - The newly created update
@@ -28,7 +28,7 @@ class UpdateCollection {
                       status: string, 
                       summary: string, 
                       details: string, 
-                      actionItems: string[] | undefined,
+                      nextSteps: string[] | undefined,
                       tags: string[] | undefined,
                       projectId: Types.ObjectId | string): Promise<HydratedDocument<Update>> {
     const date = new Date();
@@ -39,7 +39,7 @@ class UpdateCollection {
       status,
       summary,
       details,
-      actionItems: actionItems ? actionItems : [],
+      nextSteps: nextSteps ? nextSteps : [],
       tags: tags ? tags : [],
       projectId,
     });
@@ -89,7 +89,7 @@ class UpdateCollection {
                          updateDetails: { status?: string;
                                           summary?: string;
                                           details?: string;
-                                          actionItems?: string[];
+                                          nextSteps?: string[];
                                           tags?: string[];
                                         }): Promise<HydratedDocument<Update>> {
     const date = new Date();
@@ -106,8 +106,8 @@ class UpdateCollection {
       update.details = updateDetails.details;
     }
 
-    if (updateDetails.actionItems !== undefined) {
-      update.actionItems = updateDetails.actionItems;
+    if (updateDetails.nextSteps !== undefined) {
+      update.nextSteps = updateDetails.nextSteps;
     }
 
     if (updateDetails.tags !== undefined) {

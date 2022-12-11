@@ -34,7 +34,7 @@ export default {
         summary: '',
         details: '',
         status: 'inprogress',
-        actionItems: [''],
+        nextSteps: [''],
       },
       statusToText: {
         'inprogress': 'In-Progress',
@@ -45,10 +45,10 @@ export default {
   },
   methods: {
     removeItem(index) {
-      this.fields.actionItems.splice(index, 1);
+      this.fields.nextSteps.splice(index, 1);
     },
     addItem(list) {
-      this.fields.actionItems.push('');
+      this.fields.nextSteps.push('');
     },
     async submit() {
       const body = {
