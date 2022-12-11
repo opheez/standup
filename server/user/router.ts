@@ -115,9 +115,8 @@ router.post(
     // Add to global/default project for user testing purposes
     const globalProjId = '639179ef023b81d034a808c1';
     const globalProj = await ProjectCollection.findOne(globalProjId);
-    const participants = globalProj.participants;
-    participants.push(req.session.userId);
-    ProjectCollection.updateOne(globalProjId, undefined, undefined, participants);
+    globalProj.participants.push(req.session.userId);
+    await globalProj.save();
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.firstName + ' ' + user.lastName}`,
       user: util.constructUserResponse(user)
