@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <h1>Group Projects</h1>
     <div class="project-filters">
       <p
@@ -23,7 +23,7 @@
         :project="project"
       />
     </section>
-  </main>
+  </div>
 </template>
 
 <script>

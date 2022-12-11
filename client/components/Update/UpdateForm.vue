@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="field">
-      <label>Action Items</label>
+      <label>{{ fields.status === 'completed' ? 'Next Steps' : 'Action Items'}}</label>
       <div class="items-container">
         <div v-for="(item, i) in fields.actionItems" class="item">
           ●
