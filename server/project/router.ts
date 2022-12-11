@@ -179,7 +179,7 @@ router.patch(
     await EyesWantedCollection.deleteMany(updateIds);
     await ThanksCollection.deleteManybyUpdateIds(updateIds);
 
-    await UpdateCollection.deleteManyByProjectId(req.params.projecId);
+    await UpdateCollection.deleteManyByProjectId(req.params.projectId);
 
     await ProjectCollection.deleteOne(req.params.projectId);
     res.status(200).json({
