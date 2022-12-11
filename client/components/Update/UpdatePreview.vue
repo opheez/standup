@@ -7,6 +7,12 @@
     <p class="update-status status" :class="statusToText[update.status]">
       {{ statusToText[update.status] }}
     </p>
+    <p
+      v-for="tag in this.update.tags"
+      class="update-status status"
+    >
+      {{ tag }}
+    </p>
     <div
         v-if="(this.update.author.email === $store.state.email && isThankedby())">
         <p class="thanks-number">
