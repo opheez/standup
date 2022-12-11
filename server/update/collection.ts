@@ -60,11 +60,21 @@ class UpdateCollection {
   /**
    * Find all updates by projectId.
    *
-   * @param {string} projectId - The id of the project
+   * @param {Types.ObjectId | string} projectId - The id of the project
    * @return {Promise<HydratedDocument<Update>[]>} - The updates with the given projectId
    */
    static async findAllByProjectId(projectId: Types.ObjectId | string): Promise<HydratedDocument<Update>[]> {
     return UpdateModel.find({ projectId }).sort({ dateCreated: -1 }).populate('authorId');
+  }
+
+  /**
+   * Find all updates by projectId for multiple projects.
+   *
+   * @param {Types.ObjectId[] | string[]} projectIds - The ids of the projects
+   * @return {Promise<HydratedDocument<Update>[]>} - The updates with the given projectId
+   */
+   static async findAllByProjectIds(projectIds: Types.ObjectId[] | string[]): Promise<HydratedDocument<Update>[]> {
+    return UpdateModel.find({ projectId: { $in: projectIds } }).sort({ dateCreated: -1 }).populate('authorId');
   }
 
   /**
@@ -139,6 +149,17 @@ class UpdateCollection {
   static async deleteOne(updateId: Types.ObjectId | string): Promise<boolean> {
     const update = await UpdateModel.deleteOne({_id: updateId});
     return update !== null;
+  }
+
+  /**
+   * Deletes multiple updates from the collection.
+   *
+   * @param {Types.ObjectId[] | string[]} updateId - The ids of the updates to delete
+   * @return {Promise<Boolean>} - true if the update has been deleted, false otherwise
+   */
+   static async deleteMany(updateIds: Types.ObjectId[] | string[]): Promise<boolean> {
+    const updates = await UpdateModel.deleteMany({ updateId: { $in: updateIds } });
+    return updates !== null;
   }
 
   /**

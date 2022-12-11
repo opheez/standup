@@ -172,13 +172,23 @@ router.delete(
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     
-    const updates = await UpdateCollection.findAllByAuthorId(userId);
-    const updateIds = updates.map((update) => update._id);
-    await EyesWantedCollection.deleteMany(updateIds);
+    const authoredUpdates = await UpdateCollection.findAllByAuthorId(userId);
+    const authoredUpdateIds = authoredUpdates.map((update) => update._id);
+    await EyesWantedCollection.deleteMany(authoredUpdateIds);
 
     await ThanksCollection.deleteManybyUser(userId);
 
     await UpdateCollection.deleteManyByAuthorId(userId);
+
+    // also delete updates and corresponding thanks/eyes wanted in projects owned by the user
+    // which may not necessarily be authored by the user
+    const projects = await ProjectCollection.findAllByCreator(userId);
+    const projectIds = projects.map((project) => project._id);
+    const updates = await UpdateCollection.findAllByProjectIds(projectIds);
+    const updateIds = updates.map((update) => update._id);
+    await EyesWantedCollection.deleteMany(updateIds);
+    await ThanksCollection.deleteManybyUpdateIds(updateIds);
+    await UpdateCollection.deleteMany(updateIds);
 
     await ProjectCollection.deleteMany(userId);
 

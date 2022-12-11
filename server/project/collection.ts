@@ -75,6 +75,18 @@ class ProjectCollection {
   }
 
   /**
+   * Get all the projects a user is the creator of
+   *
+   * @param {Types.ObjectId | string} creatorId - The id of the creator
+   * @return {Promise<HydratedDocument<Project>[]>} - An array of all of the projects
+   */
+   static async findAllByCreator(creatorId: Types.ObjectId | string): Promise<Array<HydratedDocument<Project>>> {
+    const projects = await ProjectModel.find({ creatorId });
+    await Promise.all(projects.map(this.populateProject));
+    return projects;
+  }
+
+  /**
    * Get all the projects a user belongs to
    *
    * @param {string} userId - The id of user

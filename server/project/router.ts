@@ -7,7 +7,7 @@ import * as projectValidator from '../project/middleware';
 import * as util from './util';
 import UpdateCollection from '../update/collection';
 import EyesWantedCollection from '../eyeswanted/collection';
-import ThanksCollection from 'server/thanks/collection';
+import ThanksCollection from '../thanks/collection';
 
 const router = express.Router();
 

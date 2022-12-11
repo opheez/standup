@@ -95,7 +95,7 @@ class ThanksCollection {
    * @param {Types.ObjectId[] | string[]} updateIds - The id of the updates
    */
    static async deleteManybyUpdateIds(updateIds: Types.ObjectId[] | string[]): Promise<void> {
-    await ThanksModel.deleteMany({ updateId: { $in: updateIds} });
+    await ThanksModel.deleteMany({ updateId: { $in: updateIds } });
   }
 
   /**
