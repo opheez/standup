@@ -142,13 +142,24 @@ class UpdateCollection {
   }
 
   /**
-   * Deletes updates from the collection by author.
+   * Deletes updates from the collection by project.
    *
-   * @param {Types.ObjectId | string} userId - The id of the user whose updates to delete
+   * @param {Types.ObjectId | string} projectId - The id of the project whose updates to delete
    * @return {Promise<Boolean>} - true if the update has been deleted, false otherwise
    */
-   static async deleteManyByAuthorId(updateId: Types.ObjectId | string): Promise<boolean> {
-    const update = await UpdateModel.deleteOne({_id: updateId});
+   static async deleteManyByProjectId(projectId: Types.ObjectId | string): Promise<boolean> {
+    const update = await UpdateModel.deleteMany({ projectId });
+    return update !== null;
+  }
+
+  /**
+   * Deletes updates from the collection by author.
+   *
+   * @param {Types.ObjectId | string} authorId - The id of the user whose updates to delete
+   * @return {Promise<Boolean>} - true if the update has been deleted, false otherwise
+   */
+   static async deleteManyByAuthorId(authorId: Types.ObjectId | string): Promise<boolean> {
+    const update = await UpdateModel.deleteMany({ authorId });
     return update !== null;
   }
 }

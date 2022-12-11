@@ -5,6 +5,9 @@ import UserCollection from '../user/collection';
 import * as userValidator from '../user/middleware';
 import * as projectValidator from '../project/middleware';
 import * as util from './util';
+import UpdateCollection from '../update/collection';
+import EyesWantedCollection from '../eyeswanted/collection';
+import ThanksCollection from 'server/thanks/collection';
 
 const router = express.Router();
 
@@ -170,6 +173,14 @@ router.patch(
     projectValidator.isValidProjectModifier,
   ],
   async (req: Request, res: Response) => {
+    const updates = await UpdateCollection.findAllByProjectId(req.params.projectId);
+    const updateIds = updates.map((update) => update._id);
+    
+    await EyesWantedCollection.deleteMany(updateIds);
+    await ThanksCollection.deleteManybyUpdateIds(updateIds);
+
+    await UpdateCollection.deleteManyByProjectId(req.params.projecId);
+
     await ProjectCollection.deleteOne(req.params.projectId);
     res.status(200).json({
       message: 'Your project was deleted successfully.',
