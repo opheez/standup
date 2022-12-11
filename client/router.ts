@@ -4,6 +4,7 @@ import AccountPage from './components/Account/AccountPage.vue';
 import HomePage from './components/Home/HomePage.vue';
 import AllUpdatesView from './components/Update/views/AllUpdatesView.vue';
 import UserView from './components/Update/views/UserView.vue';
+import TagView from './components/Update/views/TagView.vue';
 import AddUpdatePage from './components/Update/AddUpdatePage.vue';
 import UpdateDetailPage from './components/Update/UpdateDetailPage.vue';
 import AccountSettingsPage from './components/Account/AccountSettingsPage.vue';
@@ -15,6 +16,7 @@ const routes = [
   {path: '/', name: 'Home', component: HomePage},
   {path: '/updates/:id', name: 'Updates', component: AllUpdatesView},
   {path: '/updates/:id/users', name: 'UpdatesPerUser', component: UserView},
+  {path: '/updates/:id/tags', name: 'UpdatesPerTag', component: TagView},
   {path: '/updates/:id/add', name: 'AddUpdate', component: AddUpdatePage},
   {path: '/updates/:id/:updateId', name: 'UpdateDetails', component: UpdateDetailPage},
   {path: '/account', name: 'Account', component: AccountPage},

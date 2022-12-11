@@ -28,7 +28,8 @@ export default {
   },
   computed: {
     sections() {
-      const userViewName = 'UpdatesPerUser'
+      const userViewName = 'UpdatesPerUser';
+      const tagViewName = 'UpdatesPerTag';
       const params = {id: this.$route.params.id};
       return [
         {
@@ -67,7 +68,31 @@ export default {
             children: [],
           })),
         },
-
+        {
+          name: 'Tags',
+          onClick: () => {
+            // this.$router.push({
+            //   params,
+            //   name: tagViewName,
+            // });
+            // this.$store.commit('setTagFilter', null);
+          },
+          active: this.$route.name === tagViewName
+              && !this.$store.state.tagFilter,
+          children: this.project.tags.map(tag => ({
+            name: tag,
+            onClick: () => {
+              this.$router.push({
+                params,
+                name: tagViewName,
+              });
+              this.$store.commit('setTagFilter', tag);
+            },
+            active: this.$route.name === tagViewName
+              && this.$store.state.tagFilter === tag,
+            children: [],
+          })),
+        }
       ];
     }
   }
