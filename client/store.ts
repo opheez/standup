@@ -21,6 +21,7 @@ const store = new Vuex.Store({
     eyeswanted: [], // mapping from user to a list of eyes wanted updates
     alleyeswanted: [], // All eyes wanted in the app
     userFilter: null,
+    tagFilter: null,
     currentUpdate: null,
   },
   mutations: {
@@ -163,6 +164,9 @@ const store = new Vuex.Store({
      },
     setUserFilter(state, userFilter) {
       state.userFilter = userFilter;
+    },
+    setTagFilter(state, tagFilter) {
+      state.tagFilter = tagFilter;
     }
   },
   // Store data across page refreshes, only discard on browser close
