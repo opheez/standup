@@ -147,6 +147,7 @@ button.thin-btn {
   border-radius: 100px;
   padding: 4px 12px;
   width: fit-content;
+  display: inline-block;
 }
 
 .status.In-Progress {
