@@ -71,6 +71,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     tags,
   } = req.body as {projectName: string, scheduledUpdates: any[], invitedUsers: string[], tags: string[]};
 
+  if (projectName === undefined) {
+    res.status(400).json({
+      error: 'Project name cannot be undefined.'
+    });
+    return;
+  }
+
   if (!projectName.trim()) {
     res.status(400).json({
       error: 'Project name must be at least one character long.'
@@ -85,11 +92,25 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
+  if (scheduledUpdatesReq === undefined) {
+    res.status(400).json({
+      error: 'Scheduled updates cannot be undefined.'
+    });
+    return;
+  }
+
   const scheduledUpdates = scheduledUpdatesReq.map(date => !isNaN(new Date(date).getTime()));
   const scheduledUpdatesErr = scheduledUpdates.indexOf(false);
   if (scheduledUpdatesErr !== -1) {
     res.status(400).json({
       error: `Project deadline ${scheduledUpdatesReq[scheduledUpdatesErr]} must be valid dates.`
+    });
+    return;
+  }
+
+  if (invitedUsersReq === undefined) {
+    res.status(400).json({
+      error: 'Invited users cannot be undefined.'
     });
     return;
   }
