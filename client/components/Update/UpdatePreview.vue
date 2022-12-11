@@ -11,7 +11,7 @@
       v-for="tag in this.update.tags"
       class="update-status status"
     >
-      {{ tag }}
+      #{{ tag }}
     </p>
     <div
         v-if="(this.update.author.email === $store.state.email && isThankedby())">

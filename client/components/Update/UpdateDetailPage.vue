@@ -52,7 +52,7 @@
             v-for="tag in this.update.tags"
             class="update-status status"
           >
-            {{ tag }}
+            #{{ tag }}
           </p>
           <p v-if="!update.tags.length">No tags were specified.</p>
         </div>
