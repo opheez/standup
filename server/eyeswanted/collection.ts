@@ -153,6 +153,17 @@ class EyesWantedCollection {
     const eyesWanted = await EyesWantedModel.deleteOne({ updateId });
     return eyesWanted !== null;
   }
+  
+  /**
+   * Delete multiple Eyes Wanteds by update id
+   *
+   * @param {Types.ObjectId[]| string[]} updateIds - The ids of the updates whose Eyes Wanted entries to delete
+   * @return {Promise<Boolean>} - true if the EyesWanteds have been deleted, false otherwise
+   */
+   static async deleteMany(updateIds: Types.ObjectId[] | string[]): Promise<boolean> {
+    const eyesWanteds = await EyesWantedModel.deleteMany({ updateId: { $in: updateIds } });
+    return eyesWanteds !== null;
+  }
 }
 
 export default EyesWantedCollection;

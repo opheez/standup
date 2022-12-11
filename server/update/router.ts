@@ -5,6 +5,8 @@ import * as userValidator from '../user/middleware';
 import * as projectValidator from '../project/middleware';
 import * as updateValidator from './middleware';
 import * as util from './util';
+import ThanksCollection from '../thanks/collection';
+import EyesWantedCollection from 'server/eyeswanted/collection';
 
 const router = express.Router();
 
@@ -147,6 +149,10 @@ router.patch(
   ],
   async (req: Request, res: Response) => {
     await UpdateCollection.deleteOne(req.params.updateId);
+
+    await ThanksCollection.deleteManybyUpdate(req.params.updateId);
+    await EyesWantedCollection.deleteOneByUpdateId(req.params.updateId);
+
     res.status(200).json({
       message: 'Your update was deleted successfully.'
     });

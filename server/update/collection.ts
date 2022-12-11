@@ -68,6 +68,16 @@ class UpdateCollection {
   }
 
   /**
+   * Find all updates by author.
+   *
+   * @param {string} authorId - The id of the author
+   * @return {Promise<HydratedDocument<Update>[]>} - The updates with the given projectId
+   */
+   static async findAllByAuthorId(authorId: Types.ObjectId | string): Promise<HydratedDocument<Update>[]> {
+    return UpdateModel.find({ authorId }).sort({ dateCreated: -1 }).populate('authorId');
+  }
+
+  /**
    * Deletes a given tag from every update in the project with given project id.
    *
    * @param {string} tag - The tag to delete
@@ -123,10 +133,21 @@ class UpdateCollection {
   /**
    * Delete a update from the collection.
    *
-   * @param {string} updateId - The updateId of update to delete
+   * @param {Types.ObjectId | string} updateId - The updateId of update to delete
    * @return {Promise<Boolean>} - true if the update has been deleted, false otherwise
    */
   static async deleteOne(updateId: Types.ObjectId | string): Promise<boolean> {
+    const update = await UpdateModel.deleteOne({_id: updateId});
+    return update !== null;
+  }
+
+  /**
+   * Deletes updates from the collection by author.
+   *
+   * @param {Types.ObjectId | string} userId - The id of the user whose updates to delete
+   * @return {Promise<Boolean>} - true if the update has been deleted, false otherwise
+   */
+   static async deleteManyByAuthorId(updateId: Types.ObjectId | string): Promise<boolean> {
     const update = await UpdateModel.deleteOne({_id: updateId});
     return update !== null;
   }
