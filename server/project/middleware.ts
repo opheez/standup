@@ -129,7 +129,7 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
   // if defined, tags must be a list of non-empty strings no longer than 50 characters
   if (tags !== undefined) {
     if (!Array.isArray(tags)) {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Tags must be a list.'
       });
       return;
@@ -137,12 +137,12 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
 
     for (const elt of tags) {
       if (typeof elt !== 'string') {
-        res.status(401).json({
+        res.status(400).json({
           error: 'Tags must be a list of strings.'
         });
         return;
       } else if (elt.trim().length === 0 || elt.trim().length > 50) {
-        res.status(401).json({
+        res.status(400).json({
           error: 'Tags must be between 1 and 50 characters long.'
         });
         return;

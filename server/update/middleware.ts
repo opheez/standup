@@ -168,21 +168,21 @@ import UpdateCollection from '../update/collection';
   }
 
   if (typeof summary !== 'string') {
-    res.status(401).json({
+    res.status(400).json({
       error: 'Summary must be a string.'
     });
     return;
   }
 
   if (summary.trim().length === 0) {
-    res.status(401).json({
+    res.status(400).json({
       error: 'Summary cannot be empty.'
     });
     return;
   }
 
   if (summary.trim().length > 60) {
-    res.status(401).json({
+    res.status(400).json({
       error: 'Summary cannot be longer than 60 characters.'
     });
     return;
@@ -197,14 +197,14 @@ import UpdateCollection from '../update/collection';
   }
 
   if (typeof details !== 'string') {
-    res.status(401).json({
+    res.status(400).json({
       error: 'Details must be a string.'
     });
     return;
   }
 
   if (details.trim().length === 0) {
-    res.status(401).json({
+    res.status(400).json({
       error: 'Details cannot be empty.'
     });
     return;
@@ -213,7 +213,7 @@ import UpdateCollection from '../update/collection';
   // action items, if defined, must be a list of strings
   if (actionItems) {
     if (!Array.isArray(actionItems)) {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Action items must be a list.'
       });
       return;
@@ -221,7 +221,7 @@ import UpdateCollection from '../update/collection';
 
     for (const elt of actionItems) {
       if (typeof elt !== 'string') {
-        res.status(401).json({
+        res.status(400).json({
           error: 'Action items must be a list of strings.'
         });
         return;
@@ -232,7 +232,7 @@ import UpdateCollection from '../update/collection';
   // tags, if defined, must be a list of strings corresponding to tags in the project
   if (tags !== undefined) {
     if (!Array.isArray(tags)) {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Tags must be a list.'
       });
       return;
@@ -243,7 +243,7 @@ import UpdateCollection from '../update/collection';
 
     for (const tag of tags) {
       if (!projectTags.includes(tag)) {
-        res.status(401).json({
+        res.status(400).json({
           error: `Tag '${tag}' is not registered in the project.`
         });
         return;
@@ -278,21 +278,21 @@ import UpdateCollection from '../update/collection';
   // summary, if defined, must be a non-empty string and fewer than 60 characters long
   if (summary !== undefined) {
     if (typeof summary !== 'string') {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Summary must be a string.'
       });
       return;
     }
 
     if (summary.trim().length === 0) {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Summary cannot be empty.'
       });
       return;
     }
 
     if (summary.trim().length > 60) {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Summary cannot be longer than 60 characters.'
       });
       return;
@@ -302,14 +302,14 @@ import UpdateCollection from '../update/collection';
   // details, if defined, must be a non-empty string
   if (details !== undefined) {
     if (typeof details !== 'string') {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Details must be a string.'
       });
       return;
     }
 
     if (details.trim() === '') {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Details cannot be empty.'
       });
       return;
@@ -319,7 +319,7 @@ import UpdateCollection from '../update/collection';
   // action items, if defined, must be a list of strings
   if (actionItems !== undefined) {
     if (!Array.isArray(actionItems)) {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Action items must be a list.'
       });
       return;
@@ -327,7 +327,7 @@ import UpdateCollection from '../update/collection';
 
     for (const elt of actionItems) {
       if (typeof elt !== 'string') {
-        res.status(401).json({
+        res.status(400).json({
           error: 'Action items must be a list of strings.'
         });
         return;
@@ -338,7 +338,7 @@ import UpdateCollection from '../update/collection';
   // tags, if defined, must be a list of tags in the project
   if (tags !== undefined) {
     if (!Array.isArray(tags)) {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Tags must be a list.'
       });
       return;
@@ -350,7 +350,7 @@ import UpdateCollection from '../update/collection';
 
     for (const tag of tags) {
       if (!projectTags.includes(tag)) {
-        res.status(401).json({
+        res.status(400).json({
           error: `Tag '${tag}' is not registered in the project.`
         });
         return;
