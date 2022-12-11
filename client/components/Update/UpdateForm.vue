@@ -7,11 +7,12 @@
       <label for="summary">
         Summary
       </label>
-      <input
-        name="summary"
-        placeholder="Implemented the backend for..."
+      <TextInput
+        :name="'summary'"
+        :maxLength="60"
+        :placeholder="'Implemented the backend for...'"
         :value="fields.summary"
-        @input="fields.summary = $event.target.value"
+        :onChange="(value) => {fields.summary = value}"
       />
     </div>
     <div class="field">
@@ -90,13 +91,14 @@
 <script>
 import Vue from 'vue';
 import Multiselect from 'vue-multiselect'
+import TextInput from '@/components/common/TextInput.vue';
 
 // register globally
 Vue.component('multiselect', Multiselect)
 
 export default {
   name: 'UpdateForm',
-  components: {Multiselect},
+  components: {Multiselect, TextInput},
   props: {
     fields: {
       type: Object,

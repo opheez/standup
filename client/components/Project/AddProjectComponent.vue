@@ -13,13 +13,12 @@
           <label for="project-name">
             Name
           </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            placeholder="Project Name"
+          <TextInput
+            :name="'name'"
+            :maxLength="50"
+            :placeholder="'Project Name'"
             :value="fields.name"
-            @input="fields.name = $event.target.value"
+            :onChange="(value) => {fields.name = value}"
           />
         </div>
         <div class="field">
@@ -112,10 +111,11 @@
 <script>
 import moment from 'moment';
 import Modal from '@/components/common/Modal.vue';
+import TextInput from '@/components/common/TextInput.vue';
 
 export default {
   name: 'AddProjectComponent',
-  components: {Modal},
+  components: {Modal, TextInput},
   data() {
     return {
       show: false,
