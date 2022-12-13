@@ -5,6 +5,9 @@ import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
 import ProjectCollection from '../project/collection';
+import UpdateCollection from '../update/collection';
+import ThanksCollection from '../thanks/collection';
+import EyesWantedCollection from '../eyeswanted/collection';
 
 const router = express.Router();
 
@@ -173,8 +176,33 @@ router.delete(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    
+    // delete updates authored by the user, and eyeswanted/thanks corresponding to those
+    const authoredUpdates = await UpdateCollection.findAllByAuthorId(userId);
+    const authoredUpdateIds = authoredUpdates.map((update) => update._id);
+    await EyesWantedCollection.deleteMany(authoredUpdateIds);
+    await ThanksCollection.deleteManybyUpdateIds(authoredUpdateIds);
+    await UpdateCollection.deleteManyByAuthorId(userId);
+
+    // delete thanks given by the user
+    await ThanksCollection.deleteManybyUser(userId);
+
+    // also delete updates and corresponding thanks/eyes wanted in projects owned by the user
+    // which may not necessarily be authored by the user
+    const projects = await ProjectCollection.findAllByCreator(userId);
+    const projectIds = projects.map((project) => project._id);
+    const updates = await UpdateCollection.findAllByProjectIds(projectIds);
+    const updateIds = updates.map((update) => update._id);
+    await EyesWantedCollection.deleteMany(updateIds);
+    await ThanksCollection.deleteManybyUpdateIds(updateIds);
+    await UpdateCollection.deleteMany(updateIds);
+    await ProjectCollection.deleteMany(userId);
+
+    // pull user from projects they were part of 
+    await ProjectCollection.removeUser(userId);
+
     await UserCollection.deleteOne(userId);
-    // await FreetCollection.deleteMany(userId);
+    
     req.session.userId = undefined;
     res.status(200).json({
       message: 'Your account has been deleted successfully.'

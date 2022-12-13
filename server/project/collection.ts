@@ -75,6 +75,18 @@ class ProjectCollection {
   }
 
   /**
+   * Get all the projects a user is the creator of
+   *
+   * @param {Types.ObjectId | string} creatorId - The id of the creator
+   * @return {Promise<HydratedDocument<Project>[]>} - An array of all of the projects
+   */
+   static async findAllByCreator(creatorId: Types.ObjectId | string): Promise<Array<HydratedDocument<Project>>> {
+    const projects = await ProjectModel.find({ creatorId });
+    await Promise.all(projects.map(this.populateProject));
+    return projects;
+  }
+
+  /**
    * Get all the projects a user belongs to
    *
    * @param {string} userId - The id of user
@@ -192,6 +204,16 @@ class ProjectCollection {
    */
   static async deleteMany(creatorId: Types.ObjectId | string): Promise<void> {
     await ProjectModel.deleteMany({creatorId});
+  }
+
+  /**
+   * Removes the given user from projects they were a participant in or invited to
+   *
+   * @param {string} userId - The id of the user
+   */
+   static async removeUser(userId: Types.ObjectId | string): Promise<void> {
+    await ProjectModel.updateMany({ participants: userId }, { $pull: { participants: userId } })
+    await ProjectModel.updateMany({ invitedUsers: userId }, { $pull: { invitedUsers: userId } })
   }
 }
 
