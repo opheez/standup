@@ -69,7 +69,7 @@ main {
 
 .alerts {
     position: absolute;
-    z-index: 99;
+    z-index: 9999;
     bottom: 0;
     top: 100%;
     left: 50%;
