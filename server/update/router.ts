@@ -68,8 +68,7 @@ router.get(
  * @param {string[] | undefined} tags - The tags of the update
  * @param {string} projectId - The id of the project the update is associated with
  * @return {UpdateResponse} - An object with the new update
- * @throws {400} - If projectId is not given, or if required update content is not given
- * @throws {401} - If update content is invalid
+ * @throws {400} - If projectId is not given, or if required update content is not given, or update content is invalid
  * @throws {403} - If user is not logged in or not part of the project
  * @throws {404} - If project with projectId is not found
  * @throws {413} - If summary exceeds 60 characters
@@ -105,8 +104,7 @@ router.post(
  * @param {string[] | undefined} actionItems - The action items of the update
  * @param {string[] | undefined} tags - The tags of the update
  * @return {UserResponse} - The updated user
- * @throws {400} - If projectId is not given
- * @throws {401} - If update content is invalid
+ * @throws {400} - If projectId is not given, or if update content is invalid
  * @throws {403} - If user is not logged in or not part of the project
  * @throws {404} - If project with projectId is not found
  * @throws {413} - If summary exceeds 60 characters
