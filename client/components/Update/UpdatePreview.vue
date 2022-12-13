@@ -1,5 +1,9 @@
 <template>
-  <article class="update preview" @click="openUpdate(update)">
+  <article
+    class="update preview"
+    :class="{flagged: inReadingList}"
+    @click="openUpdate(update)"
+  >
     <div>
       {{ update.dateModified }}: 
       {{ update.summary }}
@@ -7,21 +11,22 @@
     <p class="update-status status" :class="statusToText[update.status]">
       {{ statusToText[update.status] }}
     </p>
-    <div
-        v-if="(this.update.author.email === $store.state.email && isThankedby())">
-        <p class="thanks-number">
-        {{ this.thanks.length }} thanks </p>
-        <p v-for="thanks in this.thanks"
-        class="thanks-number">
-          by {{ thanks.postUser.firstName }} {{thanks.postUser.lastName}}
-        </p>
-      </div>
+    <p
+      v-for="tag in this.update.tags"
+      class="update-status status"
+    >
+      #{{ tag }}
+    </p>
+    <ThanksCount :update="update"/>
   </article>
 </template>
 
 <script>
+import ThanksCount from '@/components/Thanks/ThanksCount.vue';
+
 export default {
   name: 'UpdatePreview',
+  components: {ThanksCount},
   props: {
     update: {
       type: Object,
@@ -41,7 +46,14 @@ export default {
       },
     }
   },
-
+  computed: {
+    inReadingList() {
+      return this.update._id in this.$store.state.eyeswanted;
+    }
+  },
+  beforeMount() {
+    this.$store.commit('refreshAllThanks', this.update._id); 
+  },
   methods: {
     isThankedby() {
       const allthanks = this.$store.state.allthanks;
@@ -55,6 +67,10 @@ export default {
 <style scoped>
 .update {
   margin-bottom: 16px;
+}
+
+.update.flagged {
+  border-color: #993636;
 }
 
 .update > p {

@@ -28,7 +28,8 @@ export default {
   },
   computed: {
     sections() {
-      const userViewName = 'UpdatesPerUser'
+      const userViewName = 'UpdatesPerUser';
+      const tagViewName = 'UpdatesPerTag';
       const params = {id: this.$route.params.id};
       return [
         {
@@ -37,7 +38,7 @@ export default {
             this.$router.push({
               params,
               name: 'Updates',
-            })
+            }).catch(()=>{});
           },
           active: this.$route.name === 'Updates',
           children: [],
@@ -48,7 +49,7 @@ export default {
             this.$router.push({
               params,
               name: userViewName,
-            });
+            }).catch(()=>{});
             this.$store.commit('setUserFilter', null);
           },
           active: this.$route.name === userViewName
@@ -59,7 +60,7 @@ export default {
               this.$router.push({
                 params,
                 name: userViewName,
-              });
+              }).catch(()=>{});
               this.$store.commit('setUserFilter', email);
             },
             active: this.$route.name === userViewName
@@ -67,7 +68,31 @@ export default {
             children: [],
           })),
         },
-
+        {
+          name: 'Tags',
+          onClick: () => {
+            // this.$router.push({
+            //   params,
+            //   name: tagViewName,
+            // });
+            // this.$store.commit('setTagFilter', null);
+          },
+          active: this.$route.name === tagViewName
+              && !this.$store.state.tagFilter,
+          children: this.project.tags.map(tag => ({
+            name: tag,
+            onClick: () => {
+              this.$router.push({
+                params,
+                name: tagViewName,
+              }).catch(()=>{});
+              this.$store.commit('setTagFilter', tag);
+            },
+            active: this.$route.name === tagViewName
+              && this.$store.state.tagFilter === tag,
+            children: [],
+          })),
+        }
       ];
     }
   }

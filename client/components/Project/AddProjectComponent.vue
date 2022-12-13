@@ -69,6 +69,37 @@
             </button>
           </div>
         </div>
+        <div class="field">
+          <label for="tags">
+            Define all possible update tags for your project
+          </label>
+          <div class="tags-list">
+            <div
+              v-for="(tag, i) in fields.tags"
+              class="tag"
+            >
+              <input
+                :id="i"
+                :name="i"
+                :value="fields.tags[i]"
+                placeholder="Update tag"
+                @input="fields.tags[i] = $event.target.value"
+              />
+              <button
+                class="text-btn"
+                @click="$event.preventDefault(); removeTag(i)"
+              >
+                🗑
+              </button>
+            </div>
+            <button
+              class="text-btn"
+              @click="$event.preventDefault(); addTag()"
+            >
+              + Add a tag
+            </button>
+          </div>
+        </div>
       </form>
       <div class="actions">
         <button class="invert" @click="hideModal">Cancel</button>
@@ -93,6 +124,7 @@ export default {
         name: '',
         deadline: '',
         collaborators: [''],
+        tags: [''],
       },
     }
   },
@@ -112,12 +144,13 @@ export default {
           projectName: this.fields.name,
           scheduledUpdates: [this.fields.deadline],
           invitedUsers: this.fields.collaborators,
+          tags: this.fields.tags
         }),
       };
       try {
         const res = await fetch('/api/projects', options);
+        const resJson = await res.json();
         if (!res.ok) {
-          const resJson = await res.json();
           throw Error(resJson.error);
         }
         this.$store.commit('alert', {
@@ -127,6 +160,12 @@ export default {
         this.$store.commit('refreshInvites');
         this.$store.commit('refreshProjects');
         this.hideModal();
+        this.fields = {
+          name: '',
+          deadline: '',
+          collaborators: [''],
+          tags: [''],
+        };
       } catch (e) {
         this.$store.commit('alert', {
           status: 'error',
@@ -139,7 +178,13 @@ export default {
     },
     removeCollaborator(i) {
       this.fields.collaborators.splice(i, 1);
-    }
+    },
+    addTag() {
+      this.fields.tags.push('');
+    },
+    removeTag(i) {
+      this.fields.tags.splice(i, 1);
+    },
   },
 }
 </script>
@@ -151,17 +196,17 @@ export default {
 .field > input {
   width: 100%;
 }
-.collaborators-list {
+.collaborators-list, .tags-list {
   padding: 12px 16px;
   border: 1px solid #555;
   background-color: #fff;
 }
 
-.collaborators-list > .text-btn {
+.collaborators-list > .text-btn , .tags-list > .text-btn {
   text-decoration: underline;
   transition: all 0.2ms ease-in-out;
 }
-.collaborators-list > .text-btn:hover {
+.collaborators-list > .text-btn:hover, .tags-list > .text-btn:hover {
   color: rgb(91, 60, 128);
 }
 .collaborator {

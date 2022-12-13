@@ -3,7 +3,7 @@
       <h2 v-if="showProjectTitle">{{ project.projectName }}</h2>
       <div v-if="editing">
         <div class=field>
-          <UpdateForm :fields="draft">
+          <UpdateForm :fields="draft" :options="project.tags">
             <template #header>
               Edit Update
             </template>
@@ -46,20 +46,22 @@
             {{ statusToText[update.status] }}
           </p>
         </div>
-        <div 
-          v-if="($store.state.email === update.author.email
-                  && project.active === true)"
-          class="eyeswanted">
-          <AddEyesWantedComponent
-          :update="update"
-          :project="project"/>
+        <div class="field">
+          <h4>Tags</h4>
+          <p
+            v-for="tag in this.update.tags"
+            class="update-status status"
+          >
+            #{{ tag }}
+          </p>
+          <p v-if="!update.tags.length">No tags were specified.</p>
         </div>
         <div class="field">
           <h4>Details</h4>
           <p>{{ update.details }}</p>
         </div>
         <div class="action-items field">
-          <h4>Action Items</h4>
+          <h4>{{ update.status === 'completed' ? 'Next Steps' : 'Action Items'}}</h4>
           <ul class="reset">
             <li
               v-for="item in update.actionItems"
@@ -67,7 +69,9 @@
               {{ item }}
             </li>
           </ul>
-          <p v-if="!update.actionItems.length">No action items were specified.</p>
+          <p v-if="!update.actionItems.length">
+            No {{ update.status === 'completed' ? 'next steps' : 'action items'}} were specified.
+          </p>
         </div>
         <div
           class="edit-btns"
@@ -84,43 +88,39 @@
             🗑️ Delete
           </button>
         </div>
-        </br>
-        <div 
-          v-if="inReadingList"
-          class="eyeswanted">
-          <CompleteEyesWantedComponent
+        <AddEyesWantedComponent
+          v-if="$store.state.email === update.author.email
+                && project.active"
           :update="update"
-          :eyeswanted="this.eyeswanted"/>
-        </div>
-        <div 
+          :project="project"
+        />
+        <CompleteEyesWantedComponent
+          v-if="inReadingList"
+          :update="update"
+          />
+        <hr/>
+        <div
           v-if="($store.state.email !== update.author.email
                   && project.active === true)"
           class="thanks">
           <AddThanksComponent
           :update="update"/>
         </div>
-        <div
-          v-if="(this.update.author.email === $store.state.email && isThankedby())">
-          <p class="thanks-number">
-          {{ this.thanks.length }} thanks </p>
-          <p v-for="thanks in this.thanks"
-            class="thanks-number">
-            by {{ thanks.postUser.firstName }} {{thanks.postUser.lastName}}
-          </p>
-        </div>
+        <ThanksCount :update="update"/>
       </div>
     </section>
 </template>
 <script>
 import UpdateForm from '@/components/Update/UpdateForm.vue';
 import AddThanksComponent from '@/components/Thanks/AddThanks.vue';
+import ThanksCount from '@/components/Thanks/ThanksCount.vue';
 import AddEyesWantedComponent from '@/components/EyesWanted/AddEyesWanted.vue';
 import CompleteEyesWantedComponent from '@/components/EyesWanted/CompleteEyesWanted.vue';
 import UpdateSidebar from '@/components/Update/UpdateSidebar.vue';
 
 export default {
   name: 'UpdateDetailPage',
-  components: {UpdateForm, UpdateSidebar, AddThanksComponent, AddEyesWantedComponent, CompleteEyesWantedComponent},
+  components: {UpdateForm, UpdateSidebar, AddThanksComponent, AddEyesWantedComponent, CompleteEyesWantedComponent, ThanksCount},
   props: {
     update: {
       type: Object,
@@ -133,9 +133,7 @@ export default {
   },
   computed: {
     inReadingList() {
-      const eyeswanted = this.$store.state.eyeswanted;
-      this.eyeswanted = eyeswanted.filter(eyeswanted => eyeswanted.update._id === this.update._id)[0] || '';
-      return this.eyeswanted;
+      return this.update._id in this.$store.state.eyeswanted;
     },
   },
   methods: {
@@ -150,6 +148,7 @@ export default {
       this.draft = {
         ...this.update,
         actionItems: [...this.update.actionItems],
+        tags: [...this.update.tags],
       };
     },
     stopEditing() {
@@ -160,7 +159,7 @@ export default {
       const contentUnchanged = Object.entries(this.draft).every(([key, value]) => {
         const otherValue = this.update[key];
         if (value instanceof Array) {
-          return value.every((val, i) => val === otherValue[i]);
+          return value.length === otherValue.length && value.every((val, i) => val === otherValue[i]);
         }
         return otherValue === value;
       });
@@ -240,6 +239,11 @@ export default {
       },
     }
   },
+  beforeMount() {
+    if (this.update.author.email === this.$store.state.email) {
+      this.$store.commit('refreshUpdateEyesWanted', this.update._id);
+    }
+  }
 }
 </script>
 <style scoped>
@@ -274,5 +278,9 @@ export default {
 }
 .update-metadata .field {
   margin-bottom: 20px;
+}
+
+hr {
+  margin: 20px;
 }
 </style>

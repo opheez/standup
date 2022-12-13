@@ -71,6 +71,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     tags,
   } = req.body as {projectName: string, scheduledUpdates: any[], invitedUsers: string[], tags: string[]};
 
+  if (projectName === undefined) {
+    res.status(400).json({
+      error: 'Project name cannot be undefined.'
+    });
+    return;
+  }
+
   if (!projectName.trim()) {
     res.status(400).json({
       error: 'Project name must be at least one character long.'
@@ -85,11 +92,39 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
+  if (scheduledUpdatesReq === undefined) {
+    res.status(400).json({
+      error: 'Scheduled updates cannot be undefined.'
+    });
+    return;
+  }
+
+  if (!Array.isArray(scheduledUpdatesReq)) {
+    res.status(400).json({
+      error: 'Scheduled updates must be a list.'
+    });
+    return;
+  }
+
   const scheduledUpdates = scheduledUpdatesReq.map(date => !isNaN(new Date(date).getTime()));
   const scheduledUpdatesErr = scheduledUpdates.indexOf(false);
   if (scheduledUpdatesErr !== -1) {
     res.status(400).json({
       error: `Project deadline ${scheduledUpdatesReq[scheduledUpdatesErr]} must be valid dates.`
+    });
+    return;
+  }
+
+  if (invitedUsersReq === undefined) {
+    res.status(400).json({
+      error: 'Invited users cannot be undefined.'
+    });
+    return;
+  }
+
+  if (!Array.isArray(invitedUsersReq)) {
+    res.status(400).json({
+      error: 'Invited users must be a list.'
     });
     return;
   }
@@ -108,7 +143,7 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
   // if defined, tags must be a list of non-empty strings no longer than 50 characters
   if (tags !== undefined) {
     if (!Array.isArray(tags)) {
-      res.status(401).json({
+      res.status(400).json({
         error: 'Tags must be a list.'
       });
       return;
@@ -116,12 +151,12 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
 
     for (const elt of tags) {
       if (typeof elt !== 'string') {
-        res.status(401).json({
+        res.status(400).json({
           error: 'Tags must be a list of strings.'
         });
         return;
       } else if (elt.trim().length === 0 || elt.trim().length > 50) {
-        res.status(401).json({
+        res.status(400).json({
           error: 'Tags must be between 1 and 50 characters long.'
         });
         return;
@@ -160,6 +195,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
   }
 
   if (scheduledUpdatesReq !== undefined) {
+    if (!Array.isArray(scheduledUpdatesReq)) {
+      res.status(400).json({
+        error: 'Scheduled updates must be a list.'
+      });
+      return;
+    }
+
     const scheduledUpdates = scheduledUpdatesReq.map(date => !isNaN(new Date(date).getTime()));
     const scheduledUpdatesErr = scheduledUpdates.indexOf(false);
     if (scheduledUpdatesErr !== -1) {
@@ -171,6 +213,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
   }
 
   if (invitedUsersReq !== undefined) {
+    if (!Array.isArray(invitedUsersReq)) {
+      res.status(400).json({
+        error: 'Invited users must be a list.'
+      });
+      return;
+    }
+
     const invitedUsers = await Promise.all(invitedUsersReq.map(async (email) => {
       return UserCollection.findOneByEmail(email);
     }));
