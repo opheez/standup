@@ -7,7 +7,9 @@
     <div class="left">
       <img src="../../public/logo.svg">
       <h1 class="title">
-        Standup
+        <router-link to="/">
+          Standup
+        </router-link>
       </h1>
     </div>
     <div class="right" v-if="$store.state.email">
