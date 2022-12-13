@@ -163,7 +163,7 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
           error: 'Tags must be a list of strings.'
         });
         return;
-      } else if (elt.trim().length === 0 || elt.trim().length > 50) {
+      } else if (elt.trim().length === 0 || elt.trim().length > 20) {
         res.status(400).json({
           error: 'Tags must be between 1 and 50 characters long.'
         });

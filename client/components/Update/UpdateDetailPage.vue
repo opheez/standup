@@ -7,11 +7,11 @@
             <template #header>
               Edit Update
             </template>
-            <template #submit>
+            <template #submit="slotProps">
               <div class="edit-btns">
                 <button
                   class="thin-btn invert"
-                  @click="saveEdits">
+                  @click="saveEdits(slotProps.validateForm)">
                   ✅ Save
                 </button>
                 <button
@@ -180,7 +180,7 @@ export default {
       this.editing = false;
       this.draft = this.update;
     },
-    async saveEdits() {
+    async saveEdits(validateForm) {
       const contentUnchanged = Object.entries(this.draft).every(([key, value]) => {
         const otherValue = this.update[key];
         if (value instanceof Array) {
@@ -192,6 +192,13 @@ export default {
         this.$store.commit('alert', {
           status: 'error',
           message: 'Error: Edited content should be different than current content'
+        });
+        return;
+      }
+      if (validateForm()) {
+        this.$store.commit('alert', {
+          status: 'error',
+          message: 'Please fix the form errors before submitting'
         });
         return;
       }

@@ -153,10 +153,6 @@ button.thin-btn {
   display: inline-block;
 }
 
-.status:not(:first-child) {
-  margin-right: 4px !important;
-}
-
 .status.In-Progress {
   background: #FBC358;
 }
@@ -206,5 +202,28 @@ main.left-panel.thin {
 }
 main.left-panel.thin + .details-container {
   width: 33%;
+}
+
+/** Match the style of multiselect */
+input, textarea {
+  outline: none;
+  border-radius: 5px;
+  padding: 8px;
+  border: 1px solid #a4a4a4 ;
+}
+.multiselect__tags{
+  border: 1px solid #a4a4a4 !important;
+}
+
+
+textarea.error,
+input.error {
+  border-color: #ca0000;
+}
+
+p.error-message {
+  color: #ca0000;
+  font-size: 80%;
+  margin: 4px 0;
 }
 </style>
