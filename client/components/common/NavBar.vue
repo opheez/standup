@@ -43,6 +43,8 @@ nav {
 
 .title {
     margin: 0 5px;
+    color: black;
+    text-decoration: none;
 }
 
 img {
