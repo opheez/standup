@@ -74,7 +74,10 @@ class UpdateCollection {
    * @return {Promise<HydratedDocument<Update>[]>} - The updates with the given projectId
    */
    static async findAllByProjectIds(projectIds: Types.ObjectId[] | string[]): Promise<HydratedDocument<Update>[]> {
-    return UpdateModel.find({ projectId: { $in: projectIds } }).sort({ dateCreated: -1 }).populate('authorId');
+    if (projectIds.length) {
+      return UpdateModel.find({ projectId: { $in: projectIds } })
+    }
+    return [];
   }
 
   /**
@@ -158,8 +161,11 @@ class UpdateCollection {
    * @return {Promise<Boolean>} - true if the update has been deleted, false otherwise
    */
    static async deleteMany(updateIds: Types.ObjectId[] | string[]): Promise<boolean> {
-    const updates = await UpdateModel.deleteMany({ updateId: { $in: updateIds } });
-    return updates !== null;
+    if (updateIds.length) {
+      const updates = await UpdateModel.deleteMany({ updateId: { $in: updateIds } });
+      return updates !== null;
+    }
+    return false;
   }
 
   /**

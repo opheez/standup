@@ -161,8 +161,11 @@ class EyesWantedCollection {
    * @return {Promise<Boolean>} - true if the EyesWanteds have been deleted, false otherwise
    */
    static async deleteMany(updateIds: Types.ObjectId[] | string[]): Promise<boolean> {
-    const eyesWanteds = await EyesWantedModel.deleteMany({ updateId: { $in: updateIds } });
-    return eyesWanteds !== null;
+    if (updateIds.length) {
+      const eyesWanteds = await EyesWantedModel.deleteMany({ updateId: { $in: updateIds } });
+      return eyesWanteds !== null;
+    }
+    return false;
   }
 }
 
