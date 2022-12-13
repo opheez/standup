@@ -12,8 +12,9 @@
         <template #header>
             Add update form
         </template>
-        <template #submit>
-          <button type="submit" @click="submit">Add Update</button>
+        <template #submit="slotProps">
+          <button
+            type="submit" @click="submit(slotProps.validateForm)">Add Update</button>
         </template>
       </UpdateForm>
     </main>
@@ -52,7 +53,14 @@ export default {
     addItem(list) {
       this.fields.actionItems.push('');
     },
-    async submit() {
+    async submit(validateForm) {
+      if (validateForm()) {
+        this.$store.commit('alert', {
+          status: 'error',
+          message: 'Please fix form errors before submitting',
+        });
+        return;
+      }
       const body = {
         ...this.fields,
         projectId: this.$route.params.id,

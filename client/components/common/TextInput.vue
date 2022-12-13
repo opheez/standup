@@ -7,16 +7,19 @@
       :maxlength="maxLength"
       :value="value"
       @input="onChange($event.target.value)"
+      @blur="onBlur ? onBlur($event.target.value) : () => {}"
     ></textarea>
     <input
       v-else
       required
       type="text"
+      :class="{error}"
       :name="name"
       :placeholder="placeholder"
       :maxlength="maxLength"
       :value="value"
       @input="onChange($event.target.value)"
+      @blur="onBlur ? onBlur($event.target.value) : () => {}"
     />
     <p>{{value.length}}/{{maxLength}} characters</p>
   </div>
@@ -25,7 +28,8 @@
 export default {
   name: 'TextInput',
   props: {
-    textarea: false,
+    textarea: Boolean,
+    error: Boolean,
     name: String,
     value: String,
     placeholder: String,
@@ -34,7 +38,8 @@ export default {
     onChange: {
       type: Function,
       required: true,
-    }
+    },
+    onBlur: Function,
   },
 
 }

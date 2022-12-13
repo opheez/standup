@@ -3,31 +3,41 @@
     <h2>
       <slot name="header"></slot>
     </h2>
-    <div class="field required">
+    <div class="field required" :class="{error: errors['summary']}">
       <label for="summary">
         Summary
       </label>
       <TextInput
+        :error="!!errors['summary']"
         :name="'summary'"
         :maxLength="60"
         :placeholder="'Implemented the backend for...'"
         :value="fields.summary"
-        :onChange="(value) => {fields.summary = value}"
+        :onChange="summaryOnChange"
+        :onBlur="validateSummary"
       />
+      <p v-if="errors['summary']" class="error-message">
+        {{errors['summary']}}
+      </p>
     </div>
-    <div class="field required">
+    <div class="field required" :class="{error: errors['details']}">
       <label for="details">
         Details
       </label>
       <textarea
         name="details"
         placeholder="Broke the task up into..."
+        :class="{error: errors['details']}"
         :value="fields.details"
         @input="fields.details = $event.target.value"
+        @blur="validateDetails($event.target.value)"
       ></textarea>
+      <p v-if="errors['details']" class="error-message">
+        {{errors['details']}}
+      </p>
     </div>
     <div class="field">
-      <label for="details">
+      <label for="status">
         Status
       </label>
       <div class="field status-options">
@@ -49,18 +59,18 @@
         </div>
       </div>
     </div>
-    <div class="field">
-      <label>{{ fields.status === 'completed' ? 'Next Steps' : 'Action Items'}}</label>
+    <div class="field" :class="{error: hasActionItemErrors}">
+      <label>{{ listLabel }}</label>
       <div class="items-container">
         <div v-for="(item, i) in fields.actionItems" class="item">
           ●
           <input
             placeholder="Look into..."
-            :class="{error: errors[i]}"
+            :class="{error: errors.actionItems[i]}"
             :id="i"
             :value="fields.actionItems[i]"
             @input="fields.actionItems[i] = $event.target.value"
-            @blur="validate($event.target.value, i)"
+            @blur="validateActionItems($event.target.value, i)"
           />
           <button
             class="text-btn"
@@ -70,15 +80,15 @@
           </button>
         </div>
       </div>
-      <p v-if="hasErrors" class="error">
-        ⚠️ Action items cannot be empty
-      </p>
       <button
         class="text-btn"
         @click="$event.preventDefault(); addItem()"
       >
         + Add item
       </button>
+      <p v-if="hasActionItemErrors" class="error-message">
+        {{ listLabel }} cannot contain empty items.
+      </p>
     </div>
     <div class="field">
       <label>Tags</label>
@@ -89,7 +99,7 @@
         :close-on-select="false">
       </multiselect>
     </div>
-    <slot name="submit"></slot>
+    <slot name="submit" :validateForm="validateForm"></slot>
   </section>
 </template>
 
@@ -121,32 +131,57 @@ export default {
         'blocked': 'Blocked',
         'completed': 'Completed',
       },
-      errors: this.fields.actionItems.map(i => null),
+      errors: {
+        actionItems: (this.fields.actionItems || []).map(_ => false),
+      },
     };
   },
   methods: {
     removeItem(index) {
       this.fields.actionItems.splice(index, 1);
+      this.errors.actionItems.splice(index, 1);
     },
     addItem(list) {
       this.fields.actionItems.push('');
+      this.errors.actionItems.push(false);
     },
-    validate(actionItem, i) {
-      if (this.errors.length <= i) {
-        for (let j = 0; j <= i - this.errors.length; ++j) {
-          this.errors.push(null);
-        }
+    validateForm() {
+      // Validate action items because new items aren't flagged for being
+      // empty until an attempt to edit it
+      this.fields.actionItems.forEach((val, i) =>
+          this.validateActionItems(val, i));
+      return this.hasErrors;
+    },
+    summaryOnChange(value) {
+      this.fields.summary = value;
+    },
+    validateSummary(value) {
+      if (value.trim().length === 0) {
+        this.$set(this.errors, 'summary', 'Summary is a required field');
+      } else {
+        this.$delete(this.errors, 'summary', null);
       }
-      if (!actionItem) {
-        this.$set(this.errors, i, 'Cannot be left empty');
-        return;
+    },
+    validateDetails(value) {
+      if (value.trim().length === 0) {
+        this.$set(this.errors, 'details', 'Details is a required field');
+      } else {
+        this.$delete(this.errors, 'details', null);
       }
-      this.$set(this.errors, i, null);
+    },
+    validateActionItems(value, idx) {
+      this.$set(this.errors.actionItems, idx, value.trim().length === 0);
     },
   },
   computed: {
+    hasActionItemErrors() {
+      return this.errors.actionItems.some(e => e); 
+    },
     hasErrors() {
-      return this.errors.some(error => error !== null);
+      return Object.keys(this.errors).length > 1 || this.hasActionItemErrors;
+    },
+    listLabel() {
+      return this.fields.status === 'completed' ? 'Next Steps' : 'Action Items';
     }
   }
 }
@@ -170,9 +205,10 @@ section {
 }
 .field > label {
   font-weight: bold;
+  margin-bottom: 4px;
 }
 .field.required label:after {
-  color: #8b0000;
+  color: #ca0000;
   content: '*';
   display:inline;
   font-weight: bold;
@@ -180,6 +216,10 @@ section {
 
 .field > textarea {
   min-height: 100px;
+}
+.field.error {
+  border-left: 3px solid #ca0000;
+  padding-left: 8px;
 }
 
 .status-option {
@@ -200,16 +240,11 @@ section {
 .item {
   display: flex;
   align-items: center;
+  margin-bottom: 8px;
 }
 
 .item > input {
   flex-grow: 1;
   margin-left: 8px;
-}
-
-.error {
-  color: #8b0000;
-  font-size: 80%;
-  margin: 0 0 0 16px;
 }
 </style>

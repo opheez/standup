@@ -216,7 +216,14 @@ input, textarea {
   padding: 8px;
 }
 
+textarea.error,
 input.error {
-  border: 1px solid #8b0000;
+  border-color: #ca0000;
+}
+
+p.error-message {
+  color: #ca0000;
+  font-size: 80%;
+  margin: 4px 0;
 }
 </style>
