@@ -20,7 +20,7 @@ type ProjectResponse = {
  * @param {Date} date - A date object
  * @returns {string} - formatted date as string
  */
-const formatDate = (date: Date): string => moment(date).format('MMMM Do, YYYY');
+const formatDate = (date: Date): string => moment.utc(date).format('MMMM Do, YYYY');
 
 /**
  * Given a Tags array, cleans it to remove duplicates and trim whitespace.

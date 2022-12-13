@@ -1,5 +1,4 @@
 import type {HydratedDocument} from 'mongoose';
-import moment from 'moment';
 import type {Thanks, PopulatedThanks} from '../thanks/model';
 
 // Update this if you add a property to the Freet type!
@@ -8,14 +7,6 @@ type ThanksResponse = {
   postUser: string;
   updateId: string;
 };
-
-/**
- * Encode a date as an unambiguous string
- *
- * @param {Date} date - A date object
- * @returns {string} - formatted date as string
- */
-const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:mm:ss a');
 
 /**
  * Formats populated update object

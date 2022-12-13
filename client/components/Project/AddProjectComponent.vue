@@ -136,6 +136,7 @@ export default {
       this.show = true;
     },
     async submit() {
+      console.log(this.fields.deadline);
       const options = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
