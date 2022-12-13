@@ -68,6 +68,7 @@ export default {
           message: 'Successfully accepted invite',
         });
         this.$store.commit('refreshProjects');
+        this.$store.commit('refreshEyesWanted');
       });
     },
   }
