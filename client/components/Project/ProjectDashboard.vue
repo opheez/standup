@@ -1,7 +1,12 @@
 <template>
   <div>
     <h1>Group Projects</h1>
+    <div class="add-btns">
+      <ProjectInvitesComponent/>
+      <AddProjectComponent/>
+    </div>
     <div class="project-filters">
+      <label>Filter for: </label>
       <p
         v-for="(value, label) in FILTER_TO_VALUE"
         @click="activeFilter = value"
@@ -10,10 +15,6 @@
       >
         {{ label }}
       </p>
-    </div>
-    <div class="add-btns">
-      <ProjectInvitesComponent/>
-      <AddProjectComponent/>
     </div>
     <section>
       <p v-if="filteredProjects.length === 0">No projects found.</p>
@@ -76,6 +77,10 @@ export default {
   display: flex;
   margin-bottom: 20px;
 }
+.project-filters > label {
+  font-weight: bold;
+  margin-right: 8px;
+}
 .project-filters > p {
   margin: 0 8px 0 0;
   cursor: pointer;
@@ -88,9 +93,7 @@ export default {
 
 .add-btns {
   display: flex;
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
+  margin-bottom: 24px;
   z-index: 999;
 }
 .add-btns > * + * {
