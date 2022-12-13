@@ -1,7 +1,7 @@
 <template>
   <div>
     <button @click="showModal">
-      Project Invites
+      Project Invites ({{ $store.state.invites ? $store.state.invites.length : 0 }})
     </button>
     <Modal
       v-if="show"
