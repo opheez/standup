@@ -122,23 +122,16 @@ div.section + div.section {
   border-radius: 0 100px 100px 0;
   margin: 4px 0;
   padding: 8px 0 8px 16px;
-  cursor: pointer;
   transition: all 0.2ms ease-in-out;
   background-color: transparent;
   color: #313131;
 }
-
-.noclick-tab {
-  border-radius: 0 100px 100px 0;
-  margin: 4px 0;
-  padding: 8px 0 8px 16px;
-  background-color: transparent;
-  color: #313131;
-}
-
 .tab.active {
   background: #ebebeb;
   color: #000;
+}
+.tab.link {
+  cursor: pointer;
 }
 .tab.link:hover {
   background: #f4f4f4;
