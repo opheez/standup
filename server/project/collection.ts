@@ -212,8 +212,8 @@ class ProjectCollection {
    * @param {string} userId - The id of the user
    */
    static async removeUser(userId: Types.ObjectId | string): Promise<void> {
-    await ProjectModel.updateMany({ participants: { $includes: userId } }, { $pull: { participants: userId } })
-    await ProjectModel.updateMany({ invitedUsers: { $includes: userId } }, { $pull: { invitedUsers: userId } })
+    await ProjectModel.updateMany({ participants: userId }, { $pull: { participants: userId } })
+    await ProjectModel.updateMany({ invitedUsers: userId }, { $pull: { invitedUsers: userId } })
   }
 }
 
