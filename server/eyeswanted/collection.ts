@@ -113,7 +113,7 @@ class EyesWantedCollection {
     const updates = await UpdateCollection.findAllByProjectId(projectId);
     const updateIds = updates.map((update) => update._id);
 
-    return EyesWantedModel.updateMany({ updateId: { $in: updateIds } }, { $push: { invitedUsers: userId }}).populate(['updateId', 'targetUsers', {
+    return EyesWantedModel.updateMany({ updateId: { $in: updateIds } }, { $push: { targetUsers: userId }}).populate(['updateId', 'targetUsers', {
       path: 'updateId',
       populate: { path: 'authorId' }
     }]);
