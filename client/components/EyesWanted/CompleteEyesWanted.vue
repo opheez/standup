@@ -2,10 +2,10 @@
     <article>
     <section 
     class="addeyeswantedsection">
-      <button class="addeyeswantedbutton"
+      <button class="addeyeswantedbutton thin-btn"
         @click="completeEyesWanted"
       >
-        Read!
+        Mark as read!
       </button>
     </section>
       <section class="alerts">
@@ -28,16 +28,17 @@
       update: {
         type: Object,
         required: true
-        },
-       eyeswanted: {
-        type: Object,
-        required: true
-        }, 
+      },
     },
     data() {
       return {
         alerts: {} // Displays success/error messages encountered during freet modification
       };
+    },
+    computed: {
+      eyeswanted() {
+        return this.$store.state.eyeswanted[this.update._id];
+      },
     },
     methods: {
       async completeEyesWanted() {
@@ -55,7 +56,7 @@
             throw new Error(res.error);
           }
           const message = ``;
-          if (this.eyeswanted.update._id === this.$store.state.currentUpdate?._id) {
+          if (this.$route.name === 'Home' && this.eyeswanted.update._id === this.$store.state.currentUpdate?._id) {
             this.$store.commit('setCurrentUpdate', null);  
           }
           this.$store.commit('refreshEyesWanted');

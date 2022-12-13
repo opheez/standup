@@ -17,9 +17,9 @@ const store = new Vuex.Store({
     projects: [], // All projects the signed in user is a part of
     invites: [], // All projects the signed in user is invited to
     updates: {}, // mapping from project IDs to a list of updates
-    allthanks: [], // All thanks in the app
-    eyeswanted: [], // mapping from user to a list of eyes wanted updates
-    alleyeswanted: [], // All eyes wanted in the app
+    allthanks: {}, // mapping from update ID to all thanks for that update
+    eyeswanted: {}, // mapping from user to a list of eyes wanted updates
+    alleyeswanted: {}, // All eyes wanted in the app
     userFilter: null,
     tagFilter: null,
     currentUpdate: null,
@@ -139,28 +139,39 @@ const store = new Vuex.Store({
         if (!res.ok) {
           throw Error(resJson.error);
         }
-        state.eyeswanted = resJson;
+        const eyeswanted = resJson.reduce((allEyes, e) => {
+          allEyes[e.update._id] = e;
+          return allEyes;
+        }, {});
+        state.eyeswanted = eyeswanted;
       } catch (e) {
         console.log(e);
       }
     },
-    async refreshAllThanks(state){
+    async refreshUpdateEyesWanted(state, updateId) {
+      try {
+        const res = await fetch(`/api/eyeswanted?updateId=${updateId}`, {
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        });
+        const resJson = await res.json();
+        if (!res.ok) {
+          throw Error(resJson.error);
+        }
+        Vue.set(state.alleyeswanted, updateId, resJson.eyesWanted);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async refreshAllThanks(state, updateId){
       /**
        * Request the server for all the alerts (risks) the user posted.
        */
-       const url = '/api/thanks/';
-       const res = await fetch(url).then(async r => r.json());
-       console.log(res);
-       state.allthanks = res;
-     },
-     async refreshAllEyesWanted(state){
-      /**
-       * Request the server for all the alerts (risks) the user posted.
-       */
-       const url = '/api/eyeswanted/all';
-       const res = await fetch(url).then(async r => r.json());
-       console.log(res);
-       state.alleyeswanted = res;
+      const url = `/api/thanks/${updateId}`;
+      const res = await fetch(url);
+      const resJson = await res.json();
+      Vue.set(state.allthanks, updateId, resJson);
      },
     setUserFilter(state, userFilter) {
       state.userFilter = userFilter;
