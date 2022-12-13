@@ -198,6 +198,9 @@ router.delete(
     await UpdateCollection.deleteMany(updateIds);
     await ProjectCollection.deleteMany(userId);
 
+    // pull user from projects they were part of 
+    await ProjectCollection.removeUser(userId);
+
     await UserCollection.deleteOne(userId);
     
     req.session.userId = undefined;

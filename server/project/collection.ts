@@ -205,6 +205,16 @@ class ProjectCollection {
   static async deleteMany(creatorId: Types.ObjectId | string): Promise<void> {
     await ProjectModel.deleteMany({creatorId});
   }
+
+  /**
+   * Removes the given user from projects they were a participant in or invited to
+   *
+   * @param {string} userId - The id of the user
+   */
+   static async removeUser(userId: Types.ObjectId | string): Promise<void> {
+    await ProjectModel.updateMany({ participants: { $includes: userId } }, { $pull: { participants: userId } })
+    await ProjectModel.updateMany({ invitedUsers: { $includes: userId } }, { $pull: { invitedUsers: userId } })
+  }
 }
 
 export default ProjectCollection;
