@@ -148,6 +148,9 @@ router.patch(
   async (req: Request, res: Response) => {
     const userId = req.session.userId;
     const project = await ProjectCollection.respondInvite(req.params.projectId, userId, req.params.response === 'accept');
+    if (req.params.response === 'accept') {
+      await EyesWantedCollection.addUserToAllInProject(userId, req.params.projectId);
+    }
     res.status(200).json({
       message: 'Your project was updated successfully.',
       project: util.constructProjectResponse(project)

@@ -103,6 +103,23 @@ class EyesWantedCollection {
   }
 
   /**
+   * Add a user to all the active Eyes Wanted in a project
+   *
+   * @param {Types.ObjectId | string} userId - The id of the user
+   * @param {Types.ObjectId | string} projectId - The id of the project
+   * @return {Promise<HydratedDocument<EyesWanted>>} - The newly updated eyesWanteds
+   */
+   static async addUserToAllInProject(userId: Types.ObjectId | string, projectId: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
+    const updates = await UpdateCollection.findAllByProjectId(projectId);
+    const updateIds = updates.map((update) => update._id);
+
+    return EyesWantedModel.updateMany({ updateId: { $in: updateIds } }, { $push: { invitedUsers: userId }}).populate(['updateId', 'targetUsers', {
+      path: 'updateId',
+      populate: { path: 'authorId' }
+    }]);
+  }
+
+  /**
    * Update an EyesWanted to reflect that a user has read it
    *
    * @param {Types.ObjectId | string} eyesWantedId - The id of the EyesWanted to be updated
@@ -118,12 +135,12 @@ class EyesWantedCollection {
   }
 
   /**
- * Update the EyesWanted for an Update to reflect that a user has read it
- *
- * @param {Types.ObjectId | string} updateId - The id of the Update whose EyesWanted is to be updated
- * @param {Types.ObjectId | string} reader - The id of the user that just read the update
- * @return {Promise<HydratedDocument<EyesWanted>>} - The newly updated freet
- */
+   * Update the EyesWanted for an Update to reflect that a user has read it
+   *
+   * @param {Types.ObjectId | string} updateId - The id of the Update whose EyesWanted is to be updated
+   * @param {Types.ObjectId | string} reader - The id of the user that just read the update
+   * @return {Promise<HydratedDocument<EyesWanted>>} - The newly updated freet
+   */
     static async updateOneByUpdateAndReader(updateId: Types.ObjectId | string, reader: Types.ObjectId | string): Promise<HydratedDocument<EyesWanted>> {
     await EyesWantedModel.updateOne({ updateId }, { $pull: { targetUsers: reader }});
     return EyesWantedModel.findOne({ updateId }).populate(['updateId', 'targetUsers', {
