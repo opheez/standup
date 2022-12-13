@@ -9,7 +9,7 @@
         >{{ section.name }}</h4>
         <p
           v-for="subsection in section.children"
-          class="tab"
+          class="tab link"
           :class="{active: subsection.active}"
           @click="subsection.onClick()"
         >
