@@ -7,12 +7,13 @@ export default {
     updates() {
       const updates = this.$store.state.updates[this.$route.params.id] || [];
       let groupedUpdates = {
-        [this.$store.state.tagFilter]: [],
+        ['#' + this.$store.state.tagFilter]: [],
       }
       return updates.reduce((groups, u) => {
         u.tags.forEach(tag => {
-          if (tag in groups) {
-            groups[tag].push(u);
+          const header = '#' + tag;
+          if (header in groups) {
+            groups[header].push(u);
           }
         });
         return groups;
