@@ -207,8 +207,13 @@ main.left-panel.thin {
 main.left-panel.thin + .details-container {
   width: 33%;
 }
-input {
+
+/** Match the style of multiselect */
+input, textarea {
   outline: none;
+  border-radius: 5px;
+  border: 1px solid #a4a4a4;
+  padding: 8px;
 }
 
 input.error {
