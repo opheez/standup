@@ -3,13 +3,13 @@
     <section class="addeyeswantedsection">
       <h4>Get your teammates' attention!</h4>
       <button class="addeyeswantedbutton thin-btn"
-        v-if="!existingEyesWanted || project.participants.length - 1 > waitingFor.length"
+        v-if="!existingEyesWanted || !waitingFor.length"
         @click="addEyesWanted"
       >
-        Eye's wanted!
+        {{!waitingFor.length ? 'Re-mark ' : ''}} Eye's wanted!
       </button>
       <button class="addeyeswantedbutton thin-btn invert"
-        v-if="existingEyesWanted"
+        v-if="existingEyesWanted && waitingFor.length"
         @click="removeEyesWanted"
       >
         Resolve
@@ -18,7 +18,7 @@
 
     <section v-if="existingEyesWanted"
         class = "waitingFor">
-      <p v-if="waitingFor">
+      <p v-if="waitingFor.length">
         Waiting for reviews from: {{ waitingFor.join(', ') }} 
       </p>
       <p v-else>

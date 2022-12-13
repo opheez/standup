@@ -150,7 +150,11 @@ const store = new Vuex.Store({
     },
     async refreshUpdateEyesWanted(state, updateId) {
       try {
-        const res = await fetch(`/api/eyeswanted?updateId=${updateId}`);
+        const res = await fetch(`/api/eyeswanted?updateId=${updateId}`, {
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        });
         const resJson = await res.json();
         if (!res.ok) {
           throw Error(resJson.error);
