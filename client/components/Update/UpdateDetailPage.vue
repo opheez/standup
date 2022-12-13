@@ -21,7 +21,7 @@
                 </button>
                 <button
                   class="thin-btn invert"
-                  @click="deleteUpdate">
+                  @click="showDeleteWarning = true">
                   🗑️ Delete
                 </button>
               </div>
@@ -84,7 +84,7 @@
           </button>
           <button
             class="thin-btn invert"
-            @click="deleteUpdate">
+            @click="showDeleteWarning = true">
             🗑️ Delete
           </button>
         </div>
@@ -108,6 +108,22 @@
         </div>
         <ThanksCount :update="update"/>
       </div>
+      <Modal
+        v-show="showDeleteWarning"
+        :hideModal="hideDeleteWarning"
+        :absolute="true"
+      >
+        <h3>Confirm deletion</h3>
+        <p>Are you sure you want to delete update "{{update.summary}}"?</p>
+        <div class="modal-actions">
+          <button class="invert" @click="hideDeleteWarning">
+            Cancel
+          </button>
+          <button @click="deleteUpdate">
+            Delete
+          </button>
+        </div>
+      </Modal>
     </section>
 </template>
 <script>
@@ -117,10 +133,19 @@ import ThanksCount from '@/components/Thanks/ThanksCount.vue';
 import AddEyesWantedComponent from '@/components/EyesWanted/AddEyesWanted.vue';
 import CompleteEyesWantedComponent from '@/components/EyesWanted/CompleteEyesWanted.vue';
 import UpdateSidebar from '@/components/Update/UpdateSidebar.vue';
+import Modal from '@/components/common/Modal.vue';
 
 export default {
   name: 'UpdateDetailPage',
-  components: {UpdateForm, UpdateSidebar, AddThanksComponent, AddEyesWantedComponent, CompleteEyesWantedComponent, ThanksCount},
+  components: {
+    UpdateForm,
+    UpdateSidebar,
+    AddThanksComponent,
+    AddEyesWantedComponent,
+    CompleteEyesWantedComponent,
+    ThanksCount,
+    Modal,
+  },
   props: {
     update: {
       type: Object,
@@ -226,6 +251,9 @@ export default {
         });
       }
     },
+    hideDeleteWarning() {
+      this.showDeleteWarning = false;
+    }
   },
   data() {
     return {
@@ -237,13 +265,19 @@ export default {
         'blocked': 'Blocked',
         'completed': 'Completed',
       },
+      showDeleteWarning: false,
     }
   },
   beforeMount() {
     if (this.update.author.email === this.$store.state.email) {
       this.$store.commit('refreshUpdateEyesWanted', this.update._id);
     }
-  }
+  },
+  watch: {
+    update: function(old, newValue) {
+      this.showDeleteWarning = false;
+    }
+  },
 }
 </script>
 <style scoped>
@@ -264,6 +298,10 @@ export default {
 
 .update {
   position: relative;
+  max-height: 100%;
+  overflow-y: scroll;
+  padding-bottom: 40px;
+  padding-right: 12px;
 }
 
 .update .edit-btns {

@@ -195,7 +195,7 @@ main.left-panel.thin {
   width: 17%;
   height: 100%;
   margin-left: 8px;
-  padding: 40px 36px;
+  padding: 40px 36px 0 36px;
 }
 
 .details-container > button {
