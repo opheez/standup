@@ -2,9 +2,9 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import AccountPage from './components/Account/AccountPage.vue';
 import HomePage from './components/Home/HomePage.vue';
-import ProjectDashboard from './components/Project/ProjectDashboard.vue';
 import AllUpdatesView from './components/Update/views/AllUpdatesView.vue';
 import UserView from './components/Update/views/UserView.vue';
+import TagView from './components/Update/views/TagView.vue';
 import AddUpdatePage from './components/Update/AddUpdatePage.vue';
 import UpdateDetailPage from './components/Update/UpdateDetailPage.vue';
 import AccountSettingsPage from './components/Account/AccountSettingsPage.vue';
@@ -14,9 +14,9 @@ Vue.use(VueRouter);
 
 const routes = [
   {path: '/', name: 'Home', component: HomePage},
-  {path: '/projects', name: 'Projects', component: ProjectDashboard},
   {path: '/updates/:id', name: 'Updates', component: AllUpdatesView},
   {path: '/updates/:id/users', name: 'UpdatesPerUser', component: UserView},
+  {path: '/updates/:id/tags', name: 'UpdatesPerTag', component: TagView},
   {path: '/updates/:id/add', name: 'AddUpdate', component: AddUpdatePage},
   {path: '/updates/:id/:updateId', name: 'UpdateDetails', component: UpdateDetailPage},
   {path: '/account', name: 'Account', component: AccountPage},
@@ -27,7 +27,7 @@ const routes = [
 const router = new VueRouter({routes});
 
 const AUTH_REQUIRED_ROUTES = [
-  'Projects', 'Account', 'Updates', 'AddUpdate', 'UpdateDetails'
+  'Account', 'Updates', 'AddUpdate', 'UpdateDetails'
 ];
 
 /**

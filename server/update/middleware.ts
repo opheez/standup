@@ -243,7 +243,7 @@ import UpdateCollection from '../update/collection';
 
     for (const tag of tags) {
       if (!projectTags.includes(tag)) {
-        res.status(400).json({
+        res.status(404).json({
           error: `Tag '${tag}' is not registered in the project.`
         });
         return;
@@ -350,7 +350,7 @@ import UpdateCollection from '../update/collection';
 
     for (const tag of tags) {
       if (!projectTags.includes(tag)) {
-        res.status(400).json({
+        res.status(404).json({
           error: `Tag '${tag}' is not registered in the project.`
         });
         return;
