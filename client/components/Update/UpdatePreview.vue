@@ -17,15 +17,6 @@
     >
       #{{ tag }}
     </p>
-    <div
-        v-if="(this.update.author.email === $store.state.email && isThankedby())">
-        <p class="thanks-number">
-        {{ this.thanks.length }} thanks </p>
-        <p v-for="thanks in this.thanks"
-        class="thanks-number">
-          by {{ thanks.postUser.firstName }} {{thanks.postUser.lastName}}
-        </p>
-      </div>
     <ThanksCount :update="update"/>
   </article>
 </template>

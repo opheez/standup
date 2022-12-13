@@ -97,9 +97,9 @@
         <CompleteEyesWantedComponent
           v-if="inReadingList"
           :update="update"
-        />
+          />
         <hr/>
-        <div 
+        <div
           v-if="($store.state.email !== update.author.email
                   && project.active === true)"
           class="thanks">

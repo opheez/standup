@@ -153,6 +153,10 @@ button.thin-btn {
   display: inline-block;
 }
 
+.status:not(:first-child) {
+  margin-right: 4px !important;
+}
+
 .status.In-Progress {
   background: #FBC358;
 }
