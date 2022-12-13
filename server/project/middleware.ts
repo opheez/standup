@@ -140,6 +140,14 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
+  const invitedSelfErr = invitedUsers.every(user => !user._id.equals(req.session.userId));
+  if (!invitedSelfErr) {
+    res.status(400).json({
+      error: 'You cannot invite yourself to a project!'
+    });
+    return;
+  }
+
   // if defined, tags must be a list of non-empty strings no longer than 50 characters
   if (tags !== undefined) {
     if (!Array.isArray(tags)) {
