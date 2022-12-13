@@ -208,9 +208,13 @@ main.left-panel.thin + .details-container {
 input, textarea {
   outline: none;
   border-radius: 5px;
-  border: 1px solid #a4a4a4;
   padding: 8px;
+  border: 1px solid #a4a4a4 ;
 }
+.multiselect__tags{
+  border: 1px solid #a4a4a4 !important;
+}
+
 
 textarea.error,
 input.error {
