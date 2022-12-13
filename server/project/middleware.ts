@@ -99,6 +99,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
+  if (!Array.isArray(scheduledUpdatesReq)) {
+    res.status(400).json({
+      error: 'Scheduled updates must be a list.'
+    });
+    return;
+  }
+
   const scheduledUpdates = scheduledUpdatesReq.map(date => !isNaN(new Date(date).getTime()));
   const scheduledUpdatesErr = scheduledUpdates.indexOf(false);
   if (scheduledUpdatesErr !== -1) {
@@ -111,6 +118,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
   if (invitedUsersReq === undefined) {
     res.status(400).json({
       error: 'Invited users cannot be undefined.'
+    });
+    return;
+  }
+
+  if (!Array.isArray(invitedUsersReq)) {
+    res.status(400).json({
+      error: 'Invited users must be a list.'
     });
     return;
   }
@@ -181,6 +195,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
   }
 
   if (scheduledUpdatesReq !== undefined) {
+    if (!Array.isArray(scheduledUpdatesReq)) {
+      res.status(400).json({
+        error: 'Scheduled updates must be a list.'
+      });
+      return;
+    }
+
     const scheduledUpdates = scheduledUpdatesReq.map(date => !isNaN(new Date(date).getTime()));
     const scheduledUpdatesErr = scheduledUpdates.indexOf(false);
     if (scheduledUpdatesErr !== -1) {
@@ -192,6 +213,13 @@ const isValidProjectFields = async (req: Request, res: Response, next: NextFunct
   }
 
   if (invitedUsersReq !== undefined) {
+    if (!Array.isArray(invitedUsersReq)) {
+      res.status(400).json({
+        error: 'Invited users must be a list.'
+      });
+      return;
+    }
+
     const invitedUsers = await Promise.all(invitedUsersReq.map(async (email) => {
       return UserCollection.findOneByEmail(email);
     }));
