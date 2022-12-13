@@ -87,7 +87,7 @@
         + Add item
       </button>
       <p v-if="hasActionItemErrors" class="error-message">
-        {{ listLabel }} cannot contain empty items.
+        {{ listLabel }} cannot contain empty items
       </p>
     </div>
     <div class="field">
@@ -146,10 +146,12 @@ export default {
       this.errors.actionItems.push(false);
     },
     validateForm() {
-      // Validate action items because new items aren't flagged for being
+      // Validate fields agains because inputs aren't flagged for being
       // empty until an attempt to edit it
       this.fields.actionItems.forEach((val, i) =>
           this.validateActionItems(val, i));
+      this.validateSummary(this.fields.summary);
+      this.validateDetails(this.fields.details);
       return this.hasErrors;
     },
     summaryOnChange(value) {

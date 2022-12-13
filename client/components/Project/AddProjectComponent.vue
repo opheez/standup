@@ -9,32 +9,44 @@
     >
       <h2>Add Project</h2>
       <form @submit.prevent="submit">
-        <div class="field">
+        <div class="field required" :class="{error: errors.name}">
           <label for="project-name">
             Name
           </label>
           <TextInput
+            :error="!!errors.name"
             :name="'name'"
             :maxLength="50"
             :placeholder="'Project Name'"
             :value="fields.name"
             :onChange="(value) => {fields.name = value}"
+            :onBlur="validateName"
           />
+          <p v-if="errors.name" class="error-message">
+            {{ errors.name }}
+          </p>
         </div>
-        <div class="field">
-          <label for="project-name">
+        <div class="field required" :class="{error: errors.deadline}">
+          <label for="project-deadline">
             Deadline
           </label>
           <input
             id="name"
             name="name"
             type="date"
+            :class="{error: errors.deadline}"
             :min="minDate"
             :value="fields.deadline"
             @input="fields.deadline = $event.target.value"
+            @blur="validateDeadline($event.target.value)"
           />
+          <p v-if="errors.deadline" class="error-message">
+            {{ errors.deadline }}
+          </p>
         </div>
-        <div class="field">
+        <div
+          class="field required"
+          :class="{error: hasCollaboratorErrors }">
           <label for="collaborators">
             Collaborators
           </label>
@@ -50,8 +62,10 @@
                 :id="i"
                 :name="i"
                 :value="fields.collaborators[i]"
+                :class="{error: errors.collaborators[i]}"
                 placeholder="john.doe@gmail.com"
-                @input="fields.collaborators[i] = $event.target.value"
+                @input="onCollaboratorChange($event.target.value, i)"
+                @blur="validateCollaborators($event.target.value, i)"
               />
               <button
                 class="text-btn"
@@ -67,8 +81,20 @@
               + Add collaborator
             </button>
           </div>
+          <p v-if="hasMissingCollaboratorsErrors" class="error-message">
+            Please enter at least one collaborator.
+          </p>
+          <p v-if="hasCollaboratorValueErrors" class="error-message">
+            Email addresses must be of the format someone@domain
+          </p>
+          <p v-if="hasDupeCollaboratorsErrors" class="error-message">
+            Please enter each collaborator only once
+          </p>
+          <p v-if="hasSelfCollaboratorErrors" class="error-message">
+            Please do not invite yourself to the project. Creators are added by default.
+          </p>
         </div>
-        <div class="field">
+        <div class="field" :class="{error: hasTagErrors}">
           <label for="tags">
             Define all possible update tags for your project
           </label>
@@ -77,12 +103,14 @@
               v-for="(tag, i) in fields.tags"
               class="tag"
             >
-              <input
-                :id="i"
-                :name="i"
+              <TextInput
+                :error="errors.tags[i]"
+                :name="'tag'"
+                :maxLength="20"
+                :placeholder="'Update tags'"
                 :value="fields.tags[i]"
-                placeholder="Update tag"
-                @input="fields.tags[i] = $event.target.value"
+                :onChange="(value) => onTagChange(value, i)"
+                :onBlur="(value) => validateTags(value, i)"
               />
               <button
                 class="text-btn"
@@ -98,6 +126,9 @@
               + Add a tag
             </button>
           </div>
+          <p v-if="hasTagErrors" class="error-message">
+            Tags cannot be empty
+          </p>
         </div>
       </form>
       <div class="actions">
@@ -126,6 +157,10 @@ export default {
         collaborators: [''],
         tags: [''],
       },
+      errors: {
+        tags: [false],
+        collaborators: [false],
+      }
     }
   },
   methods: {
@@ -135,8 +170,35 @@ export default {
     showModal() {
       this.show = true;
     },
+    validateName(value) {
+      if (value.trim().length === 0) {
+        this.$set(this.errors, 'name', 'Project name is a required field');
+      } else {
+        this.$delete(this.errors, 'name');
+      }
+    },
+    validateDeadline(value) {
+      if (value.trim().length === 0) {
+        this.$set(this.errors, 'deadline', 'Deadline is a required field');
+      } else {
+        this.$delete(this.errors, 'deadline');
+      }
+    },
+    validateTags(value, idx) {
+      this.$set(this.errors.tags, idx, value.trim().length === 0);
+    },
+    validateCollaborators(value, idx) {
+      const emailRegex = /^^\S+@.+\..+$/i;
+      this.$set(this.errors.collaborators, idx, !emailRegex.test(value));
+    },
     async submit() {
-      console.log(this.fields.deadline);
+      if (this.validateForm()) {
+        this.$store.commit('alert', {
+          status: 'error',
+          message: 'Please fix form errors before submitting',
+        });
+        return;
+      }
       const options = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -167,6 +229,10 @@ export default {
           collaborators: [''],
           tags: [''],
         };
+        this.errors = {
+          collaborators: [false],
+          tags: [false],
+        }
       } catch (e) {
         this.$store.commit('alert', {
           status: 'error',
@@ -176,17 +242,64 @@ export default {
     },
     addCollaborator() {
       this.fields.collaborators.push('');
+      this.errors.collaborators.push(false);
     },
     removeCollaborator(i) {
       this.fields.collaborators.splice(i, 1);
+      this.errors.collaborators.splice(i, 1);
+    },
+    onCollaboratorChange(value, i) {
+      this.$set(this.fields.collaborators, i, value);
     },
     addTag() {
       this.fields.tags.push('');
+      this.errors.tags.push(false);
     },
     removeTag(i) {
       this.fields.tags.splice(i, 1);
+      this.errors.tags.splice(i, 1);
+    },
+    onTagChange(value, idx) {
+      this.$set(this.fields.tags, idx, value);
+    },
+    validateForm() {
+      // Validate all fields again because inputs aren't flagged
+      // until an attempt to edit it
+      this.fields.collaborators.forEach((val, i) =>
+          this.validateCollaborators(val, i));
+      this.fields.tags.forEach((val, i) =>
+          this.validateTags(val, i));
+      this.validateName(this.fields.name);
+      this.validateDeadline(this.fields.deadline);
+      return this.hasErrors;
     },
   },
+  computed: {
+    hasCollaboratorValueErrors() {
+      return this.errors.collaborators.some(e => e);
+    },
+    hasMissingCollaboratorsErrors() {
+      return this.fields.collaborators.length === 0;
+    },
+    hasDupeCollaboratorsErrors() {
+      return new Set(this.fields.collaborators).size !== this.fields.collaborators.length;
+    },
+    hasSelfCollaboratorErrors() {
+      return this.fields.collaborators.find((email) => email === this.$store.state.email);
+    },
+    hasCollaboratorErrors() {
+      return this.hasCollaboratorValueErrors
+          || this.hasMissingCollaboratorsErrors
+          || this.hasDupeCollaboratorsErrors
+          || this.hasSelfCollaboratorErrors;
+    },
+    hasTagErrors() {
+      return this.errors.tags.some(e => e);
+    },
+    hasErrors() {
+      return Object.keys(this.errors).length > 2 || this.hasTagErrors || this.hasCollaboratorErrors;
+    }
+  }
 }
 </script>
 
@@ -197,6 +310,21 @@ export default {
 .field > input {
   width: 100%;
 }
+.field > label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.field.required > label:after {
+  color: #ca0000;
+  content: '*';
+  display:inline;
+  font-weight: bold;
+}
+.field.error {
+  border-left: 3px solid #ca0000;
+  padding-left: 8px;
+}
+
 .collaborators-list, .tags-list {
   padding: 12px 16px;
   border: 1px solid #555;
@@ -213,6 +341,7 @@ export default {
 .collaborator {
   display: flex;
   align-items: center;
+  margin-bottom: 4px;
 }
 .collaborator > label {
   margin-right: 8px;
@@ -220,10 +349,15 @@ export default {
 .collaborator > input {
   flex-grow: 1;
 }
-
 .actions {
   display: flex;
   justify-content: space-between;
   margin-top: 24px;
+}
+
+.tag {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 4px;
 }
 </style>

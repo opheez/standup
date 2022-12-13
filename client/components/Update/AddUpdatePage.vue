@@ -75,7 +75,6 @@ export default {
         const res = await fetch('/api/updates', options);
         const resJson = await res.json();
         if (!res.ok) {
-          const resJson = await res.json();
           throw Error(resJson.error);
         }
         this.$store.commit('alert', {
