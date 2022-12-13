@@ -4,8 +4,6 @@
       <div v-for="section in sections" class="section">
         <h4
           class="tab"
-          :class="{active: section.active}"
-          @click="section.onClick()"
         >{{ section.name }}</h4>
         <p
           v-for="subsection in section.children"
