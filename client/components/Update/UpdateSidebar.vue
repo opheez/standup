@@ -1,22 +1,19 @@
 <template>
   <aside class="sidebar">
-    <div v-for="section in sections" class="section">
-      <h4
-        v-if="section.name && section.name == 'Tags'"
-        class="noclick-tab"
-      >{{ section.name }}</h4>
-      <h4
-        v-else
-        class="tab"
-      >{{ section.name }}</h4>
-      <p
-        v-for="subsection in section.children"
-        class="tab link"
-        :class="{active: subsection.active}"
-        @click="subsection.onClick()"
-      >
-        {{ subsection.name }}
-      </p>
+    <div class="section-container">
+      <div v-for="section in sections" class="section">
+        <h4
+          class="tab"
+        >{{ section.name }}</h4>
+        <p
+          v-for="subsection in section.children"
+          class="tab link"
+          :class="{active: subsection.active}"
+          @click="subsection.onClick()"
+        >
+          {{ subsection.name }}
+        </p>
+      </div>
     </div>
   </aside>
 </template>
@@ -109,11 +106,37 @@ aside {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 17%;
-  top: 0;
+  padding-right: 16px;
+}
+aside,
+.section-container:after {
+  height: 80vh;
+  top: 10vh;
   left: 0;
-  height: 100%;
-  padding-right: 24px;
+  width: 17%;
+}
+
+.section-container {
+  overflow-y: scroll;
+  padding: 12vh 0;
+}
+
+.section-container:after {
+  content: "";
+  position: fixed;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+        to bottom,
+        white 10%,
+        transparent 16%,
+        transparent 84%,
+        white 90%,
+        white 100%);
+  width: 17%;
+  height: 80vh;
 }
 div.section + div.section {
   margin-top: 12px;
@@ -121,10 +144,12 @@ div.section + div.section {
 .tab {
   border-radius: 0 100px 100px 0;
   margin: 4px 0;
-  padding: 8px 0 8px 16px;
+  padding: 8px 4px 8px 16px;
   transition: all 0.2ms ease-in-out;
   background-color: transparent;
   color: #313131;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .tab.active {
   background: #ebebeb;
