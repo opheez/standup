@@ -88,4 +88,7 @@ export default {
   font-size: 80%;
   color:rgb(125, 125, 125);
 }
+.status:not(:first-child) {
+  margin-right: 4px !important;
+}
 </style>
