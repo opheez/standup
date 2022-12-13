@@ -2,13 +2,16 @@
   <aside class="sidebar">
     <div v-for="section in sections" class="section">
       <h4
+        v-if="section.name && section.name == 'Tags'"
+        class="noclick-tab"
+      >{{ section.name }}</h4>
+      <h4
+        v-else
         class="tab"
-        :class="{active: section.active}"
-        @click="section.onClick()"
       >{{ section.name }}</h4>
       <p
         v-for="subsection in section.children"
-        class="tab"
+        class="tab link"
         :class="{active: subsection.active}"
         @click="subsection.onClick()"
       >
@@ -31,56 +34,56 @@ export default {
       const userViewName = 'UpdatesPerUser';
       const tagViewName = 'UpdatesPerTag';
       const params = {id: this.$route.params.id};
-      return [
+      const tabs = [
         {
-          name: 'Overview',
-          onClick: () => {
-            this.$router.push({
-              params,
-              name: 'Updates',
-            }).catch(()=>{});
-          },
-          active: this.$route.name === 'Updates',
-          children: [],
-        },
-        {
-          name: 'Users',
-          onClick: () => {
-            this.$router.push({
-              params,
-              name: userViewName,
-            }).catch(()=>{});
-            this.$store.commit('setUserFilter', null);
-          },
-          active: this.$route.name === userViewName
-              && !this.$store.state.userFilter,
-          children: this.project.participants.map(email => ({
-            name: email,
+          name: '',
+          children: [{
+            name: 'Overview',
             onClick: () => {
               this.$router.push({
                 params,
-                name: userViewName,
+                name: 'Updates',
               }).catch(()=>{});
-              this.$store.commit('setUserFilter', email);
             },
-            active: this.$route.name === userViewName
-              && this.$store.state.userFilter === email,
-            children: [],
-          })),
+            active: this.$route.name === 'Updates',
+          }],
         },
         {
+          name: 'Users',
+          children: [
+            {
+              name: 'All users',
+              onClick: () => {
+                this.$router.push({
+                  params,
+                  name: userViewName,
+                }).catch(()=>{});
+                this.$store.commit('setUserFilter', null);
+              },
+              active: this.$route.name === userViewName
+                  && !this.$store.state.userFilter,
+            },
+            ...this.project.participants.map(email => ({
+              name: email,
+              onClick: () => {
+                this.$router.push({
+                  params,
+                  name: userViewName,
+                }).catch(()=>{});
+                this.$store.commit('setUserFilter', email);
+              },
+              active: this.$route.name === userViewName
+                && this.$store.state.userFilter === email,
+              children: [],
+            })),    
+          ],
+        },
+      ];
+      if (this.project.tags.length) {
+        tabs.push({
           name: 'Tags',
-          onClick: () => {
-            // this.$router.push({
-            //   params,
-            //   name: tagViewName,
-            // });
-            // this.$store.commit('setTagFilter', null);
-          },
-          active: this.$route.name === tagViewName
-              && !this.$store.state.tagFilter,
           children: this.project.tags.map(tag => ({
-            name: tag,
+            name: `# ${tag}`,
             onClick: () => {
               this.$router.push({
                 params,
@@ -92,8 +95,9 @@ export default {
               && this.$store.state.tagFilter === tag,
             children: [],
           })),
-        }
-      ];
+        });
+      }
+      return tabs;
     }
   }
 }
@@ -124,11 +128,19 @@ div.section + div.section {
   color: #313131;
 }
 
+.noclick-tab {
+  border-radius: 0 100px 100px 0;
+  margin: 4px 0;
+  padding: 8px 0 8px 16px;
+  background-color: transparent;
+  color: #313131;
+}
+
 .tab.active {
   background: #ebebeb;
   color: #000;
 }
-.tab:hover {
+.tab.link:hover {
   background: #f4f4f4;
 }
 </style>
