@@ -2,7 +2,11 @@
   <aside class="sidebar">
     <div v-for="section in sections" class="section">
       <h4
-        v-if="section.name"
+        v-if="section.name && section.name == 'Tags'"
+        class="noclick-tab"
+      >{{ section.name }}</h4>
+      <h4
+        v-else
         class="tab"
       >{{ section.name }}</h4>
       <p
@@ -120,6 +124,14 @@ div.section + div.section {
   padding: 8px 0 8px 16px;
   cursor: pointer;
   transition: all 0.2ms ease-in-out;
+  background-color: transparent;
+  color: #313131;
+}
+
+.noclick-tab {
+  border-radius: 0 100px 100px 0;
+  margin: 4px 0;
+  padding: 8px 0 8px 16px;
   background-color: transparent;
   color: #313131;
 }
