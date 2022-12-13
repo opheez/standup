@@ -6,7 +6,7 @@
         v-if="!existingEyesWanted || !waitingFor.length"
         @click="addEyesWanted"
       >
-        {{!waitingFor.length ? 'Re-mark ' : ''}} Eye's wanted!
+        {{!waitingFor.length ? 'Re-mark ' : ''}} Eyes wanted!
       </button>
       <button class="addeyeswantedbutton thin-btn invert"
         v-if="existingEyesWanted && waitingFor.length"
