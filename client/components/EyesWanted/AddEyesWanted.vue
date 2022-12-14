@@ -14,7 +14,7 @@
         v-if="existingEyesWanted && waitingFor.length"
         @click="removeEyesWanted"
       >
-        Mark as resolved and cancel
+        Cancel request
       </button>
     </section>
 
