@@ -1,18 +1,19 @@
 <template>
     <article>
     <section class="addeyeswantedsection">
-      <h4>Get your teammates' attention!</h4>
+      <h4 v-if="!existingEyesWanted">Ask your team to read this update:</h4>
+      <h4 v-else>You've asked your team to read this update.</h4>
       <button class="addeyeswantedbutton thin-btn"
         v-if="!existingEyesWanted || !waitingFor.length"
         @click="addEyesWanted"
       >
-        {{!waitingFor.length ? 'Re-mark ' : ''}} Eyes wanted!
+        {{!waitingFor.length ? 'Re-request eyes wanted!' : 'Eyes wanted!'}} 
       </button>
       <button class="addeyeswantedbutton thin-btn invert"
         v-if="existingEyesWanted && waitingFor.length"
         @click="removeEyesWanted"
       >
-        Resolve
+        Mark as resolved and cancel
       </button>
     </section>
 
@@ -22,7 +23,7 @@
         Waiting for reviews from: {{ waitingFor.join(', ') }} 
       </p>
       <p v-else>
-        All teammates have read the update!
+        All your teammates have read this update!
       </p>
     </section>
 

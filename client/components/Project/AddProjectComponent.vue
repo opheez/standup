@@ -127,7 +127,7 @@
             </button>
           </div>
           <p v-if="hasTagErrors" class="error-message">
-            Tags cannot be empty
+            Tags cannot be empty strings
           </p>
         </div>
       </form>
