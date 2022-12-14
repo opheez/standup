@@ -6,11 +6,11 @@
   <nav :class="{thin: $store.state.currentUpdate}">
     <div class="left">
       <img src="../../public/logo.svg">
-      <h1 class="title">
-        <router-link to="/">
+      <router-link to="/" class="title">
+        <h1 class="title">
           Standup
-        </router-link>
-      </h1>
+        </h1>
+      </router-link>
     </div>
     <div class="right" v-if="$store.state.email">
       <router-link to="/">
