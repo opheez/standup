@@ -87,7 +87,7 @@
         + Add item
       </button>
       <p v-if="hasActionItemErrors" class="error-message">
-        {{ listLabel }} cannot contain empty items
+        {{ listLabel }} cannot contain empty entries
       </p>
     </div>
     <div class="field">
