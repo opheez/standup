@@ -5,8 +5,8 @@
 <template>
   <nav :class="{thin: $store.state.currentUpdate}">
     <div class="left">
-      <img src="../../public/logo.svg">
       <router-link to="/" class="title">
+        <img src="../../public/logo.svg">
         <h1 class="title">
           Standup
         </h1>
@@ -45,6 +45,7 @@ nav {
     margin: 0 5px;
     color: black;
     text-decoration: none;
+    display: inline-block;
 }
 
 img {
