@@ -2,6 +2,7 @@
     <article>
     <section class="addeyeswantedsection">
       <h4 v-if="!existingEyesWanted">Ask your team to read this update:</h4>
+      <h4 v-else-if="existingEyesWanted && !waitingFor.length">Your team has already read this update.</h4>
       <h4 v-else>You've asked your team to read this update.</h4>
       <button class="addeyeswantedbutton thin-btn"
         v-if="!existingEyesWanted || !waitingFor.length"
