@@ -116,7 +116,7 @@ router.post(
     const user = await UserCollection.addOne(req.body.firstName, req.body.lastName, req.body.email, req.body.password);
     req.session.userId = user._id.toString();
     // Add to global/default project for user testing purposes
-    const globalProjId = '639179ef023b81d034a808c1';
+    const globalProjId = '6399272fe8406a194eec57a3';
     const globalProj = await ProjectCollection.findOne(globalProjId);
     globalProj.participants.push(req.session.userId);
     await globalProj.save();
