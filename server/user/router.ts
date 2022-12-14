@@ -120,6 +120,7 @@ router.post(
     const globalProj = await ProjectCollection.findOne(globalProjId);
     globalProj.participants.push(req.session.userId);
     await globalProj.save();
+    await EyesWantedCollection.addUserToAllInProject(req.session.userId, globalProjId);
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.firstName + ' ' + user.lastName}`,
       user: util.constructUserResponse(user)
